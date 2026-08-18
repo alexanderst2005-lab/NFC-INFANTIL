@@ -69,6 +69,24 @@ const DEFAULT_PROFILES = [
         photoUrl: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400&auto=format&fit=crop&q=80",
         active: true,
         createdAt: new Date().toISOString()
+    },
+    {
+        id: "prof-005",
+        slug: "max",
+        name: "Max",
+        gender: "pet",
+        age: 3,
+        bloodType: "",
+        parentPhone: "573001234567",
+        whatsappMessage: "Hola, encontré a la mascota Max y quiero comunicarme con su dueño.",
+        locationMapsUrl: "",
+        schoolMapsUrl: "",
+        school: "",
+        grade: "",
+        medicalConditions: "",
+        photoUrl: "https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=400&auto=format&fit=crop&q=80",
+        active: true,
+        createdAt: new Date().toISOString()
     }
 ];
 
