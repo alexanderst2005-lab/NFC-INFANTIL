@@ -1,5 +1,5 @@
 /* ==========================================================================
-   NFC INFANTIL - ADMIN PANEL LOGIC (AUTHORITATIVE CENTRAL CLOUD SYNC)
+   NFC INFANTIL - ADMIN PANEL LOGIC (STRUCTURED DASHBOARD & CLOUD SYNC)
    ========================================================================== */
 
 const DEFAULT_PIN = "1234";
@@ -131,11 +131,9 @@ class AdminApp {
                 const cloudProfiles = jsonRes && Array.isArray(jsonRes.profiles) ? jsonRes.profiles : [];
 
                 if (cloudProfiles.length > 0) {
-                    // Authoritative overwrite: Central Cloud DB is the single source of truth
                     this.profiles = cloudProfiles;
                     this.saveProfilesLocal();
                 } else if (this.profiles.length > 0) {
-                    // Seed Central DB if empty
                     await this.pushToCloudDB();
                 }
 
@@ -182,16 +180,25 @@ class AdminApp {
         const grid = document.getElementById('admin-profiles-grid');
         if (!grid) return;
 
+        // Update Statistics Counters
+        const totalCountEl = document.getElementById('stat-total-count');
+        const activeCountEl = document.getElementById('stat-active-count');
+        if (totalCountEl) totalCountEl.textContent = this.profiles.length;
+        if (activeCountEl) activeCountEl.textContent = this.profiles.filter(p => p.active).length;
+
         const filtered = this.profiles.filter(p =>
             p.name.toLowerCase().includes(filterText.toLowerCase()) ||
-            p.slug.toLowerCase().includes(filterText.toLowerCase())
+            p.slug.toLowerCase().includes(filterText.toLowerCase()) ||
+            (p.school && p.school.toLowerCase().includes(filterText.toLowerCase())) ||
+            (p.parentName && p.parentName.toLowerCase().includes(filterText.toLowerCase()))
         );
 
         if (filtered.length === 0) {
             grid.innerHTML = `
-                <div style="grid-column: 1/-1; text-align: center; padding: 3rem; color: var(--text-secondary);">
-                    <i class="fa-solid fa-folder-open" style="font-size: 3rem; margin-bottom: 1rem;"></i>
-                    <p>No se encontraron perfiles creados.</p>
+                <div style="grid-column: 1/-1; text-align: center; padding: 4rem 1rem; color: var(--text-secondary); background: var(--bg-card); border-radius: var(--radius-lg); border: 1px dashed var(--border-color);">
+                    <i class="fa-solid fa-folder-open" style="font-size: 3rem; margin-bottom: 1rem; color: var(--accent-main); opacity: 0.7;"></i>
+                    <h3 style="color: var(--text-primary); margin-bottom: 0.5rem;">No se encontraron perfiles</h3>
+                    <p style="font-size: 0.9rem;">Prueba con otra búsqueda o crea un nuevo perfil infantil.</p>
                 </div>
             `;
             return;
@@ -204,42 +211,77 @@ class AdminApp {
 
             return `
                 <div class="admin-card ${!p.active ? 'is-inactive' : ''}">
-                    <div class="admin-card-head">
-                        <img src="${p.photoUrl}" alt="${p.name}" class="admin-card-avatar">
-                        <div class="admin-card-meta">
-                            <h4>${p.name}</h4>
-                            <span class="slug-pill">/${p.slug}</span>
-                            <div style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.3rem;">
-                                ${p.gender === 'girl' ? '👧 Niña' : '👦 Niño'} • ${p.age} Años • ${p.bloodType}
-                            </div>
+                    <!-- Card Top Header -->
+                    <div class="admin-card-header">
+                        <div class="avatar-wrapper">
+                            <img src="${p.photoUrl}" alt="${p.name}" class="admin-card-avatar">
+                            <span class="gender-tag ${p.gender === 'girl' ? 'tag-girl' : 'tag-boy'}">
+                                ${p.gender === 'girl' ? '👧 Niña' : '👦 Niño'}
+                            </span>
+                        </div>
+                        
+                        <div class="status-badge ${p.active ? 'status-active' : 'status-disabled'}">
+                            <span class="status-dot"></span>
+                            <span>${p.active ? 'Activo' : 'Inactivo'}</span>
                         </div>
                     </div>
 
-                    <div style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.8rem;">
-                        <div><i class="fa-solid fa-phone"></i> WhatsApp: +${p.parentPhone}</div>
-                        <div><i class="fa-solid fa-location-dot"></i> ${p.locationAddress || 'Sin ubicación'}</div>
+                    <!-- Card Body Info -->
+                    <div class="admin-card-body">
+                        <h4 class="admin-card-name">${p.name}</h4>
+                        
+                        <!-- URL Link Pill Bar -->
+                        <div class="url-pill-bar">
+                            <span class="url-slug-text">/${p.slug}</span>
+                            <button onclick="adminApp.copyProfileLink('${publicUrl}')" class="btn-copy-mini" title="Copiar URL">
+                                <i class="fa-solid fa-copy"></i> Copiar
+                            </button>
+                        </div>
+
+                        <!-- Metadata Badges Grid -->
+                        <div class="card-meta-grid">
+                            <div class="meta-item">
+                                <i class="fa-solid fa-calendar-day"></i>
+                                <span>${p.age} Años</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="fa-solid fa-droplet" style="color: #f87171;"></i>
+                                <span>${p.bloodType}</span>
+                            </div>
+                            <div class="meta-item meta-item-full">
+                                <i class="fa-solid fa-users"></i>
+                                <span>${p.parentName || 'Sin padres reg.'}</span>
+                            </div>
+                            <div class="meta-item meta-item-full">
+                                <i class="fa-solid fa-phone"></i>
+                                <span>+${p.parentPhone}</span>
+                            </div>
+                            ${p.school ? `
+                            <div class="meta-item meta-item-full">
+                                <i class="fa-solid fa-school"></i>
+                                <span>${p.school}</span>
+                            </div>
+                            ` : ''}
+                        </div>
                     </div>
 
-                    <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.2); padding: 0.6rem 0.8rem; border-radius: var(--radius-sm); margin-bottom: 0.8rem;">
-                        <span style="font-size: 0.8rem; font-weight: 700; color: ${p.active ? 'var(--success)' : 'var(--danger)'}">
-                            ${p.active ? '● ACTIVO' : '○ INACTIVO'}
-                        </span>
-                        <label class="switch">
-                            <input type="checkbox" ${p.active ? 'checked' : ''} onchange="adminApp.toggleProfileActive('${p.id}', this.checked)">
-                            <span class="slider"></span>
-                        </label>
-                    </div>
+                    <!-- Card Footer Actions -->
+                    <div class="admin-card-footer">
+                        <div class="toggle-switch-wrapper" title="Activar/Desactivar perfil NFC">
+                            <label class="switch">
+                                <input type="checkbox" ${p.active ? 'checked' : ''} onchange="adminApp.toggleProfileActive('${p.id}', this.checked)">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
 
-                    <div class="admin-card-actions">
-                        <button onclick="adminApp.copyProfileLink('${publicUrl}')" class="btn btn-secondary btn-sm" title="Copiar URL Corta Única">
-                            <i class="fa-solid fa-link"></i> Copiar URL
-                        </button>
-                        <button onclick="adminApp.openEditModal('${p.id}')" class="btn btn-primary btn-sm">
-                            <i class="fa-solid fa-pen"></i> Editar
-                        </button>
-                        <button onclick="adminApp.deleteProfile('${p.id}')" class="btn btn-danger btn-sm" title="Eliminar Definitivamente">
-                            <i class="fa-solid fa-trash"></i>
-                        </button>
+                        <div class="footer-btn-group">
+                            <button onclick="adminApp.openEditModal('${p.id}')" class="btn btn-secondary btn-sm">
+                                <i class="fa-solid fa-pen-to-square"></i> Editar
+                            </button>
+                            <button onclick="adminApp.deleteProfile('${p.id}')" class="btn btn-danger btn-sm" title="Eliminar Definitivamente">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
             `;
@@ -311,7 +353,7 @@ class AdminApp {
         const p = this.profiles.find(item => item.id === id);
         if (!p) return;
 
-        document.getElementById('modal-title').innerHTML = `<i class="fa-solid fa-pen"></i> Editar Perfil de ${p.name}`;
+        document.getElementById('modal-title').innerHTML = `<i class="fa-solid fa-pen-to-square"></i> Editar Perfil de ${p.name}`;
         document.getElementById('input-profile-id').value = p.id;
         document.getElementById('input-name').value = p.name;
         document.getElementById('input-slug').value = p.slug;
