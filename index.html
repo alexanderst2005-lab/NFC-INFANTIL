@@ -171,24 +171,33 @@
                             </div>
                         </div>
 
-                        <!-- Optional Extra Cards (Parent, School, Grade, Medical Notes) -->
-                        <div class="info-box hidden" id="box-parent">
-                            <div class="info-card-icon icon-parent"><i class="fa-solid fa-users"></i></div>
-                            <div class="info-card-text"><span class="label">Padres / Acudientes</span><span class="val" id="p-parent">Cargando...</span></div>
+                        <!-- Optional Extra Cards (School, Grade, Parent) -->
+                        <div class="info-card-box box-school hidden" id="box-school" style="margin-top: 0.75rem;">
+                            <div class="info-card-icon icon-school">
+                                <i class="fa-solid fa-school"></i>
+                            </div>
+                            <div class="info-card-text">
+                                <span class="label">Institución Educativa</span>
+                                <span class="val" id="p-school">Cargando...</span>
+                            </div>
                         </div>
-                        <div class="info-box hidden" id="box-school">
-                            <div class="info-card-icon icon-school"><i class="fa-solid fa-school"></i></div>
-                            <div class="info-card-text"><span class="label">Institución Educativa</span><span class="val" id="p-school">Cargando...</span></div>
-                        </div>
-                        <div class="info-box hidden" id="box-grade">
-                            <div class="info-card-icon icon-grade"><i class="fa-solid fa-graduation-cap"></i></div>
-                            <div class="info-card-text"><span class="label">Grado / Curso</span><span class="val" id="p-grade">Cargando...</span></div>
+
+                        <div class="info-card-box box-grade hidden" id="box-grade" style="margin-top: 0.75rem;">
+                            <div class="info-card-icon icon-grade">
+                                <i class="fa-solid fa-graduation-cap"></i>
+                            </div>
+                            <div class="info-card-text">
+                                <span class="label">Grado / Curso</span>
+                                <span class="val" id="p-grade">Cargando...</span>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Special Medical Notes -->
+                    <!-- Special Medical Notes / Conditions -->
                     <div class="special-care-box hidden" id="box-medical">
-                        <div class="special-care-header"><i class="fa-solid fa-notes-medical"></i> Información Importante / Cuidados</div>
+                        <div class="special-care-header">
+                            <i class="fa-solid fa-heart-pulse"></i> Enfermedad o Condición
+                        </div>
                         <div class="special-care-body" id="p-medical-notes"></div>
                     </div>
 
