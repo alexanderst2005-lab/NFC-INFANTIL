@@ -101,11 +101,8 @@ class ProfileApp {
         // 1. Render immediately from local memory
         this.renderSingleProfile(targetSlug);
 
-        // 2. Fetch latest Cloud DB automatically
+        // 2. Fetch latest Cloud DB automatically (syncFromCloudDB re-renders only if data changed)
         await this.syncFromCloudDB();
-
-        // 3. Re-render immediately with updated cloud data
-        this.renderSingleProfile(targetSlug);
     }
 
     calculateAgeFromBirthDate(birthDateStr, fallbackAge = 5) {
@@ -665,6 +662,11 @@ class ProfileApp {
     renderFloatingDecorators(gender) {
         const container = document.getElementById('floating-decorators-container');
         if (!container) return;
+
+        if (container.getAttribute('data-rendered-gender') === gender && container.children.length > 0) {
+            return;
+        }
+        container.setAttribute('data-rendered-gender', gender);
 
         const boyIcons = ['fa-rocket', 'fa-user-astronaut', 'fa-star', 'fa-cloud-moon', 'fa-compass', 'fa-shuttle-space'];
         const girlIcons = ['fa-wand-magic-sparkles', 'fa-heart', 'fa-sun', 'fa-cloud', 'fa-feather', 'fa-spa'];
