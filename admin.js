@@ -18,7 +18,8 @@ const DEFAULT_PROFILES = [
         bloodType: "B+",
         parentPhone: "573001234567",
         whatsappMessage: "Hola, encontré la información del perfil de Samuel y me gustaría comunicarme con sus padres.",
-        locationMapsUrl: "https://maps.google.com/?q=4.6853,-74.0435",
+        locationMapsUrl: "",
+        schoolMapsUrl: "",
         photoUrl: "https://images.unsplash.com/photo-1543332164-6e82f355badc?w=400&auto=format&fit=crop&q=80",
         active: true,
         createdAt: new Date().toISOString()
@@ -32,7 +33,8 @@ const DEFAULT_PROFILES = [
         bloodType: "A+",
         parentPhone: "573159876543",
         whatsappMessage: "Hola, encontré la información del perfil de Valentina y quiero comunicarme con sus padres.",
-        locationMapsUrl: "https://maps.google.com/?q=6.2088,-75.5674",
+        locationMapsUrl: "",
+        schoolMapsUrl: "",
         photoUrl: "https://images.unsplash.com/photo-1595454223600-91fb272189d5?w=400&auto=format&fit=crop&q=80",
         active: true,
         createdAt: new Date().toISOString()
@@ -46,7 +48,8 @@ const DEFAULT_PROFILES = [
         bloodType: "B+",
         parentPhone: "573204445566",
         whatsappMessage: "Hola, encontré la información del perfil de Juan Diego y me comunico con sus padres.",
-        locationMapsUrl: "https://maps.google.com/?q=4.6581,-74.1084",
+        locationMapsUrl: "",
+        schoolMapsUrl: "",
         photoUrl: "https://images.unsplash.com/photo-1519238263530-99bdd11df2ea?w=400&auto=format&fit=crop&q=80",
         active: true,
         createdAt: new Date().toISOString()
@@ -60,7 +63,8 @@ const DEFAULT_PROFILES = [
         bloodType: "AB+",
         parentPhone: "573108889900",
         whatsappMessage: "Hola, estoy escaneando la pulsera NFC de Sofía y me comunico con sus padres.",
-        locationMapsUrl: "https://maps.google.com/?q=3.4516,-76.5320",
+        locationMapsUrl: "",
+        schoolMapsUrl: "",
         photoUrl: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400&auto=format&fit=crop&q=80",
         active: true,
         createdAt: new Date().toISOString()
@@ -84,8 +88,6 @@ class AdminApp {
 
     sanitizeProfile(p) {
         if (!p) return null;
-
-        // Default lookup for base profiles if fields were wiped out in old DB
         let baseDefault = DEFAULT_PROFILES.find(d => d.id === p.id || d.slug === p.slug);
 
         const name = (p.name && String(p.name).trim() !== '' && String(p.name).trim() !== 'undefined') 
@@ -109,8 +111,8 @@ class AdminApp {
             bloodType: (p.bloodType && String(p.bloodType).trim() !== '' && String(p.bloodType) !== 'undefined') ? String(p.bloodType).trim() : (baseDefault ? baseDefault.bloodType : 'O+'),
             parentPhone: (p.parentPhone && String(p.parentPhone).trim() !== '' && String(p.parentPhone) !== 'undefined') ? String(p.parentPhone).trim() : (baseDefault ? baseDefault.parentPhone : ''),
             whatsappMessage: (p.whatsappMessage && String(p.whatsappMessage).trim() !== '') ? String(p.whatsappMessage).trim() : (baseDefault ? baseDefault.whatsappMessage : 'Hola, encontré la información del perfil de {nombre}.'),
-            locationMapsUrl: (p.locationMapsUrl && String(p.locationMapsUrl).trim() !== '') ? String(p.locationMapsUrl).trim() : (baseDefault ? baseDefault.locationMapsUrl : ''),
-            schoolMapsUrl: (p.schoolMapsUrl && String(p.schoolMapsUrl).trim() !== '') ? String(p.schoolMapsUrl).trim() : (baseDefault ? baseDefault.schoolMapsUrl : ''),
+            locationMapsUrl: (p.locationMapsUrl !== undefined && p.locationMapsUrl !== null) ? String(p.locationMapsUrl).trim() : '',
+            schoolMapsUrl: (p.schoolMapsUrl !== undefined && p.schoolMapsUrl !== null) ? String(p.schoolMapsUrl).trim() : '',
             photoUrl: (p.photoUrl && String(p.photoUrl).trim() !== '' && String(p.photoUrl) !== 'undefined') ? String(p.photoUrl).trim() : (baseDefault ? baseDefault.photoUrl : ''),
             active: true,
             createdAt: p.createdAt || new Date().toISOString()
@@ -153,7 +155,6 @@ class AdminApp {
                 const cloudProfiles = jsonRes && Array.isArray(jsonRes.profiles) ? jsonRes.profiles : [];
 
                 if (cloudProfiles.length > 0) {
-                    // Sanitize all cloud profiles against default lookup
                     this.profiles = cloudProfiles.map(p => this.sanitizeProfile(p)).filter(Boolean);
                     this.saveProfilesLocal();
                 } else if (this.profiles.length > 0) {
@@ -267,8 +268,14 @@ class AdminApp {
                             </div>
                             ${p.locationMapsUrl ? `
                             <div class="meta-item meta-item-full">
-                                <i class="fa-solid fa-location-dot" style="color: #fbbf24;"></i>
-                                <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px;">${p.locationMapsUrl}</span>
+                                <i class="fa-solid fa-house-user" style="color: #fbbf24;"></i>
+                                <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px;">Casa: ${p.locationMapsUrl}</span>
+                            </div>
+                            ` : ''}
+                            ${p.schoolMapsUrl ? `
+                            <div class="meta-item meta-item-full">
+                                <i class="fa-solid fa-school" style="color: #f59e0b;"></i>
+                                <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px;">Colegio: ${p.schoolMapsUrl}</span>
                             </div>
                             ` : ''}
                         </div>
