@@ -97,7 +97,7 @@ export default async function handler(req, res) {
                 incomingProfiles = body.profiles;
             }
 
-            if (incomingProfiles !== null && incomingProfiles.length > 0) {
+            if (incomingProfiles !== null && Array.isArray(incomingProfiles)) {
                 sharedProfilesStore = incomingProfiles.map(p => ({
                     id: p.id || `prof-${Date.now()}`,
                     slug: (p.slug && String(p.slug).trim() !== '' && String(p.slug).trim() !== 'undefined') ? String(p.slug).trim() : 'perfil',

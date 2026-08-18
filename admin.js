@@ -188,12 +188,9 @@ class AdminApp {
                 const jsonRes = await res.json();
                 const cloudProfiles = jsonRes && Array.isArray(jsonRes.profiles) ? jsonRes.profiles : [];
 
-                if (cloudProfiles.length > 0) {
-                    // CLOUD PROFILES FIRST so mobile edits/updates immediately override stale PC local cache!
-                    const combined = [...cloudProfiles, ...this.profiles];
-                    const deduplicated = this.deduplicateProfiles(combined);
-
-                    this.profiles = deduplicated;
+                if (Array.isArray(cloudProfiles) && cloudProfiles.length > 0) {
+                    // Authoritative Master Sync: Cloud DB is single source of truth for C.R.U.D.
+                    this.profiles = this.deduplicateProfiles(cloudProfiles);
                     this.saveProfilesLocal();
                     if (this.isAuthenticated) {
                         this.renderProfilesGrid();
@@ -358,6 +355,7 @@ class AdminApp {
 
         if (confirm(`¿Deseas eliminar permanentemente el perfil de ${profile.name}?`)) {
             this.profiles = this.profiles.filter(p => p.id !== id);
+            this.saveProfilesLocal();
             await this.pushToCloudDB();
             this.renderProfilesGrid();
             this.showToast(`Perfil de ${profile.name} eliminado definitivamente.`);

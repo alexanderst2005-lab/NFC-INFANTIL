@@ -190,11 +190,8 @@ class ProfileApp {
                 const jsonRes = await res.json();
                 const cloudProfiles = jsonRes && Array.isArray(jsonRes.profiles) ? jsonRes.profiles : [];
 
-                if (cloudProfiles.length > 0) {
-                    const combined = [...cloudProfiles, ...this.profiles];
-                    const deduplicated = this.deduplicateProfiles(combined);
-
-                    this.profiles = deduplicated;
+                if (Array.isArray(cloudProfiles) && cloudProfiles.length > 0) {
+                    this.profiles = this.deduplicateProfiles(cloudProfiles);
                     this.saveProfilesLocal();
                     const currentSlug = this.getSlugFromUrl();
                     if (currentSlug) this.renderSingleProfile(currentSlug);
