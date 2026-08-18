@@ -131,26 +131,46 @@ class AdminApp {
         };
     }
 
+    deduplicateProfiles(list) {
+        if (!Array.isArray(list)) return [];
+        const seenIds = new Set();
+        const seenSlugs = new Set();
+        const result = [];
+
+        for (const p of list) {
+            const sanitized = this.sanitizeProfile(p);
+            if (!sanitized) continue;
+            
+            if (!seenIds.has(sanitized.id) && !seenSlugs.has(sanitized.slug)) {
+                seenIds.add(sanitized.id);
+                seenSlugs.add(sanitized.slug);
+                result.push(sanitized);
+            }
+        }
+        return result;
+    }
+
     loadProfilesLocal() {
         const stored = localStorage.getItem('nfc_profiles_db');
         if (stored) {
             try {
                 const parsed = JSON.parse(stored);
                 if (Array.isArray(parsed) && parsed.length > 0) {
-                    this.profiles = parsed.map(p => this.sanitizeProfile(p)).filter(Boolean);
+                    this.profiles = this.deduplicateProfiles(parsed);
                 } else {
-                    this.profiles = DEFAULT_PROFILES.map(p => this.sanitizeProfile(p)).filter(Boolean);
+                    this.profiles = this.deduplicateProfiles(DEFAULT_PROFILES);
                 }
             } catch (e) {
-                this.profiles = DEFAULT_PROFILES.map(p => this.sanitizeProfile(p)).filter(Boolean);
+                this.profiles = this.deduplicateProfiles(DEFAULT_PROFILES);
             }
         } else {
-            this.profiles = DEFAULT_PROFILES.map(p => this.sanitizeProfile(p)).filter(Boolean);
+            this.profiles = this.deduplicateProfiles(DEFAULT_PROFILES);
         }
         this.saveProfilesLocal();
     }
 
     saveProfilesLocal() {
+        this.profiles = this.deduplicateProfiles(this.profiles);
         localStorage.setItem('nfc_profiles_db', JSON.stringify(this.profiles));
     }
 
@@ -168,14 +188,19 @@ class AdminApp {
                 const cloudProfiles = jsonRes && Array.isArray(jsonRes.profiles) ? jsonRes.profiles : [];
 
                 if (cloudProfiles.length > 0) {
-                    this.profiles = cloudProfiles.map(p => this.sanitizeProfile(p)).filter(Boolean);
-                    this.saveProfilesLocal();
+                    // Combine LOCAL profiles FIRST + CLOUD profiles so user data is NEVER lost!
+                    const combined = [...this.profiles, ...cloudProfiles];
+                    const deduplicated = this.deduplicateProfiles(combined);
+
+                    if (JSON.stringify(deduplicated) !== JSON.stringify(this.profiles)) {
+                        this.profiles = deduplicated;
+                        this.saveProfilesLocal();
+                        if (this.isAuthenticated) {
+                            this.renderProfilesGrid();
+                        }
+                    }
                 } else if (this.profiles.length > 0) {
                     await this.pushToCloudDB();
-                }
-
-                if (this.isAuthenticated) {
-                    this.renderProfilesGrid();
                 }
             }
         } catch (err) {
@@ -219,6 +244,8 @@ class AdminApp {
         const grid = document.getElementById('admin-profiles-grid');
         if (!grid) return;
 
+        this.profiles = this.deduplicateProfiles(this.profiles);
+
         const totalCountEl = document.getElementById('stat-total-count');
         if (totalCountEl) totalCountEl.textContent = this.profiles.length;
 
@@ -226,6 +253,8 @@ class AdminApp {
             p.name.toLowerCase().includes(filterText.toLowerCase()) ||
             p.slug.toLowerCase().includes(filterText.toLowerCase())
         );
+
+        grid.innerHTML = ''; // Explicit clear before rendering
 
         if (filtered.length === 0) {
             grid.innerHTML = `

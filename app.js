@@ -134,26 +134,46 @@ class ProfileApp {
         };
     }
 
+    deduplicateProfiles(list) {
+        if (!Array.isArray(list)) return [];
+        const seenIds = new Set();
+        const seenSlugs = new Set();
+        const result = [];
+
+        for (const p of list) {
+            const sanitized = this.sanitizeProfile(p);
+            if (!sanitized) continue;
+            
+            if (!seenIds.has(sanitized.id) && !seenSlugs.has(sanitized.slug)) {
+                seenIds.add(sanitized.id);
+                seenSlugs.add(sanitized.slug);
+                result.push(sanitized);
+            }
+        }
+        return result;
+    }
+
     loadProfilesLocal() {
         const stored = localStorage.getItem('nfc_profiles_db');
         if (stored) {
             try {
                 const parsed = JSON.parse(stored);
                 if (Array.isArray(parsed) && parsed.length > 0) {
-                    this.profiles = parsed.map(p => this.sanitizeProfile(p)).filter(Boolean);
+                    this.profiles = this.deduplicateProfiles(parsed);
                 } else {
-                    this.profiles = DEFAULT_PROFILES.map(p => this.sanitizeProfile(p)).filter(Boolean);
+                    this.profiles = this.deduplicateProfiles(DEFAULT_PROFILES);
                 }
             } catch (e) {
-                this.profiles = DEFAULT_PROFILES.map(p => this.sanitizeProfile(p)).filter(Boolean);
+                this.profiles = this.deduplicateProfiles(DEFAULT_PROFILES);
             }
         } else {
-            this.profiles = DEFAULT_PROFILES.map(p => this.sanitizeProfile(p)).filter(Boolean);
+            this.profiles = this.deduplicateProfiles(DEFAULT_PROFILES);
         }
         this.saveProfilesLocal();
     }
 
     saveProfilesLocal() {
+        this.profiles = this.deduplicateProfiles(this.profiles);
         localStorage.setItem('nfc_profiles_db', JSON.stringify(this.profiles));
     }
 
@@ -171,8 +191,15 @@ class ProfileApp {
                 const cloudProfiles = jsonRes && Array.isArray(jsonRes.profiles) ? jsonRes.profiles : [];
 
                 if (cloudProfiles.length > 0) {
-                    this.profiles = cloudProfiles.map(p => this.sanitizeProfile(p)).filter(Boolean);
-                    this.saveProfilesLocal();
+                    const combined = [...this.profiles, ...cloudProfiles];
+                    const deduplicated = this.deduplicateProfiles(combined);
+
+                    if (JSON.stringify(deduplicated) !== JSON.stringify(this.profiles)) {
+                        this.profiles = deduplicated;
+                        this.saveProfilesLocal();
+                        const currentSlug = this.getSlugFromUrl();
+                        if (currentSlug) this.renderSingleProfile(currentSlug);
+                    }
                 }
             }
         } catch (err) {
