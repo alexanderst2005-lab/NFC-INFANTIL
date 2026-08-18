@@ -84,6 +84,7 @@ class AdminApp {
         this.loadProfilesLocal();
         this.setupEventListeners();
         this.renderState();
+        document.documentElement.classList.add('ready');
         await this.syncFromCloudDB();
     }
 
