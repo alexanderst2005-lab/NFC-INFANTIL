@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NFC Seguridad Infantil | Perfil de Identificación</title>
-    <meta name="description" content="Plataforma oficial de seguridad e identificación infantil mediante código QR y pulseras NFC.">
+    <title>NFC Seguridad Infantil | Perfil Único</title>
+    <meta name="description" content="Perfil oficial de identificación y contacto de emergencia para seguridad infantil mediante pulsera NFC.">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -22,78 +22,31 @@
         <div class="bubble bubble-3"></div>
     </div>
 
-    <!-- Navigation Header -->
-    <header class="app-header">
-        <a href="/" class="brand-logo" id="brand-home-link">
+    <!-- Minimal Clean Header (No nav links to other profiles) -->
+    <header class="app-header" style="justify-content: center;">
+        <div class="brand-logo" style="cursor: default;">
             <div class="brand-icon">
                 <i class="fa-solid fa-shield-cat"></i>
             </div>
             <span>NFC<span style="color: var(--accent-main)">Infantil</span></span>
-        </a>
-        <nav class="header-nav">
-            <a href="/admin.html" class="btn btn-secondary btn-sm">
-                <i class="fa-solid fa-user-gear"></i> Panel Admin
-            </a>
-        </nav>
+        </div>
     </header>
 
     <main class="container">
 
         <!-- ===================================================================
-             PÁGINA OFICIAL PRINCIPAL (DIRECTORIO DE PERFILES)
+             PÁGINA PÚBLICA ÚNICA Y 100% AISLADA DEL NIÑO O NIÑA
              =================================================================== -->
-        <section id="view-home" class="view-section active-view">
-            
-            <div class="official-hero-banner" style="text-align: center; margin-bottom: 2.5rem; padding: 2.5rem 1.5rem; background: var(--bg-card); border-radius: var(--radius-xl); border: 1px solid var(--border-color); backdrop-filter: blur(16px);">
-                <div class="brand-icon" style="width: 65px; height: 65px; font-size: 2rem; margin: 0 auto 1rem;">
-                    <i class="fa-solid fa-shield-cat"></i>
-                </div>
-                <h1 style="font-size: 2.3rem; font-weight: 800; margin-bottom: 0.5rem;">Página Oficial NFC Seguridad Infantil</h1>
-                <p style="color: var(--text-secondary); max-width: 620px; margin: 0 auto 1.5rem; font-size: 1.05rem;">
-                    Selecciona cualquier perfil para ingresar a su página única o copia su enlace personalizado de seguridad.
-                </p>
+        <section id="view-profile" class="view-section active-view">
+            <div class="profile-container" style="margin-top: 0.5rem;">
 
-                <!-- Search Bar -->
-                <div class="search-input-wrap" style="max-width: 480px; margin: 0 auto;">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                    <input type="text" id="public-search-input" placeholder="Buscar por nombre o tipo de sangre...">
-                </div>
-            </div>
-
-            <!-- Public Cards Grid of All Registered Kids -->
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-                <h2 style="font-size: 1.5rem; font-weight: 800;"><i class="fa-solid fa-users" style="color: var(--accent-main)"></i> Perfiles Registrados</h2>
-                <span class="theme-badge" style="background: rgba(255,255,255,0.08); color: var(--text-primary);"><span id="public-kids-count">0</span> Registrados</span>
-            </div>
-
-            <div class="profiles-admin-grid" id="public-kids-grid">
-                <!-- Dynamically populated from JS -->
-            </div>
-        </section>
-
-
-        <!-- ===================================================================
-             PÁGINA PÚBLICA ÚNICA DEL NIÑO / NIÑA (DISEÑO ADAPTABLE PC Y MOVIL)
-             =================================================================== -->
-        <section id="view-profile" class="view-section hidden">
-            <div class="profile-container" style="margin-top: 0;">
-                
-                <div style="margin-bottom: 1.2rem; display: flex; justify-content: space-between; align-items: center;">
-                    <a href="/" id="btn-back-home" class="btn btn-secondary btn-sm">
-                        <i class="fa-solid fa-arrow-left"></i> Volver al Inicio
-                    </a>
-                    <button id="btn-copy-current-link" class="btn btn-secondary btn-sm">
-                        <i class="fa-solid fa-copy"></i> Copiar Enlace
-                    </button>
-                </div>
-
-                <!-- MAIN CARD (MOBILE STACKED & PC DUAL-COLUMN SPLIT) -->
+                <!-- MAIN SINGLE CHILD CARD -->
                 <div class="profile-card">
                     <div class="profile-card-desktop-split">
                         
-                        <!-- LEFT COLUMN: PHOTO & LOGO -->
+                        <!-- LEFT COLUMN: PHOTO & LOGO BANNER -->
                         <div class="profile-left-column">
-                            <!-- Badge Bar -->
+                            <!-- Status Bar -->
                             <div class="profile-badge-bar">
                                 <span class="theme-badge" id="p-badge">
                                     <i class="fa-solid fa-child"></i> <span id="p-gender-text">Perfil Infantil</span>
@@ -109,18 +62,18 @@
                                 <img src="" alt="Foto Niño/a" id="p-avatar" class="profile-avatar-img">
                             </div>
 
-                            <!-- Logo Banner below Photo -->
+                            <!-- Official NFC Seguridad Infantil Logo Banner below Photo -->
                             <div class="logo-banner-wrapper">
                                 <img src="assets/logo-nfc-seguridad.png" alt="NFC Seguridad Infantil" class="logo-banner-img">
                             </div>
                         </div>
 
-                        <!-- RIGHT COLUMN: CORE INFO & ACTION BUTTONS -->
+                        <!-- RIGHT COLUMN: CORE SINGLE CHILD DATA & ACTION BUTTONS -->
                         <div class="profile-right-column">
                             
                             <!-- Information Grid -->
                             <div class="info-cards-grid">
-                                <!-- Nombre -->
+                                <!-- Nombre del Niño/a -->
                                 <div class="info-box">
                                     <div class="info-icon icon-parent">
                                         <i class="fa-solid fa-user"></i>
@@ -155,7 +108,7 @@
                                 </div>
                             </div>
 
-                            <!-- Action Buttons Stack (WhatsApp & Maps) -->
+                            <!-- Action Buttons Stack (WhatsApp & Location) -->
                             <div class="profile-actions-stack">
                                 <a href="#" id="btn-whatsapp-action" target="_blank" class="btn btn-whatsapp btn-block">
                                     <i class="fa-brands fa-whatsapp"></i> CONTACTAR A MIS PAPÁS
@@ -179,17 +132,16 @@
             </div>
         </section>
 
-        <!-- INACTIVE PROFILE SCREEN -->
+        <!-- INACTIVE PROFILE SCREEN (WHEN PROFILE IS DEACTIVATED OR WRONG URL) -->
         <section id="view-inactive" class="view-section hidden">
             <div class="inactive-screen">
                 <div style="font-size: 3.5rem; color: var(--warning); margin-bottom: 1rem;">
                     <i class="fa-solid fa-circle-exclamation"></i>
                 </div>
                 <h2 style="font-size: 1.6rem; margin-bottom: 0.5rem;" id="inactive-title">Perfil No Disponible</h2>
-                <p style="color: var(--text-secondary); margin-bottom: 2rem;" id="inactive-desc">
+                <p style="color: var(--text-secondary);" id="inactive-desc">
                     Este perfil no se encuentra disponible actualmente.
                 </p>
-                <a href="/" class="btn btn-primary"><i class="fa-solid fa-house"></i> Volver al Inicio</a>
             </div>
         </section>
     </main>
