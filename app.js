@@ -259,14 +259,14 @@ class ProfileApp {
                 const jsonRes = await res.json();
                 const cloudProfiles = jsonRes && Array.isArray(jsonRes.profiles) ? jsonRes.profiles : [];
 
-                const merged = this.mergeAndPreserveProfiles(this.profiles, cloudProfiles);
-                const sanitized = this.deduplicateProfiles(merged);
-
-                if (JSON.stringify(sanitized) !== JSON.stringify(this.profiles)) {
-                    this.profiles = sanitized;
-                    this.saveProfilesLocal();
-                    const currentSlug = this.getSlugFromUrl();
-                    if (currentSlug) this.renderSingleProfile(currentSlug);
+                if (Array.isArray(cloudProfiles) && cloudProfiles.length > 0) {
+                    const sanitizedCloud = this.deduplicateProfiles(cloudProfiles);
+                    if (JSON.stringify(sanitizedCloud) !== JSON.stringify(this.profiles)) {
+                        this.profiles = sanitizedCloud;
+                        this.saveProfilesLocal();
+                        const currentSlug = this.getSlugFromUrl();
+                        if (currentSlug) this.renderSingleProfile(currentSlug);
+                    }
                 }
             }
         } catch (err) {

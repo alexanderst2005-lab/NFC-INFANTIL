@@ -275,19 +275,16 @@ class AdminApp {
                 const jsonRes = await res.json();
                 const cloudProfiles = jsonRes && Array.isArray(jsonRes.profiles) ? jsonRes.profiles : [];
 
-                const merged = this.mergeAndPreserveProfiles(this.profiles, cloudProfiles);
-                const sanitized = this.deduplicateProfiles(merged);
-
-                if (JSON.stringify(sanitized) !== JSON.stringify(this.profiles)) {
-                    this.profiles = sanitized;
-                    this.saveProfilesLocal();
-                    if (this.isAuthenticated) {
-                        this.renderProfilesGrid();
+                if (Array.isArray(cloudProfiles) && cloudProfiles.length > 0) {
+                    const sanitizedCloud = this.deduplicateProfiles(cloudProfiles);
+                    if (JSON.stringify(sanitizedCloud) !== JSON.stringify(this.profiles)) {
+                        this.profiles = sanitizedCloud;
+                        this.saveProfilesLocal();
+                        if (this.isAuthenticated) {
+                            this.renderProfilesGrid();
+                        }
                     }
-                }
-
-                // If local had custom profiles missing from cloud (due to cold start), push merged array to cloud
-                if (JSON.stringify(sanitized) !== JSON.stringify(cloudProfiles)) {
+                } else if (this.profiles.length > 0) {
                     await this.pushToCloudDB();
                 }
             }
