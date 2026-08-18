@@ -1,5 +1,5 @@
 /* ==========================================================================
-   NFC INFANTIL - PUBLIC SINGLE CHILD PROFILE VIEWER (SAME-ORIGIN CLOUD DB)
+   NFC INFANTIL - PUBLIC SINGLE CHILD PROFILE VIEWER (AUTOMATIC CLOUD DB)
    ========================================================================== */
 
 const CLOUD_DB_ENDPOINT = "/api/sync";
@@ -102,7 +102,7 @@ class IsolatedProfileApp {
             this.renderSingleProfile(targetSlug);
         }
 
-        // Fetch latest Cloud DB
+        // Fetch latest Cloud DB automatically
         await this.syncFromCloudDB();
 
         // Re-render with updated cloud data
@@ -128,13 +128,6 @@ class IsolatedProfileApp {
         localStorage.setItem('nfc_profiles_db', JSON.stringify(this.profiles));
     }
 
-    mergeProfiles(cloudList, localList) {
-        const map = new Map();
-        (cloudList || []).forEach(p => p && p.id && map.set(p.id, p));
-        (localList || []).forEach(p => p && p.id && map.set(p.id, p));
-        return Array.from(map.values());
-    }
-
     async syncFromCloudDB() {
         try {
             const controller = new AbortController();
@@ -147,8 +140,10 @@ class IsolatedProfileApp {
                 const jsonRes = await res.json();
                 const cloudProfiles = jsonRes && Array.isArray(jsonRes.profiles) ? jsonRes.profiles : [];
 
-                this.profiles = this.mergeProfiles(cloudProfiles, this.profiles);
-                this.saveProfilesLocal();
+                if (cloudProfiles.length > 0) {
+                    this.profiles = cloudProfiles;
+                    this.saveProfilesLocal();
+                }
             }
         } catch (err) {
             console.log("Cloud sync load offline, using LocalStorage:", err);

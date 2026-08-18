@@ -1,5 +1,5 @@
 /* ==========================================================================
-   NFC INFANTIL - ADMIN PANEL LOGIC (SAME-ORIGIN VERCEL SERVERLESS SYNC)
+   NFC INFANTIL - ADMIN PANEL LOGIC (100% AUTOMATIC CLOUD SYNC & DELETION)
    ========================================================================== */
 
 const DEFAULT_PIN = "1234";
@@ -117,14 +117,7 @@ class AdminApp {
         localStorage.setItem('nfc_profiles_db', JSON.stringify(this.profiles));
     }
 
-    mergeProfiles(cloudList, localList) {
-        const map = new Map();
-        (cloudList || []).forEach(p => p && p.id && map.set(p.id, p));
-        (localList || []).forEach(p => p && p.id && map.set(p.id, p));
-        return Array.from(map.values());
-    }
-
-    // Sync profiles across PC, mobile and all browsers over the internet
+    // Automatically sync profiles with cloud database on load
     async syncFromCloudDB() {
         try {
             const controller = new AbortController();
@@ -137,12 +130,11 @@ class AdminApp {
                 const jsonRes = await res.json();
                 const cloudProfiles = jsonRes && Array.isArray(jsonRes.profiles) ? jsonRes.profiles : [];
 
-                const merged = this.mergeProfiles(cloudProfiles, this.profiles);
-                this.profiles = merged;
-                this.saveProfilesLocal();
-
-                // If local profiles had new items, push merged list to Vercel Serverless Sync
-                if (merged.length > cloudProfiles.length || cloudProfiles.length === 0) {
+                if (cloudProfiles.length > 0) {
+                    this.profiles = cloudProfiles;
+                    this.saveProfilesLocal();
+                } else if (this.profiles.length > 0) {
+                    // First time initialization if cloud is empty
                     await this.pushToCloudDB();
                 }
 
@@ -166,14 +158,6 @@ class AdminApp {
         } catch (err) {
             console.log("Cloud sync push error:", err);
         }
-    }
-
-    async forceSyncCloud() {
-        this.showToast("⏳ Sincronizando perfiles...");
-        await this.pushToCloudDB();
-        await this.syncFromCloudDB();
-        this.renderProfilesGrid();
-        this.showToast(`🟢 ¡Nube sincronizada! (${this.profiles.length} perfiles)`);
     }
 
     renderState() {
@@ -252,7 +236,7 @@ class AdminApp {
                         <button onclick="adminApp.openEditModal('${p.id}')" class="btn btn-primary btn-sm">
                             <i class="fa-solid fa-pen"></i> Editar
                         </button>
-                        <button onclick="adminApp.deleteProfile('${p.id}')" class="btn btn-danger btn-sm" title="Eliminar">
+                        <button onclick="adminApp.deleteProfile('${p.id}')" class="btn btn-danger btn-sm" title="Eliminar Definitivamente">
                             <i class="fa-solid fa-trash"></i>
                         </button>
                     </div>
@@ -279,6 +263,7 @@ class AdminApp {
         });
     }
 
+    // Permanent Deletion across PC, mobile, and cloud database
     async deleteProfile(id) {
         const profile = this.profiles.find(p => p.id === id);
         if (!profile) return;
@@ -287,7 +272,7 @@ class AdminApp {
             this.profiles = this.profiles.filter(p => p.id !== id);
             await this.pushToCloudDB();
             this.renderProfilesGrid();
-            this.showToast(`Perfil de ${profile.name} eliminado.`);
+            this.showToast(`Perfil de ${profile.name} eliminado definitivamente.`);
         }
     }
 
@@ -391,7 +376,7 @@ class AdminApp {
             this.profiles.unshift(profileData);
         }
 
-        this.showToast("Guardando y sincronizando con la nube...");
+        this.showToast("Guardando cambios...");
         await this.pushToCloudDB();
         this.closeModal();
         this.renderProfilesGrid();
