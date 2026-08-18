@@ -1,9 +1,10 @@
 /* ==========================================================================
-   NFC INFANTIL - ADMIN PANEL LOGIC (CLOUD DB SYNC + CLEAN SHORT URLS)
+   NFC INFANTIL - ADMIN PANEL LOGIC (INSTANT CLOUD DB SYNC)
    ========================================================================== */
 
 const DEFAULT_PIN = "1234";
-const CLOUD_SYNC_URL = "https://kvdb.io/NFCInfantil2026SecureKey/profiles";
+const CLOUD_SYNC_GET = "https://keyvalue.immanuel.co/api/KeyVal/GetValue/nfc_infantil_db_store_2026";
+const CLOUD_SYNC_POST = "https://keyvalue.immanuel.co/api/KeyVal/UpdateValue/nfc_infantil_db_store_2026/";
 
 const DEFAULT_PROFILES = [
     {
@@ -120,14 +121,22 @@ class AdminApp {
     // Sync profiles across PC, mobile and all browsers over the internet
     async syncFromCloudDB() {
         try {
-            const res = await fetch(CLOUD_SYNC_URL, { cache: 'no-cache' });
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 3500);
+
+            const res = await fetch(CLOUD_SYNC_GET, { signal: controller.signal });
+            clearTimeout(timeoutId);
+
             if (res.ok) {
-                const cloudData = await res.json();
-                if (Array.isArray(cloudData) && cloudData.length > 0) {
-                    this.profiles = cloudData;
-                    this.saveProfilesLocal();
-                    if (this.isAuthenticated) {
-                        this.renderProfilesGrid();
+                const rawText = await res.text();
+                if (rawText && rawText !== "null" && rawText !== '""') {
+                    const cloudData = JSON.parse(decodeURIComponent(rawText));
+                    if (Array.isArray(cloudData) && cloudData.length > 0) {
+                        this.profiles = cloudData;
+                        this.saveProfilesLocal();
+                        if (this.isAuthenticated) {
+                            this.renderProfilesGrid();
+                        }
                     }
                 }
             }
@@ -139,11 +148,9 @@ class AdminApp {
     async pushToCloudDB() {
         this.saveProfilesLocal();
         try {
-            await fetch(CLOUD_SYNC_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(this.profiles)
-            });
+            const jsonStr = JSON.stringify(this.profiles);
+            const encoded = encodeURIComponent(jsonStr);
+            await fetch(`${CLOUD_SYNC_POST}${encoded}`, { method: 'POST' });
         } catch (err) {
             console.log("Cloud sync push error:", err);
         }

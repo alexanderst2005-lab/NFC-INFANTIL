@@ -1,8 +1,8 @@
 /* ==========================================================================
-   NFC INFANTIL - PUBLIC SINGLE CHILD PROFILE VIEWER (CLOUD SYNC + UNIQUE)
+   NFC INFANTIL - PUBLIC SINGLE CHILD PROFILE VIEWER (INSTANT CLOUD SYNC)
    ========================================================================== */
 
-const CLOUD_SYNC_URL = "https://kvdb.io/NFCInfantil2026SecureKey/profiles";
+const CLOUD_SYNC_GET = "https://keyvalue.immanuel.co/api/KeyVal/GetValue/nfc_infantil_db_store_2026";
 
 const DEFAULT_PROFILES = [
     {
@@ -92,8 +92,22 @@ class IsolatedProfileApp {
 
     async init() {
         this.loadProfilesLocal();
-        this.handleRouting();
+        
+        // Fast initial render from LocalStorage
+        const targetSlug = this.getSlugFromUrl();
+        this.currentSlug = targetSlug;
+        
+        // Check if slug is immediately available
+        const hasMatchLocal = this.findProfileBySlug(targetSlug);
+        if (hasMatchLocal) {
+            this.renderSingleProfile(targetSlug);
+        }
+
+        // Fetch latest Cloud DB
         await this.syncFromCloudDB();
+
+        // Final re-render with cloud data
+        this.renderSingleProfile(targetSlug);
     }
 
     loadProfilesLocal() {
@@ -115,17 +129,21 @@ class IsolatedProfileApp {
         localStorage.setItem('nfc_profiles_db', JSON.stringify(this.profiles));
     }
 
-    // Sync profiles asynchronously from Cloud DB
     async syncFromCloudDB() {
         try {
-            const res = await fetch(CLOUD_SYNC_URL, { cache: 'no-cache' });
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 3500);
+
+            const res = await fetch(CLOUD_SYNC_GET, { signal: controller.signal });
+            clearTimeout(timeoutId);
+
             if (res.ok) {
-                const cloudData = await res.json();
-                if (Array.isArray(cloudData) && cloudData.length > 0) {
-                    this.profiles = cloudData;
-                    this.saveProfilesLocal();
-                    if (this.currentSlug) {
-                        this.renderSingleProfile(this.currentSlug);
+                const rawText = await res.text();
+                if (rawText && rawText !== "null" && rawText !== '""') {
+                    const cloudData = JSON.parse(decodeURIComponent(rawText));
+                    if (Array.isArray(cloudData) && cloudData.length > 0) {
+                        this.profiles = cloudData;
+                        this.saveProfilesLocal();
                     }
                 }
             }
@@ -135,7 +153,7 @@ class IsolatedProfileApp {
     }
 
     // Client Router: Extracts URL Slug (/samuel, ?slug=samuel, or ?p=samuel)
-    handleRouting() {
+    getSlugFromUrl() {
         const path = window.location.pathname.toLowerCase().replace(/\/$/, '') || '/';
         const urlParams = new URLSearchParams(window.location.search);
 
@@ -149,33 +167,34 @@ class IsolatedProfileApp {
         } else {
             slug = 'samuel';
         }
-
-        this.currentSlug = slug;
-        this.renderSingleProfile(slug);
+        return slug;
     }
 
-    // Renders strictly the single child profile corresponding to the URL
-    renderSingleProfile(rawSlug) {
+    findProfileBySlug(rawSlug) {
         if (!rawSlug) rawSlug = 'samuel';
-
         const cleanSlug = rawSlug.toLowerCase().trim()
             .replace(/^\/+|\/+$/g, '')
             .replace(/\.html$/, '');
 
-        // Search matching exact slug or slug prefix/name match
         let profile = this.profiles.find(p => p.slug.toLowerCase().trim() === cleanSlug);
-        
         if (!profile) {
             profile = this.profiles.find(p => 
                 p.name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(cleanSlug) ||
                 cleanSlug.includes(p.slug.toLowerCase().trim())
             );
         }
+        return profile;
+    }
+
+    // Renders strictly the single child profile corresponding to the URL
+    renderSingleProfile(rawSlug) {
+        const profile = this.findProfileBySlug(rawSlug);
 
         const profileView = document.getElementById('view-profile');
         const inactiveView = document.getElementById('view-inactive');
 
         if (!profile) {
+            const cleanSlug = (rawSlug || 'samuel').toLowerCase().trim().replace(/^\/+|\/+$/g, '').replace(/\.html$/, '');
             this.showInactive("Perfil No Encontrado", `No existe ningún perfil registrado con el enlace '/${cleanSlug}'.`);
             return;
         }
