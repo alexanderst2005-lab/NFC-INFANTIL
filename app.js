@@ -258,9 +258,12 @@ class ProfileApp {
             if (res.ok) {
                 const jsonRes = await res.json();
                 if (jsonRes && Array.isArray(jsonRes.profiles)) {
-                    const sanitizedCloud = this.deduplicateProfiles(jsonRes.profiles);
-                    if (JSON.stringify(sanitizedCloud) !== JSON.stringify(this.profiles)) {
-                        this.profiles = sanitizedCloud;
+                    const cloudProfiles = jsonRes.profiles;
+                    const merged = this.mergeAndPreserveProfiles(this.profiles, cloudProfiles);
+                    const sanitizedMerged = this.deduplicateProfiles(merged);
+
+                    if (JSON.stringify(sanitizedMerged) !== JSON.stringify(this.profiles)) {
+                        this.profiles = sanitizedMerged;
                         this.saveProfilesLocal();
                         const currentSlug = this.getSlugFromUrl();
                         if (currentSlug) this.renderSingleProfile(currentSlug);
