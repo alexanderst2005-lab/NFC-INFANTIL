@@ -1160,13 +1160,15 @@ body.theme-girl .scene-item {
     }
 
     .modal-overlay {
-        padding: 0;
-        align-items: flex-end;
+        padding: 0.8rem 0.6rem;
+        align-items: center;
+        justify-content: center;
     }
 
     .modal-container {
-        max-height: 94vh;
-        border-radius: 28px 28px 0 0;
+        max-height: 90vh;
+        border-radius: 28px;
+        margin: auto;
     }
 
     .modal-body {
