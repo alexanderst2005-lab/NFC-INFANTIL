@@ -311,54 +311,130 @@ class ProfileApp {
             inactiveView.classList.add('hidden');
         }
 
-        // Apply Theme based on gender ('boy' vs 'girl')
-        const themeClass = profile.gender === 'girl' ? 'theme-girl' : 'theme-boy';
+        // Apply Theme based on gender ('boy', 'girl', 'pet')
+        let themeClass = 'theme-boy';
+        if (profile.gender === 'girl') themeClass = 'theme-girl';
+        else if (profile.gender === 'pet') themeClass = 'theme-pet';
+
         document.body.className = themeClass;
         document.documentElement.className = themeClass;
         this.renderFloatingDecorators(profile.gender);
 
-        // Render Title
-        document.title = `Perfil de ${profile.name} | NFC Seguridad Infantil`;
+        // Render Page Title
+        document.title = profile.gender === 'pet' 
+            ? `Perfil de ${profile.name} | Identificación de Mascota`
+            : `Perfil de ${profile.name} | NFC Seguridad Infantil`;
 
         const heroNameEl = document.getElementById('p-hero-name');
         if (heroNameEl) heroNameEl.textContent = profile.name;
 
+        const topBrandTitleEl = document.getElementById('p-top-brand-title');
+        if (topBrandTitleEl) {
+            topBrandTitleEl.textContent = profile.gender === 'pet' ? 'Identificación de Mascota' : 'Identificación Infantil';
+        }
+
         const genderTextEl = document.getElementById('p-gender-text');
-        if (genderTextEl) genderTextEl.textContent = 'Perfil verificado';
+        if (genderTextEl) {
+            genderTextEl.innerHTML = profile.gender === 'pet' 
+                ? '<i class="fa-solid fa-paw"></i> Mascota Registrada' 
+                : 'Perfil verificado';
+        }
+
+        const securityRibbonEl = document.getElementById('p-security-ribbon');
+        if (securityRibbonEl) {
+            securityRibbonEl.textContent = profile.gender === 'pet' ? 'Perfil de mascota 🐾' : 'Mi perfil de seguridad';
+        }
 
         const footerTagEl = document.getElementById('p-footer-tag');
         if (footerTagEl) {
-            footerTagEl.innerHTML = profile.gender === 'girl'
-                ? '<i class="fa-solid fa-shield-heart"></i> Protegida con amor <i class="fa-solid fa-heart" style="color: #ec4899;"></i>'
-                : '<i class="fa-solid fa-shield-heart"></i> Protegido con amor <i class="fa-solid fa-heart" style="color: #38bdf8;"></i>';
+            if (profile.gender === 'girl') {
+                footerTagEl.innerHTML = '<i class="fa-solid fa-shield-heart"></i> Protegida con amor <i class="fa-solid fa-heart" style="color: #ec4899;"></i>';
+            } else if (profile.gender === 'pet') {
+                footerTagEl.innerHTML = '<i class="fa-solid fa-paw"></i> Mascota protegida con amor <i class="fa-solid fa-heart" style="color: #10b981;"></i>';
+            } else {
+                footerTagEl.innerHTML = '<i class="fa-solid fa-shield-heart"></i> Protegido con amor <i class="fa-solid fa-heart" style="color: #38bdf8;"></i>';
+            }
         }
 
         const ageValEl = document.getElementById('p-age-val') || document.getElementById('p-age');
         if (ageValEl) ageValEl.textContent = `${profile.age} años`;
 
+        const ageIconEl = document.getElementById('p-age-icon');
+        if (ageIconEl) {
+            ageIconEl.className = profile.gender === 'pet' ? 'fa-solid fa-paw' : 'fa-solid fa-cake-candles';
+        }
+
         const bloodValEl = document.getElementById('p-blood-val') || document.getElementById('p-blood');
-        if (bloodValEl) bloodValEl.textContent = profile.bloodType || 'O+';
+        if (bloodValEl) bloodValEl.textContent = profile.bloodType || (profile.gender === 'pet' ? 'N/A' : 'O+');
+
+        const boxBloodEl = document.getElementById('box-blood');
+        if (boxBloodEl && profile.gender === 'pet' && (profile.bloodType === 'N/A' || !profile.bloodType)) {
+            // For pets with N/A blood, keep card clean
+        }
+
+        // 1. School Optional Box
+        const schoolBoxEl = document.getElementById('box-school');
+        const schoolValEl = document.getElementById('p-school');
+        if (profile.school && String(profile.school).trim() !== '') {
+            if (schoolValEl) schoolValEl.textContent = profile.school.trim();
+            if (schoolBoxEl) schoolBoxEl.classList.remove('hidden');
+        } else if (schoolBoxEl) {
+            schoolBoxEl.classList.add('hidden');
+        }
+
+        // 2. Grade Optional Box
+        const gradeBoxEl = document.getElementById('box-grade');
+        const gradeValEl = document.getElementById('p-grade');
+        if (profile.grade && String(profile.grade).trim() !== '') {
+            if (gradeValEl) gradeValEl.textContent = profile.grade.trim();
+            if (gradeBoxEl) gradeBoxEl.classList.remove('hidden');
+        } else if (gradeBoxEl) {
+            gradeBoxEl.classList.add('hidden');
+        }
+
+        // 3. Medical / Special Care Notes Optional Box
+        const medicalBoxEl = document.getElementById('box-medical');
+        const medicalValEl = document.getElementById('p-medical-notes');
+        if (profile.medicalConditions && String(profile.medicalConditions).trim() !== '') {
+            if (medicalValEl) medicalValEl.textContent = profile.medicalConditions.trim();
+            if (medicalBoxEl) medicalBoxEl.classList.remove('hidden');
+        } else if (medicalBoxEl) {
+            medicalBoxEl.classList.add('hidden');
+        }
 
         // Update Mockup Deco Icons per Gender
         const isGirl = profile.gender === 'girl';
+        const isPet = profile.gender === 'pet';
         
         const topLeftDeco = document.getElementById('deco-top-left');
-        if (topLeftDeco) topLeftDeco.innerHTML = isGirl ? '<i class="fa-solid fa-feather-pointed"></i>' : '<i class="fa-solid fa-rocket"></i>';
+        if (topLeftDeco) {
+            topLeftDeco.innerHTML = isPet ? '<i class="fa-solid fa-paw"></i>' : (isGirl ? '<i class="fa-solid fa-feather-pointed"></i>' : '<i class="fa-solid fa-rocket"></i>');
+        }
 
         const topRightDeco = document.getElementById('deco-top-right');
-        if (topRightDeco) topRightDeco.innerHTML = isGirl ? '<i class="fa-solid fa-rainbow"></i>' : '<i class="fa-solid fa-atom"></i>';
+        if (topRightDeco) {
+            topRightDeco.innerHTML = isPet ? '<i class="fa-solid fa-bone"></i>' : (isGirl ? '<i class="fa-solid fa-rainbow"></i>' : '<i class="fa-solid fa-atom"></i>');
+        }
 
         const bottomRightDeco = document.getElementById('deco-bottom-right');
-        if (bottomRightDeco) bottomRightDeco.innerHTML = isGirl ? '<i class="fa-solid fa-wand-magic-sparkles"></i>' : '<i class="fa-solid fa-user-astronaut"></i>';
+        if (bottomRightDeco) {
+            bottomRightDeco.innerHTML = isPet ? '<i class="fa-solid fa-heart"></i>' : (isGirl ? '<i class="fa-solid fa-wand-magic-sparkles"></i>' : '<i class="fa-solid fa-user-astronaut"></i>');
+        }
 
         const bloodIconEl = document.getElementById('p-blood-icon');
-        if (bloodIconEl) bloodIconEl.innerHTML = isGirl ? '<i class="fa-solid fa-heart"></i>' : '<i class="fa-solid fa-droplet"></i>';
+        if (bloodIconEl) {
+            bloodIconEl.innerHTML = isPet ? '<i class="fa-solid fa-paw"></i>' : (isGirl ? '<i class="fa-solid fa-heart"></i>' : '<i class="fa-solid fa-droplet"></i>');
+        }
 
         const sceneLeft = document.getElementById('scene-left');
-        if (sceneLeft) sceneLeft.innerHTML = isGirl ? '<i class="fa-solid fa-seedling"></i>' : '<i class="fa-solid fa-tree"></i>';
+        if (sceneLeft) {
+            sceneLeft.innerHTML = isPet ? '<i class="fa-solid fa-bone"></i>' : (isGirl ? '<i class="fa-solid fa-seedling"></i>' : '<i class="fa-solid fa-tree"></i>');
+        }
 
         const sceneRight = document.getElementById('scene-right');
-        if (sceneRight) sceneRight.innerHTML = isGirl ? '<i class="fa-solid fa-chess-rook"></i>' : '<i class="fa-solid fa-paw"></i>';
+        if (sceneRight) {
+            sceneRight.innerHTML = isPet ? '<i class="fa-solid fa-paw"></i>' : (isGirl ? '<i class="fa-solid fa-chess-rook"></i>' : '<i class="fa-solid fa-paw"></i>');
+        }
 
         // Avatar Photo
         const avatarEl = document.getElementById('p-avatar');
@@ -366,11 +442,21 @@ class ProfileApp {
             avatarEl.src = (profile.photoUrl && profile.photoUrl.trim() !== '') ? profile.photoUrl : NEUTRAL_AVATAR_SVG;
         }
 
-        // WhatsApp Link Generator ("CONTACTAR A MIS PAPÁS")
+        // WhatsApp Link Generator ("CONTACTAR A MIS PAPÁS" / "CONTACTAR A MI DUEÑO")
         const waBtn = document.getElementById('btn-whatsapp-action');
         if (waBtn) {
+            const mainTextEl = waBtn.querySelector('.btn-main-text');
+            if (mainTextEl) {
+                mainTextEl.textContent = isPet ? 'Contactar a mi dueño' : 'Contactar a mis papás';
+            }
+
             const phone = (profile.parentPhone && String(profile.parentPhone).trim() !== '' && String(profile.parentPhone) !== 'undefined') ? String(profile.parentPhone).trim() : '573001234567';
-            const customMsg = profile.whatsappMessage || `Hola, encontré la información del perfil de ${profile.name} y me gustaría comunicarme con sus padres.`;
+            
+            const defaultMsg = isPet
+                ? `Hola, encontré a la mascota ${profile.name} y quiero comunicarme con su dueño.`
+                : `Hola, encontré la información del perfil de ${profile.name} y me gustaría comunicarme con sus padres.`;
+
+            const customMsg = profile.whatsappMessage || defaultMsg;
             const formattedMsg = customMsg.replace('{nombre}', profile.name);
             const waCleanPhone = phone.replace(/[^0-9]/g, '');
             
@@ -422,7 +508,11 @@ class ProfileApp {
 
         const boyIcons = ['fa-rocket', 'fa-user-astronaut', 'fa-star', 'fa-cloud-moon', 'fa-compass', 'fa-shuttle-space'];
         const girlIcons = ['fa-wand-magic-sparkles', 'fa-heart', 'fa-sun', 'fa-cloud', 'fa-feather', 'fa-spa'];
-        const icons = gender === 'girl' ? girlIcons : boyIcons;
+        const petIcons = ['fa-paw', 'fa-bone', 'fa-heart', 'fa-paw', 'fa-bone', 'fa-shield-dog'];
+        
+        let icons = boyIcons;
+        if (gender === 'girl') icons = girlIcons;
+        else if (gender === 'pet') icons = petIcons;
 
         container.innerHTML = icons.map((icon, idx) => `
             <div class="decorator dec-${idx + 1}">

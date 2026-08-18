@@ -128,6 +128,22 @@
                 </div>
             </div>
 
+            <!-- Category Filter Tabs -->
+            <div class="category-tabs-bar">
+                <button type="button" class="category-tab active" data-tab="all" id="tab-all">
+                    <i class="fa-solid fa-list-ul"></i> Todos <span class="tab-badge" id="tab-count-all">0</span>
+                </button>
+                <button type="button" class="category-tab" data-tab="boy" id="tab-boy">
+                    <i class="fa-solid fa-child"></i> Niños <span class="tab-badge" id="tab-count-boy">0</span>
+                </button>
+                <button type="button" class="category-tab" data-tab="girl" id="tab-girl">
+                    <i class="fa-solid fa-child-dress"></i> Niñas <span class="tab-badge" id="tab-count-girl">0</span>
+                </button>
+                <button type="button" class="category-tab" data-tab="pet" id="tab-pet">
+                    <i class="fa-solid fa-paw"></i> Mascotas <span class="tab-badge" id="tab-count-pet">0</span>
+                </button>
+            </div>
+
             <!-- Toolbar / Search Bar -->
             <div class="admin-toolbar">
                 <div class="search-box">
@@ -158,7 +174,7 @@
 
                 <!-- 1. FOTOGRAFÍA -->
                 <div class="modal-section-title">
-                    <i class="fa-solid fa-camera"></i> Fotografía del Niño / Niña
+                    <i class="fa-solid fa-camera"></i> Fotografía del Niño / Niña o Mascota
                 </div>
 
                 <div class="form-group" style="text-align: center;">
@@ -178,37 +194,38 @@
                     <input type="url" id="input-photo-url" class="form-input" style="margin-top: 0.8rem;" placeholder="O pega una URL de imagen (https://...)">
                 </div>
 
-                <!-- 2. DATOS DEL NIÑO -->
+                <!-- 2. DATOS DEL NIÑO / MASCOTA -->
                 <div class="modal-section-title">
                     <i class="fa-solid fa-id-card"></i> Datos del Perfil
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label class="form-label" for="input-name">Nombre Completo del Niño/a *</label>
-                        <input type="text" id="input-name" class="form-input" placeholder="Ej: Samuel Arias Rodríguez" required>
+                        <label class="form-label" for="input-name" id="lbl-input-name">Nombre Completo del Niño/a o Mascota *</label>
+                        <input type="text" id="input-name" class="form-input" placeholder="Ej: Samuel Arias Rodríguez o Firulais" required>
                     </div>
 
                     <div class="form-group">
                         <label class="form-label" for="input-slug">Enlace URL Corto *</label>
                         <input type="text" id="input-slug" class="form-input" placeholder="Ej: samuel" required>
-                        <span class="field-hint">Ej: /samuel, /valentina</span>
+                        <span class="field-hint">Ej: /samuel, /valentina, /firulais</span>
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label class="form-label" for="input-gender">Género *</label>
+                        <label class="form-label" for="input-gender">Categoría / Género *</label>
                         <select id="input-gender" class="form-select" required>
                             <option value="" disabled selected>Seleccionar...</option>
                             <option value="boy">👦 Niño</option>
                             <option value="girl">👧 Niña</option>
+                            <option value="pet">🐾 Mascota</option>
                         </select>
                     </div>
 
                     <div class="form-group">
                         <label class="form-label" for="input-age">Edad (Años) *</label>
-                        <input type="number" id="input-age" class="form-input" min="0" max="18" placeholder="Ej: 5" required>
+                        <input type="number" id="input-age" class="form-input" min="0" max="30" placeholder="Ej: 5" required>
                     </div>
 
                     <div class="form-group">
@@ -223,17 +240,41 @@
                             <option value="B-">B-</option>
                             <option value="AB+">AB+</option>
                             <option value="AB-">AB-</option>
+                            <option value="N/A">N/A (Mascotas)</option>
                         </select>
                     </div>
                 </div>
 
-                <!-- 3. BOTÓN CONTACTAR A MIS PAPÁS (WHATSAPP) -->
+                <!-- 3. EDUCACIÓN Y CONDICIONES MÉDICAS (OPCIONAL) -->
                 <div class="modal-section-title">
-                    <i class="fa-solid fa-square-phone"></i> Botón Contactar a mis Papás
+                    <i class="fa-solid fa-graduation-cap"></i> Educación y Salud / Cuidados (Opcional)
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="input-school">Colegio / Institución (Opcional)</label>
+                        <input type="text" id="input-school" class="form-input" placeholder="Ej: Colegio San José">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="input-grade">Grado / Curso (Opcional)</label>
+                        <input type="text" id="input-grade" class="form-input" placeholder="Ej: 3° de Primaria">
+                    </div>
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label" for="input-phone">Teléfono WhatsApp (Con código país) *</label>
+                    <label class="form-label" for="input-medical">Enfermedades / Condiciones / Cuidados Importantes (Opcional)</label>
+                    <textarea id="input-medical" class="form-textarea" rows="2" placeholder="Ej: Alérgico a la Penicilina, Asma leve, Requiere dieta especial..." style="resize: vertical; min-height: 70px; width: 100%;"></textarea>
+                    <span class="field-hint">Solo se muestra en el perfil público si contiene información.</span>
+                </div>
+
+                <!-- 4. BOTÓN CONTACTAR A PADRES / DUEÑO (WHATSAPP) -->
+                <div class="modal-section-title">
+                    <i class="fa-solid fa-square-phone"></i> Contacto de Emergencia (WhatsApp)
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="input-phone" id="lbl-input-phone">Teléfono WhatsApp (Con código país) *</label>
                     <input type="tel" id="input-phone" class="form-input" placeholder="Ej: 573001234567" required>
                     <span class="field-hint">Sin código +, ni espacios (Ej: 573001234567)</span>
                 </div>
@@ -241,10 +282,10 @@
                 <div class="form-group">
                     <label class="form-label" for="input-whatsapp-msg">Mensaje Predeterminado de WhatsApp</label>
                     <textarea id="input-whatsapp-msg" class="form-textarea" rows="3" placeholder="Ej: Hola, encontré la información del perfil de {nombre}..." style="resize: vertical; min-height: 90px; width: 100%;"></textarea>
-                    <span class="field-hint">Se despliega completamente para ver y editar todo el texto que se enviará por WhatsApp.</span>
+                    <span class="field-hint">Se despliega completamente para ver y editar todo el texto enviado por WhatsApp.</span>
                 </div>
 
-                <!-- 4. UBICACIÓN (OPCIONAL) -->
+                <!-- 5. UBICACIÓN (OPCIONAL) -->
                 <div class="modal-section-title">
                     <i class="fa-solid fa-location-dot"></i> Ubicación (Opcional)
                 </div>

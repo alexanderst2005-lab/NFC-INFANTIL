@@ -77,6 +77,7 @@ class AdminApp {
         this.profiles = [];
         this.isAuthenticated = (localStorage.getItem('nfc_admin_auth') === 'true' || sessionStorage.getItem('nfc_admin_auth') === 'true');
         this.photoRemoved = false;
+        this.currentCategoryTab = 'all';
         this.init();
     }
 
@@ -103,7 +104,7 @@ class AdminApp {
             ? String(p.name).trim() 
             : (baseDefault ? baseDefault.name : 'Perfil');
         
-        const gender = (p.gender === 'girl' || p.gender === 'boy') 
+        const gender = (p.gender === 'girl' || p.gender === 'pet') 
             ? p.gender 
             : (baseDefault ? baseDefault.gender : 'boy');
 
@@ -121,18 +122,28 @@ class AdminApp {
         }
 
         let schoolMapsUrl = (p.schoolMapsUrl !== undefined && p.schoolMapsUrl !== null) ? String(p.schoolMapsUrl).trim() : '';
+        let school = p.school ? String(p.school).trim() : '';
+        let grade = p.grade ? String(p.grade).trim() : '';
+        let medicalConditions = p.medicalConditions ? String(p.medicalConditions).trim() : '';
+
+        const defaultWaMsg = gender === 'pet'
+            ? 'Hola, encontré a la mascota {nombre} y quiero comunicarme con su dueño.'
+            : 'Hola, encontré la información del perfil de {nombre}.';
 
         return {
             id: p.id || `prof-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
             slug: slug,
             name: name,
             gender: gender,
-            age: parseInt(p.age) > 0 ? parseInt(p.age) : (baseDefault ? baseDefault.age : 5),
-            bloodType: (p.bloodType && String(p.bloodType).trim() !== '' && String(p.bloodType) !== 'undefined') ? String(p.bloodType).trim() : (baseDefault ? baseDefault.bloodType : 'O+'),
+            age: parseInt(p.age) >= 0 ? parseInt(p.age) : (baseDefault ? baseDefault.age : 5),
+            bloodType: (p.bloodType && String(p.bloodType).trim() !== '' && String(p.bloodType) !== 'undefined') ? String(p.bloodType).trim() : (gender === 'pet' ? 'N/A' : (baseDefault ? baseDefault.bloodType : 'O+')),
             parentPhone: (p.parentPhone && String(p.parentPhone).trim() !== '' && String(p.parentPhone) !== 'undefined') ? String(p.parentPhone).trim() : (baseDefault ? baseDefault.parentPhone : ''),
-            whatsappMessage: (p.whatsappMessage && String(p.whatsappMessage).trim() !== '') ? String(p.whatsappMessage).trim() : (baseDefault ? baseDefault.whatsappMessage : 'Hola, encontré la información del perfil de {nombre}.'),
+            whatsappMessage: (p.whatsappMessage && String(p.whatsappMessage).trim() !== '') ? String(p.whatsappMessage).trim() : (baseDefault ? baseDefault.whatsappMessage : defaultWaMsg),
             locationMapsUrl: locationMapsUrl,
             schoolMapsUrl: schoolMapsUrl,
+            school: school,
+            grade: grade,
+            medicalConditions: medicalConditions,
             photoUrl: (p.photoUrl && String(p.photoUrl).trim() !== '' && String(p.photoUrl) !== 'undefined') ? String(p.photoUrl).trim() : (baseDefault ? baseDefault.photoUrl : ''),
             active: true,
             createdAt: p.createdAt || new Date().toISOString()
@@ -257,20 +268,34 @@ class AdminApp {
 
         this.profiles = this.deduplicateProfiles(this.profiles);
 
-        const totalCountEl = document.getElementById('stat-total-count');
-        if (totalCountEl) totalCountEl.textContent = this.profiles.length;
+        // Update category tab counts
+        const countAll = this.profiles.length;
+        const countBoy = this.profiles.filter(p => p.gender === 'boy').length;
+        const countGirl = this.profiles.filter(p => p.gender === 'girl').length;
+        const countPet = this.profiles.filter(p => p.gender === 'pet').length;
 
-        const filtered = this.profiles.filter(p =>
-            p.name.toLowerCase().includes(filterText.toLowerCase()) ||
-            p.slug.toLowerCase().includes(filterText.toLowerCase())
-        );
+        const totalCountEl = document.getElementById('stat-total-count');
+        if (totalCountEl) totalCountEl.textContent = countAll;
+
+        if (document.getElementById('tab-count-all')) document.getElementById('tab-count-all').textContent = countAll;
+        if (document.getElementById('tab-count-boy')) document.getElementById('tab-count-boy').textContent = countBoy;
+        if (document.getElementById('tab-count-girl')) document.getElementById('tab-count-girl').textContent = countGirl;
+        if (document.getElementById('tab-count-pet')) document.getElementById('tab-count-pet').textContent = countPet;
+
+        const filtered = this.profiles.filter(p => {
+            const matchesTab = (this.currentCategoryTab === 'all') || (p.gender === this.currentCategoryTab);
+            const matchesSearch = p.name.toLowerCase().includes(filterText.toLowerCase()) ||
+                                  p.slug.toLowerCase().includes(filterText.toLowerCase());
+            return matchesTab && matchesSearch;
+        });
 
         if (filtered.length === 0) {
+            const categoryLabel = this.currentCategoryTab === 'boy' ? 'niños' : (this.currentCategoryTab === 'girl' ? 'niñas' : (this.currentCategoryTab === 'pet' ? 'mascotas' : 'perfiles'));
             const emptyHtml = `
                 <div style="grid-column: 1/-1; text-align: center; padding: 4rem 1rem; color: var(--text-secondary); background: var(--bg-card); border-radius: var(--radius-lg); border: 1px dashed var(--border-color);">
                     <i class="fa-solid fa-folder-open" style="font-size: 3rem; margin-bottom: 1rem; color: var(--accent-main); opacity: 0.7;"></i>
-                    <h3 style="color: var(--text-primary); margin-bottom: 0.5rem;">No se encontraron perfiles</h3>
-                    <p style="font-size: 0.9rem;">Prueba con otra búsqueda o crea un nuevo perfil infantil.</p>
+                    <h3 style="color: var(--text-primary); margin-bottom: 0.5rem;">No se encontraron ${categoryLabel}</h3>
+                    <p style="font-size: 0.9rem;">Prueba con otra búsqueda o crea un nuevo perfil.</p>
                 </div>
             `;
             if (grid.innerHTML !== emptyHtml) grid.innerHTML = emptyHtml;
@@ -283,15 +308,29 @@ class AdminApp {
             const publicUrl = `${origin}/${p.slug}`;
             const photo = (p.photoUrl && p.photoUrl.trim() !== '') ? p.photoUrl : NEUTRAL_AVATAR_SVG;
 
+            let avatarBorder = '';
+            let pillClass = 'pill-boy';
+            let pillText = '👦 Niño';
+
+            if (p.gender === 'girl') {
+                avatarBorder = 'border-color: #f472b6;';
+                pillClass = 'pill-girl';
+                pillText = '👧 Niña';
+            } else if (p.gender === 'pet') {
+                avatarBorder = 'border-color: #10b981;';
+                pillClass = 'pill-pet';
+                pillText = '🐾 Mascota';
+            }
+
             return `
                 <div class="admin-card">
                     <!-- Clean Header (Avatar Left, Name & Gender Pill Right) -->
                     <div class="admin-card-header">
-                        <img src="${photo}" alt="${p.name}" class="admin-card-avatar" style="${p.gender === 'girl' ? 'border-color: #f472b6;' : ''}">
+                        <img src="${photo}" alt="${p.name}" class="admin-card-avatar" style="${avatarBorder}">
                         <div class="admin-card-header-info">
                             <h4 class="admin-card-name" title="${p.name}">${p.name}</h4>
-                            <span class="gender-pill ${p.gender === 'girl' ? 'pill-girl' : 'pill-boy'}">
-                                ${p.gender === 'girl' ? '👧 Niña' : '👦 Niño'}
+                            <span class="gender-pill ${pillClass}">
+                                ${pillText}
                             </span>
                         </div>
                     </div>
@@ -320,6 +359,12 @@ class AdminApp {
                                 <i class="fa-solid fa-phone" style="color: #34d399;"></i>
                                 <span>${p.parentPhone ? '+' + p.parentPhone : 'Sin WhatsApp'}</span>
                             </div>
+                            ${(p.school || p.grade) ? `
+                            <div class="meta-item meta-item-full">
+                                <i class="fa-solid fa-graduation-cap" style="color: #a855f7;"></i>
+                                <span>${p.school || ''} ${p.grade ? '(' + p.grade + ')' : ''}</span>
+                            </div>
+                            ` : ''}
                             ${(p.locationMapsUrl && p.locationMapsUrl.trim() !== '') ? `
                             <div class="meta-item meta-item-full">
                                 <i class="fa-solid fa-location-dot" style="color: #fbbf24;"></i>
@@ -337,6 +382,13 @@ class AdminApp {
                         <a href="/${p.slug}" target="_blank" class="btn btn-secondary btn-sm" title="Ver Perfil Público" style="display: inline-flex; align-items: center; justify-content: center; text-decoration: none; padding: 0.6rem 0.9rem;">
                             <i class="fa-solid fa-arrow-up-right-from-square"></i> Ver
                         </a>
+                        <button onclick="adminApp.deleteProfile('${p.id}')" class="btn btn-danger btn-sm" title="Eliminar Definitivamente" style="padding: 0.6rem 0.9rem;">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+        }).join('');
                         <button onclick="adminApp.deleteProfile('${p.id}')" class="btn btn-danger btn-sm" title="Eliminar Definitivamente" style="padding: 0.6rem 0.9rem;">
                             <i class="fa-solid fa-trash"></i>
                         </button>
@@ -393,18 +445,29 @@ class AdminApp {
 
     openCreateModal() {
         this.photoRemoved = false;
-        document.getElementById('modal-title').innerHTML = `<i class="fa-solid fa-user-plus"></i> Crear Perfil Infantil`;
+        const initialGender = (this.currentCategoryTab === 'girl' || this.currentCategoryTab === 'pet') ? this.currentCategoryTab : 'boy';
+        
+        const titleIcon = initialGender === 'pet' ? 'fa-paw' : 'fa-user-plus';
+        const titleText = initialGender === 'pet' ? 'Crear Perfil de Mascota 🐾' : 'Crear Perfil Infantil';
+        
+        document.getElementById('modal-title').innerHTML = `<i class="fa-solid ${titleIcon}"></i> ${titleText}`;
         document.getElementById('form-save-profile').reset();
         document.getElementById('input-profile-id').value = '';
         document.getElementById('input-name').value = '';
         document.getElementById('input-slug').value = '';
-        document.getElementById('input-gender').value = '';
+        document.getElementById('input-gender').value = initialGender;
         document.getElementById('input-age').value = '';
-        document.getElementById('input-blood').value = '';
+        document.getElementById('input-blood').value = initialGender === 'pet' ? 'N/A' : '';
         document.getElementById('input-phone').value = '';
-        document.getElementById('input-whatsapp-msg').value = '';
+        
+        const defaultWa = initialGender === 'pet'
+            ? 'Hola, encontré a la mascota {nombre} y quiero comunicarme con su dueño.'
+            : '';
+        document.getElementById('input-whatsapp-msg').value = defaultWa;
         document.getElementById('input-maps-url').value = '';
-        if (document.getElementById('input-school-url')) document.getElementById('input-school-url').value = '';
+        if (document.getElementById('input-school')) document.getElementById('input-school').value = '';
+        if (document.getElementById('input-grade')) document.getElementById('input-grade').value = '';
+        if (document.getElementById('input-medical')) document.getElementById('input-medical').value = '';
         document.getElementById('input-photo-url').value = '';
         document.getElementById('photo-preview').src = NEUTRAL_AVATAR_SVG;
         document.getElementById('modal-profile').classList.remove('hidden');
@@ -418,17 +481,27 @@ class AdminApp {
         this.photoRemoved = false;
         const currentPhoto = (p.photoUrl && p.photoUrl.trim() !== '') ? p.photoUrl : NEUTRAL_AVATAR_SVG;
 
-        document.getElementById('modal-title').innerHTML = `<i class="fa-solid fa-pen-to-square"></i> Editar Perfil de ${p.name}`;
+        const titleIcon = p.gender === 'pet' ? 'fa-paw' : 'fa-pen-to-square';
+        const titleLabel = p.gender === 'pet' ? `Editar Perfil de Mascota: ${p.name}` : `Editar Perfil de ${p.name}`;
+        
+        document.getElementById('modal-title').innerHTML = `<i class="fa-solid ${titleIcon}"></i> ${titleLabel}`;
         document.getElementById('input-profile-id').value = p.id;
         document.getElementById('input-name').value = p.name;
         document.getElementById('input-slug').value = p.slug;
         document.getElementById('input-gender').value = p.gender;
         document.getElementById('input-age').value = p.age;
-        document.getElementById('input-blood').value = p.bloodType;
+        document.getElementById('input-blood').value = p.bloodType || (p.gender === 'pet' ? 'N/A' : '');
         document.getElementById('input-phone').value = p.parentPhone || '';
-        document.getElementById('input-whatsapp-msg').value = p.whatsappMessage || 'Hola, encontré el perfil de {nombre} y quiero comunicarme con sus padres.';
+        
+        const defaultWa = p.gender === 'pet'
+            ? 'Hola, encontré a la mascota {nombre} y quiero comunicarme con su dueño.'
+            : 'Hola, encontré la información del perfil de {nombre} y quiero comunicarme con sus padres.';
+
+        document.getElementById('input-whatsapp-msg').value = p.whatsappMessage || defaultWa;
         document.getElementById('input-maps-url').value = p.locationMapsUrl || '';
-        if (document.getElementById('input-school-url')) document.getElementById('input-school-url').value = p.schoolMapsUrl || '';
+        if (document.getElementById('input-school')) document.getElementById('input-school').value = p.school || '';
+        if (document.getElementById('input-grade')) document.getElementById('input-grade').value = p.grade || '';
+        if (document.getElementById('input-medical')) document.getElementById('input-medical').value = p.medicalConditions || '';
         
         const isBase64 = p.photoUrl && p.photoUrl.startsWith('data:');
         document.getElementById('input-photo-url').value = (p.photoUrl && p.photoUrl !== NEUTRAL_AVATAR_SVG && !isBase64) ? p.photoUrl : '';
@@ -480,18 +553,24 @@ class AdminApp {
         }
 
         const existingProf = id ? this.profiles.find(p => p.id === id) : null;
+        const schoolVal = document.getElementById('input-school')?.value.trim() || '';
+        const gradeVal = document.getElementById('input-grade')?.value.trim() || '';
+        const medicalVal = document.getElementById('input-medical')?.value.trim() || '';
 
         const rawProfile = {
             id: id || `prof-${Date.now()}`,
             slug: slug,
             name: name,
             gender: gender,
-            age: parseInt(document.getElementById('input-age').value) || 5,
-            bloodType: document.getElementById('input-blood').value,
+            age: parseInt(document.getElementById('input-age').value) >= 0 ? parseInt(document.getElementById('input-age').value) : 5,
+            bloodType: document.getElementById('input-blood').value || (gender === 'pet' ? 'N/A' : 'O+'),
             parentPhone: document.getElementById('input-phone').value.trim(),
             whatsappMessage: document.getElementById('input-whatsapp-msg').value.trim(),
             locationMapsUrl: document.getElementById('input-maps-url').value.trim(),
             schoolMapsUrl: (document.getElementById('input-school-url')?.value || '').trim(),
+            school: schoolVal,
+            grade: gradeVal,
+            medicalConditions: medicalVal,
             photoUrl: finalPhoto,
             active: true,
             createdAt: existingProf ? (existingProf.createdAt || new Date().toISOString()) : new Date().toISOString(),
@@ -539,6 +618,30 @@ class AdminApp {
     }
 
     setupEventListeners() {
+        // Category Tab Switchers
+        document.querySelectorAll('.category-tab').forEach(tabBtn => {
+            tabBtn.addEventListener('click', (e) => {
+                document.querySelectorAll('.category-tab').forEach(b => b.classList.remove('active'));
+                const btn = e.currentTarget;
+                btn.classList.add('active');
+                this.currentCategoryTab = btn.getAttribute('data-tab') || 'all';
+                const searchVal = document.getElementById('admin-search-input')?.value || '';
+                this.renderProfilesGrid(searchVal);
+            });
+        });
+
+        // Dynamic gender selector change helper for default WhatsApp & Blood type
+        document.getElementById('input-gender')?.addEventListener('change', (e) => {
+            const val = e.target.value;
+            const waInput = document.getElementById('input-whatsapp-msg');
+            const bloodInput = document.getElementById('input-blood');
+            if (val === 'pet') {
+                if (bloodInput && !bloodInput.value) bloodInput.value = 'N/A';
+                if (waInput && (!waInput.value || waInput.value.includes('perfil de'))) {
+                    waInput.value = 'Hola, encontré a la mascota {nombre} y quiero comunicarme con su dueño.';
+                }
+            }
+        });
         document.getElementById('form-admin-login')?.addEventListener('submit', (e) => {
             e.preventDefault();
             const user = document.getElementById('input-admin-user')?.value.trim();

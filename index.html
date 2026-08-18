@@ -41,6 +41,8 @@
                         if (!p && (slug === 'valentina' || slug === 'sofia')) p = { gender: 'girl' };
                         if (p && p.gender === 'girl') {
                             document.documentElement.className = 'theme-girl';
+                        } else if (p && p.gender === 'pet') {
+                            document.documentElement.className = 'theme-pet';
                         }
                     }
                 } else if (slug === 'valentina' || slug === 'sofia') {
@@ -90,7 +92,7 @@
                     <div class="profile-top-bar">
                         <div class="top-bar-brand">
                             <div class="brand-shield-icon"><i class="fa-solid fa-shield-halved"></i></div>
-                            <span>Identificación Infantil</span>
+                            <span id="p-top-brand-title">Identificación Infantil</span>
                         </div>
                         <div class="verified-badge-pill" id="p-badge">
                             <i class="fa-solid fa-check"></i> <span id="p-gender-text">Perfil verificado</span>
@@ -124,7 +126,7 @@
                             <h1 class="profile-hero-name" id="p-hero-name">SAMUEL</h1>
                             <span class="name-spark spark-right">////</span>
                         </div>
-                        <div class="security-ribbon">
+                        <div class="security-ribbon" id="p-security-ribbon">
                             Mi perfil de seguridad
                         </div>
                     </div>
@@ -133,9 +135,9 @@
                     <div class="info-cards-grid">
                         <div class="info-cards-row">
                             <!-- Edad -->
-                            <div class="info-card-box box-age">
+                            <div class="info-card-box box-age" id="box-age">
                                 <div class="info-card-icon icon-age">
-                                    <i class="fa-solid fa-cake-candles"></i>
+                                    <i class="fa-solid fa-cake-candles" id="p-age-icon"></i>
                                 </div>
                                 <div class="info-card-text">
                                     <span class="label">Edad</span>
@@ -143,7 +145,7 @@
                                 </div>
                             </div>
                             <!-- Tipo de Sangre -->
-                            <div class="info-card-box box-blood">
+                            <div class="info-card-box box-blood" id="box-blood">
                                 <div class="info-card-icon icon-blood" id="p-blood-icon">
                                     <i class="fa-solid fa-droplet"></i>
                                 </div>
@@ -154,7 +156,7 @@
                             </div>
                         </div>
 
-                        <!-- Optional Extra Cards (Parent, School, Medical Notes) -->
+                        <!-- Optional Extra Cards (Parent, School, Grade, Medical Notes) -->
                         <div class="info-box hidden" id="box-parent">
                             <div class="info-card-icon icon-parent"><i class="fa-solid fa-users"></i></div>
                             <div class="info-card-text"><span class="label">Padres / Acudientes</span><span class="val" id="p-parent">Cargando...</span></div>
@@ -162,6 +164,10 @@
                         <div class="info-box hidden" id="box-school">
                             <div class="info-card-icon icon-school"><i class="fa-solid fa-school"></i></div>
                             <div class="info-card-text"><span class="label">Institución Educativa</span><span class="val" id="p-school">Cargando...</span></div>
+                        </div>
+                        <div class="info-box hidden" id="box-grade">
+                            <div class="info-card-icon icon-grade"><i class="fa-solid fa-graduation-cap"></i></div>
+                            <div class="info-card-text"><span class="label">Grado / Curso</span><span class="val" id="p-grade">Cargando...</span></div>
                         </div>
                     </div>
 
