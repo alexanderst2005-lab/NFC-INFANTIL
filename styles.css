@@ -793,6 +793,10 @@ body.theme-girl .scene-item {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
     gap: 1.3rem;
+    contain: content;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    transform: translate3d(0, 0, 0);
 }
 
 .admin-card {
@@ -807,6 +811,10 @@ body.theme-girl .scene-item {
     transition: var(--transition);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
     color: #f8fafc;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    transform: translate3d(0, 0, 0);
+    contain: paint layout;
 }
 .admin-card:hover {
     transform: translateY(-3px);
