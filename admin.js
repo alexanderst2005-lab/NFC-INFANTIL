@@ -424,7 +424,9 @@ class AdminApp {
         document.getElementById('input-whatsapp-msg').value = p.whatsappMessage || 'Hola, encontré el perfil de {nombre} y quiero comunicarme con sus padres.';
         document.getElementById('input-maps-url').value = p.locationMapsUrl || '';
         if (document.getElementById('input-school-url')) document.getElementById('input-school-url').value = p.schoolMapsUrl || '';
-        document.getElementById('input-photo-url').value = (p.photoUrl && p.photoUrl !== NEUTRAL_AVATAR_SVG) ? p.photoUrl : '';
+        
+        const isBase64 = p.photoUrl && p.photoUrl.startsWith('data:');
+        document.getElementById('input-photo-url').value = (p.photoUrl && p.photoUrl !== NEUTRAL_AVATAR_SVG && !isBase64) ? p.photoUrl : '';
         document.getElementById('photo-preview').src = currentPhoto;
 
         document.getElementById('modal-profile').classList.remove('hidden');
