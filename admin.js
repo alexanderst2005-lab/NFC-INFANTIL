@@ -252,7 +252,7 @@ class AdminApp {
                         <div class="admin-card-header-info">
                             <h4 class="admin-card-name" title="${p.name}">${p.name}</h4>
                             <span class="gender-pill ${p.gender === 'girl' ? 'pill-girl' : 'pill-boy'}">
-                                ${p.gender === 'girl' ? '👧 Niña (Rosa)' : '👦 Niño (Azul)'}
+                                ${p.gender === 'girl' ? '👧 Niña' : '👦 Niño'}
                             </span>
                         </div>
                     </div>
