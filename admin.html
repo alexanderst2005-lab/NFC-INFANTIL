@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Administrativo | NFC Infantil</title>
+    <meta name="description" content="Panel de administración y gestión de perfiles de identificación NFC Infantil.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="theme-default">
+
+    <!-- Background Decorator Bubbles -->
+    <div class="bg-bubbles">
+        <div class="bubble bubble-1"></div>
+        <div class="bubble bubble-2"></div>
+        <div class="bubble bubble-3"></div>
+    </div>
+
+    <!-- Navigation Header for Admin Page -->
+    <header class="app-header">
+        <a href="/admin.html" class="brand-logo">
+            <div class="brand-icon">
+                <i class="fa-solid fa-user-gear"></i>
+            </div>
+            <span>Panel<span style="color: var(--accent-main)">Admin</span></span>
+        </a>
+        <nav class="header-nav">
+            <a href="/" class="btn btn-secondary btn-sm">
+                <i class="fa-solid fa-globe"></i> Ver Perfiles Públicos
+            </a>
+            <button class="btn btn-secondary btn-sm hidden" id="btn-admin-logout" title="Cerrar Sesión">
+                <i class="fa-solid fa-power-off"></i> Salir
+            </button>
+        </nav>
+    </header>
+
+    <main class="container">
+        <!-- ===================================================================
+             STATE 1: ADMIN LOGIN (PROTECCIÓN POR PIN)
+             =================================================================== -->
+        <section id="admin-login-screen" class="view-section active-view">
+            <div class="login-box">
+                <div class="brand-icon" style="margin: 0 auto 1.2rem; width: 55px; height: 55px; font-size: 1.5rem;">
+                    <i class="fa-solid fa-lock"></i>
+                </div>
+                <h2 style="margin-bottom: 0.4rem; font-size: 1.6rem;">Acceso Administrativo</h2>
+                <p style="color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 1.8rem;">
+                    Ingresa el PIN de seguridad para crear, editar o desactivar perfiles.
+                </p>
+                <form id="form-admin-login">
+                    <div class="form-group" style="margin-bottom: 1.2rem;">
+                        <input type="password" id="input-admin-pin" class="form-control" placeholder="PIN (Por defecto: 1234)" required style="text-align: center; font-size: 1.3rem; letter-spacing: 4px;">
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block"><i class="fa-solid fa-right-to-bracket"></i> Iniciar Sesión</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- ===================================================================
+             STATE 2: DASHBOARD DE EDICIÓN Y GESTIÓN
+             =================================================================== -->
+        <section id="admin-dashboard-screen" class="view-section">
+            <div class="admin-container" style="padding: 0;">
+                
+                <div class="admin-header-bar">
+                    <div>
+                        <h1 class="admin-title">Panel de Edición de Perfiles</h1>
+                        <p style="color: var(--text-secondary);">Administra la información, fotos, enlaces de WhatsApp y ubicación sin modificar código.</p>
+                    </div>
+                    <div>
+                        <button class="btn btn-primary" id="btn-open-create-modal">
+                            <i class="fa-solid fa-plus"></i> Crear Nuevo Perfil
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Search Bar -->
+                <div class="search-filter-bar">
+                    <div class="search-input-wrap">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" id="admin-search-input" placeholder="Buscar perfil por nombre, slug o colegio...">
+                    </div>
+                </div>
+
+                <!-- Profiles Cards Grid -->
+                <div class="profiles-admin-grid" id="admin-profiles-grid">
+                    <!-- Dynamically populated from JS -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ===================================================================
+         MODAL DE CREACIÓN / EDICIÓN DE PERFIL
+         =================================================================== -->
+    <div class="modal-backdrop hidden" id="modal-profile">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 id="modal-title"><i class="fa-solid fa-user-plus"></i> Crear Perfil Infantil</h3>
+                <button class="btn btn-secondary btn-sm" id="modal-close-btn" style="border:none;">&times;</button>
+            </div>
+            <form id="form-save-profile" class="modal-body">
+                <input type="hidden" id="input-profile-id">
+
+                <div class="form-grid">
+                    
+                    <!-- Nombre completo -->
+                    <div class="form-group full-width">
+                        <label for="input-name">Nombre Completo del Niño / Niña *</label>
+                        <input type="text" id="input-name" class="form-control" required placeholder="Ej: Samuel Torres">
+                    </div>
+
+                    <!-- Enlace Único (Slug) -->
+                    <div class="form-group full-width">
+                        <label for="input-slug">Enlace Único de URL (Slug) *</label>
+                        <input type="text" id="input-slug" class="form-control" required placeholder="Ej: samuel (generará dominio.com/samuel)">
+                    </div>
+
+                    <!-- Selección de Género (Niño vs Niña) -->
+                    <div class="form-group">
+                        <label for="input-gender">Género (Define la temática visual) *</label>
+                        <select id="input-gender" class="form-control" required>
+                            <option value="boy">👦 Niño (Temática Azul / Cian)</option>
+                            <option value="girl">👧 Niña (Temática Coral / Rosa)</option>
+                        </select>
+                    </div>
+
+                    <!-- Edad -->
+                    <div class="form-group">
+                        <label for="input-age">Edad *</label>
+                        <input type="number" id="input-age" class="form-control" min="1" max="17" required placeholder="Ej: 6">
+                    </div>
+
+                    <!-- Tipo de Sangre -->
+                    <div class="form-group">
+                        <label for="input-blood">Grupo Sanguíneo *</label>
+                        <select id="input-blood" class="form-control" required>
+                            <option value="O+">O Positivo (O+)</option>
+                            <option value="O-">O Negativo (O-)</option>
+                            <option value="A+">A Positivo (A+)</option>
+                            <option value="A-">A Negativo (A-)</option>
+                            <option value="B+">B Positivo (B+)</option>
+                            <option value="B-">B Negativo (B-)</option>
+                            <option value="AB+">AB Positivo (AB+)</option>
+                            <option value="AB-">AB Negativo (AB-)</option>
+                        </select>
+                    </div>
+
+                    <!-- Colegio / Jardín -->
+                    <div class="form-group">
+                        <label for="input-school">Colegio o Jardín Infantil</label>
+                        <input type="text" id="input-school" class="form-control" placeholder="Ej: Colegio San José">
+                    </div>
+
+                    <!-- Nombre de los Padres -->
+                    <div class="form-group full-width">
+                        <label for="input-parent">Nombre de los Padres / Acudientes *</label>
+                        <input type="text" id="input-parent" class="form-control" required placeholder="Ej: Carlos y Diana Torres">
+                    </div>
+
+                    <!-- Número de WhatsApp -->
+                    <div class="form-group">
+                        <label for="input-phone">Número de WhatsApp (con código de país) *</label>
+                        <input type="tel" id="input-phone" class="form-control" required placeholder="Ej: 573001234567">
+                    </div>
+
+                    <!-- Dirección o Ciudad -->
+                    <div class="form-group">
+                        <label for="input-address">Dirección / Ubicación Resumida</label>
+                        <input type="text" id="input-address" class="form-control" placeholder="Ej: Calle 100 #15-20, Bogotá">
+                    </div>
+
+                    <!-- Mensaje de WhatsApp Configurable -->
+                    <div class="form-group full-width">
+                        <label for="input-whatsapp-msg">Mensaje Predeterminado de WhatsApp *</label>
+                        <textarea id="input-whatsapp-msg" class="form-control" rows="2" required placeholder="Ej: Hola, encontré la información del perfil de {nombre} y me gustaría comunicarme con sus padres."></textarea>
+                    </div>
+
+                    <!-- Enlace de Google Maps -->
+                    <div class="form-group full-width">
+                        <label for="input-maps-url">Enlace a Google Maps o Waze</label>
+                        <input type="url" id="input-maps-url" class="form-control" placeholder="Ej: https://maps.google.com/?q=4.6097,-74.0817">
+                    </div>
+
+                    <!-- Alergias -->
+                    <div class="form-group full-width">
+                        <label for="input-allergies">Alergias o Condiciones Médicas</label>
+                        <input type="text" id="input-allergies" class="form-control" placeholder="Ej: Alergia a la Penicilina, Asma.">
+                    </div>
+
+                    <!-- Información Adicional -->
+                    <div class="form-group full-width">
+                        <label for="input-notes">Información Adicional de Emergencia</label>
+                        <textarea id="input-notes" class="form-control" rows="2" placeholder="Ej: Autorizado entregar solo a abuela materna Elena."></textarea>
+                    </div>
+
+                    <!-- Carga / Selector de Foto -->
+                    <div class="form-group full-width">
+                        <label>Foto del Niño/a (Subir desde archivo o URL)</label>
+                        <div class="photo-uploader-box" id="dropzone-photo">
+                            <img src="https://images.unsplash.com/photo-1543332164-6e82f355badc?w=150&auto=format&fit=crop&q=80" alt="Preview" id="photo-preview" class="photo-preview-thumb">
+                            <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.4rem;">
+                                Haz clic aquí para **subir una foto desde tu equipo o celular**
+                            </p>
+                            <input type="file" id="file-photo-input" accept="image/*" class="hidden">
+                            <input type="url" id="input-photo-url" class="form-control" placeholder="O pega un enlace de foto externa (URL)..." style="margin-top: 0.5rem;">
+                        </div>
+                    </div>
+
+                    <!-- Estado Activo/Inactivo -->
+                    <div class="form-group full-width" style="display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,0.05); padding: 1rem; border-radius: var(--radius-md);">
+                        <div>
+                            <span style="font-weight: 700; display: block;">Estado del Perfil</span>
+                            <span style="font-size: 0.8rem; color: var(--text-secondary);">Si se deshabilita, su URL pública no mostrará la ficha.</span>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="input-active" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                </div>
+
+                <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 1.5rem; padding-top: 1.2rem; border-top: 1px solid var(--border-color);">
+                    <button type="button" class="btn btn-secondary" id="modal-cancel-btn">Cancelar</button>
+                    <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> Guardar Cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="toast-msg hidden"></div>
+
+    <script src="admin.js"></script>
+</body>
+</html>
