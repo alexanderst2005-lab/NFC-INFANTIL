@@ -240,6 +240,14 @@ class AdminApp {
             ? override.photoUrl
             : (base.photoUrl || '');
 
+        const name = (override.name && override.name.trim() !== '' && override.name !== 'Perfil')
+            ? override.name
+            : (base.name || 'Perfil');
+
+        const phone = (override.parentPhone && override.parentPhone.trim() !== '')
+            ? override.parentPhone
+            : (base.parentPhone || '');
+
         const location = (override.locationMapsUrl && override.locationMapsUrl.trim() !== '')
             ? override.locationMapsUrl
             : (base.locationMapsUrl || '');
@@ -256,43 +264,47 @@ class AdminApp {
             ? override.medicalConditions
             : (base.medicalConditions || '');
 
+        const birthDate = (override.birthDate && override.birthDate.trim() !== '')
+            ? override.birthDate
+            : (base.birthDate || '');
+
+        const whatsappMessage = (override.whatsappMessage && override.whatsappMessage.trim() !== '')
+            ? override.whatsappMessage
+            : (base.whatsappMessage || '');
+
         return {
             ...base,
             ...override,
+            name: name,
             photoUrl: photo,
+            parentPhone: phone,
             locationMapsUrl: location,
             school: school,
             grade: grade,
-            medicalConditions: medical
+            medicalConditions: medical,
+            birthDate: birthDate,
+            whatsappMessage: whatsappMessage
         };
     }
 
     mergeAndPreserveProfiles(localProfiles = [], cloudProfiles = []) {
-        const deletedIds = JSON.parse(localStorage.getItem('nfc_deleted_ids') || '[]');
         const profileMap = new Map();
 
-        // 1. Load Cloud Profiles (excluding explicitly deleted ones)
+        // 1. Load Cloud Profiles
         cloudProfiles.forEach(p => {
-            if (p && p.id && !deletedIds.includes(p.id)) {
+            if (p && p.id) {
                 profileMap.set(p.id, { ...p });
             }
         });
 
-        // 2. Merge Local Profiles (preserving user custom data across serverless cold-starts)
+        // 2. Merge Local Profiles (preserving user custom data across serverless cold-starts & redeploys)
         localProfiles.forEach(p => {
-            if (p && p.id && !deletedIds.includes(p.id)) {
+            if (p && p.id) {
                 if (profileMap.has(p.id)) {
                     const existing = profileMap.get(p.id);
-                    const pTime = p.updatedAt ? new Date(p.updatedAt).getTime() : 0;
-                    const exTime = existing.updatedAt ? new Date(existing.updatedAt).getTime() : 0;
-
-                    if (pTime >= exTime) {
-                        profileMap.set(p.id, this.mergeSingleProfile(existing, p));
-                    } else {
-                        profileMap.set(p.id, this.mergeSingleProfile(p, existing));
-                    }
+                    profileMap.set(p.id, this.mergeSingleProfile(existing, p));
                 } else {
-                    // Local profile not in cloud (user created it & serverless cold-started) -> PRESERVE IT!
+                    // Local profile not in cloud (created locally or cold-started) -> PRESERVE IT!
                     profileMap.set(p.id, { ...p });
                 }
             }
@@ -313,18 +325,20 @@ class AdminApp {
             if (res.ok) {
                 const jsonRes = await res.json();
                 if (jsonRes && Array.isArray(jsonRes.profiles)) {
-                    const sanitizedCloud = this.deduplicateProfiles(jsonRes.profiles);
-                    
-                    if (sanitizedCloud.length > 0) {
-                        if (JSON.stringify(sanitizedCloud) !== JSON.stringify(this.profiles)) {
-                            this.profiles = sanitizedCloud;
-                            this.saveProfilesLocal();
-                            if (this.isAuthenticated) {
-                                this.renderProfilesGrid();
-                            }
+                    const cloudProfiles = jsonRes.profiles;
+                    const merged = this.mergeAndPreserveProfiles(this.profiles, cloudProfiles);
+                    const sanitizedMerged = this.deduplicateProfiles(merged);
+
+                    if (JSON.stringify(sanitizedMerged) !== JSON.stringify(this.profiles)) {
+                        this.profiles = sanitizedMerged;
+                        this.saveProfilesLocal();
+                        if (this.isAuthenticated) {
+                            this.renderProfilesGrid();
                         }
-                    } else if (this.profiles.length > 0) {
-                        // Cold-start fallback: if cloud responded with empty initial list, re-push local custom profiles
+                    }
+
+                    // If local custom data was merged and is different from raw cloud, re-push merged array to cloud
+                    if (JSON.stringify(sanitizedMerged) !== JSON.stringify(cloudProfiles)) {
                         await this.pushToCloudDB();
                     }
                 }
