@@ -15,14 +15,19 @@
 </head>
 <body class="theme-default">
 
-    <!-- Ambient Dynamic Glow Bubbles -->
+    <!-- Ambient Dynamic Glow Orbs -->
     <div class="bg-bubbles">
         <div class="bubble bubble-1"></div>
         <div class="bubble bubble-2"></div>
         <div class="bubble bubble-3"></div>
     </div>
 
-    <!-- Minimal Clean Header (No nav links to other profiles) -->
+    <!-- Floating Organic Infantile Decorators (Populated dynamically in JS per theme) -->
+    <div class="floating-decorators" id="floating-decorators-container">
+        <!-- Dynamically injected from JS -->
+    </div>
+
+    <!-- Minimal Header (Pure brand identifier, NO links to other kids) -->
     <header class="app-header" style="justify-content: center;">
         <div class="brand-logo" style="cursor: default;">
             <div class="brand-icon">
@@ -38,13 +43,13 @@
              PÁGINA PÚBLICA ÚNICA Y 100% AISLADA DEL NIÑO O NIÑA
              =================================================================== -->
         <section id="view-profile" class="view-section active-view">
-            <div class="profile-container" style="margin-top: 0.5rem;">
+            <div class="profile-container">
 
                 <!-- MAIN SINGLE CHILD CARD -->
                 <div class="profile-card">
                     <div class="profile-card-desktop-split">
                         
-                        <!-- LEFT COLUMN: PHOTO & LOGO BANNER -->
+                        <!-- LEFT COLUMN: HERO PHOTO, BADGES & LOGO BANNER -->
                         <div class="profile-left-column">
                             <!-- Status Bar -->
                             <div class="profile-badge-bar">
@@ -62,25 +67,31 @@
                                 <img src="" alt="Foto Niño/a" id="p-avatar" class="profile-avatar-img">
                             </div>
 
+                            <!-- Hero Name Title for Mobile/Left Column -->
+                            <h1 class="profile-hero-name" id="p-hero-name">Cargando...</h1>
+                            <div class="profile-hero-subtitle" id="p-hero-subtitle">
+                                Identificación y Seguridad Infantil NFC
+                            </div>
+
                             <!-- Official NFC Seguridad Infantil Logo Banner below Photo -->
                             <div class="logo-banner-wrapper">
                                 <img src="assets/logo-nfc-seguridad.png" alt="NFC Seguridad Infantil" class="logo-banner-img">
                             </div>
                         </div>
 
-                        <!-- RIGHT COLUMN: CORE SINGLE CHILD DATA & ACTION BUTTONS -->
+                        <!-- RIGHT COLUMN: VISUAL DATA CARDS & ACTION BUTTONS -->
                         <div class="profile-right-column">
                             
-                            <!-- Information Grid -->
+                            <!-- Information Visual Cards Grid -->
                             <div class="info-cards-grid">
-                                <!-- Nombre del Niño/a -->
+                                <!-- Nombre Completo -->
                                 <div class="info-box">
-                                    <div class="info-icon icon-parent">
-                                        <i class="fa-solid fa-user"></i>
+                                    <div class="info-icon icon-name">
+                                        <i class="fa-solid fa-id-card"></i>
                                     </div>
                                     <div class="info-content">
-                                        <span class="label">Nombre</span>
-                                        <span class="val" id="p-name" style="font-size: 1.35rem;">Cargando...</span>
+                                        <span class="label">Nombre del Niño/a</span>
+                                        <span class="val" id="p-name">Cargando...</span>
                                     </div>
                                 </div>
 
@@ -105,6 +116,38 @@
                                             <span class="val" id="p-blood">O+</span>
                                         </div>
                                     </div>
+                                </div>
+
+                                <!-- Colegio / Jardín Infantil (Si aplica) -->
+                                <div class="info-box hidden" id="box-school">
+                                    <div class="info-icon icon-school">
+                                        <i class="fa-solid fa-school"></i>
+                                    </div>
+                                    <div class="info-content">
+                                        <span class="label">Institución Educativa</span>
+                                        <span class="val" id="p-school">Cargando...</span>
+                                    </div>
+                                </div>
+
+                                <!-- Acudientes / Padres -->
+                                <div class="info-box hidden" id="box-parent">
+                                    <div class="info-icon icon-parent">
+                                        <i class="fa-solid fa-users"></i>
+                                    </div>
+                                    <div class="info-content">
+                                        <span class="label">Padres / Acudientes</span>
+                                        <span class="val" id="p-parent">Cargando...</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Special Medical / Care Highlight Box -->
+                            <div class="special-care-box hidden" id="box-medical">
+                                <div class="special-care-header">
+                                    <i class="fa-solid fa-notes-medical"></i> Información Importante / Cuidados
+                                </div>
+                                <div class="special-care-body" id="p-medical-notes">
+                                    <!-- Medical notes dynamically populated -->
                                 </div>
                             </div>
 
@@ -132,7 +175,7 @@
             </div>
         </section>
 
-        <!-- INACTIVE PROFILE SCREEN (WHEN PROFILE IS DEACTIVATED OR WRONG URL) -->
+        <!-- INACTIVE PROFILE SCREEN -->
         <section id="view-inactive" class="view-section hidden">
             <div class="inactive-screen">
                 <div style="font-size: 3.5rem; color: var(--warning); margin-bottom: 1rem;">
@@ -145,9 +188,6 @@
             </div>
         </section>
     </main>
-
-    <!-- Notification Toast -->
-    <div id="toast" class="toast-msg hidden"></div>
 
     <script src="app.js"></script>
 </body>

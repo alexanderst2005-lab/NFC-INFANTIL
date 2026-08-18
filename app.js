@@ -1,5 +1,5 @@
 /* ==========================================================================
-   NFC INFANTIL - PUBLIC SINGLE CHILD PROFILE VIEWER (CLEAN SHORT URLS)
+   NFC INFANTIL - PUBLIC SINGLE CHILD PROFILE VIEWER (ULTRA-PREMIUM)
    ========================================================================== */
 
 const DEFAULT_PROFILES = [
@@ -16,8 +16,8 @@ const DEFAULT_PROFILES = [
         locationAddress: "Calle 100 #15-20, Bogotá",
         locationMapsUrl: "https://maps.google.com/?q=4.6853,-74.0435",
         allergies: "Ninguna",
-        medicalNotes: "",
-        school: "",
+        medicalNotes: "Usa inhalador en caso de crisis asmática. Entregar únicamente a acudientes registrados.",
+        school: "Gimnasio Campestre Los Laureles",
         photoUrl: "https://images.unsplash.com/photo-1543332164-6e82f355badc?w=400&auto=format&fit=crop&q=80",
         active: true,
         createdAt: new Date().toISOString()
@@ -34,9 +34,9 @@ const DEFAULT_PROFILES = [
         whatsappMessage: "Hola, encontré la información del perfil de Valentina y quiero comunicarme con sus padres.",
         locationAddress: "Carrera 43A #1-50, Medellín",
         locationMapsUrl: "https://maps.google.com/?q=6.2088,-75.5674",
-        allergies: "Ninguna conocida",
-        medicalNotes: "",
-        school: "",
+        allergies: "Alergias leves a la penicilina",
+        medicalNotes: "Lleva su carnet de vacunación completo.",
+        school: "Colegio San José Infantil",
         photoUrl: "https://images.unsplash.com/photo-1595454223600-91fb272189d5?w=400&auto=format&fit=crop&q=80",
         active: true,
         createdAt: new Date().toISOString()
@@ -53,9 +53,9 @@ const DEFAULT_PROFILES = [
         whatsappMessage: "Hola, encontré la información del perfil de Juan Diego y me comunico con sus padres.",
         locationAddress: "Calle 26 #68-80, Bogotá",
         locationMapsUrl: "https://maps.google.com/?q=4.6581,-74.1084",
-        allergies: "",
-        medicalNotes: "",
-        school: "",
+        allergies: "Intolerancia a la lactosa",
+        medicalNotes: "Utiliza gafas formuladas.",
+        school: "Jardín Exploradores del Futuro",
         photoUrl: "https://images.unsplash.com/photo-1519238263530-99bdd11df2ea?w=400&auto=format&fit=crop&q=80",
         active: true,
         createdAt: new Date().toISOString()
@@ -72,9 +72,9 @@ const DEFAULT_PROFILES = [
         whatsappMessage: "Hola, estoy escaneando la pulsera NFC de Sofía y me comunico con sus padres.",
         locationAddress: "Avenida 4 Norte #10-15, Cali",
         locationMapsUrl: "https://maps.google.com/?q=3.4516,-76.5320",
-        allergies: "",
-        medicalNotes: "",
-        school: "",
+        allergies: "Alergia al maní",
+        medicalNotes: "Siempre porta su pulsera de identificación NFC.",
+        school: "Jardín Infantil Mis Primeros Pasos",
         photoUrl: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400&auto=format&fit=crop&q=80",
         active: true,
         createdAt: new Date().toISOString()
@@ -159,18 +159,60 @@ class IsolatedProfileApp {
 
         // Apply Theme based on gender ('boy' vs 'girl')
         document.body.className = profile.gender === 'girl' ? 'theme-girl' : 'theme-boy';
+        this.renderFloatingDecorators(profile.gender);
 
-        // Render Values safely
+        // Render Title
         document.title = `Perfil de ${profile.name} | NFC Seguridad Infantil`;
         
+        // Render Names
         const nameEl = document.getElementById('p-name');
         if (nameEl) nameEl.textContent = profile.name;
+
+        const heroNameEl = document.getElementById('p-hero-name');
+        if (heroNameEl) heroNameEl.textContent = profile.name;
 
         const ageEl = document.getElementById('p-age');
         if (ageEl) ageEl.textContent = profile.age;
 
         const bloodEl = document.getElementById('p-blood');
         if (bloodEl) bloodEl.textContent = profile.bloodType;
+
+        // School Box
+        const schoolBox = document.getElementById('box-school');
+        const schoolEl = document.getElementById('p-school');
+        if (schoolBox && schoolEl) {
+            if (profile.school && profile.school.trim() !== '') {
+                schoolEl.textContent = profile.school;
+                schoolBox.classList.remove('hidden');
+            } else {
+                schoolBox.classList.add('hidden');
+            }
+        }
+
+        // Parent Box
+        const parentBox = document.getElementById('box-parent');
+        const parentEl = document.getElementById('p-parent');
+        if (parentBox && parentEl) {
+            if (profile.parentName && profile.parentName.trim() !== '') {
+                parentEl.textContent = profile.parentName;
+                parentBox.classList.remove('hidden');
+            } else {
+                parentBox.classList.add('hidden');
+            }
+        }
+
+        // Special Care / Medical Notes Box
+        const medicalBox = document.getElementById('box-medical');
+        const medicalNotesEl = document.getElementById('p-medical-notes');
+        if (medicalBox && medicalNotesEl) {
+            const combinedNotes = [profile.allergies, profile.medicalNotes].filter(n => n && n.trim() !== '').join(' • ');
+            if (combinedNotes && combinedNotes.trim() !== '') {
+                medicalNotesEl.textContent = combinedNotes;
+                medicalBox.classList.remove('hidden');
+            } else {
+                medicalBox.classList.add('hidden');
+            }
+        }
 
         // Badge
         const badgeEl = document.getElementById('p-badge');
@@ -218,6 +260,29 @@ class IsolatedProfileApp {
             profileView.classList.add('active-view');
         }
         if (inactiveView) inactiveView.classList.add('hidden');
+    }
+
+    renderFloatingDecorators(gender) {
+        const container = document.getElementById('floating-decorators-container');
+        if (!container) return;
+
+        if (gender === 'girl') {
+            container.innerHTML = `
+                <div class="floating-item item-1"><i class="fa-solid fa-spa"></i></div>
+                <div class="floating-item item-2"><i class="fa-solid fa-butterfly"></i></div>
+                <div class="floating-item item-3"><i class="fa-solid fa-heart"></i></div>
+                <div class="floating-item item-4"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+                <div class="floating-item item-5"><i class="fa-solid fa-star"></i></div>
+            `;
+        } else {
+            container.innerHTML = `
+                <div class="floating-item item-1"><i class="fa-solid fa-star"></i></div>
+                <div class="floating-item item-2"><i class="fa-solid fa-cloud"></i></div>
+                <div class="floating-item item-3"><i class="fa-solid fa-rocket"></i></div>
+                <div class="floating-item item-4"><i class="fa-solid fa-user-astronaut"></i></div>
+                <div class="floating-item item-5"><i class="fa-solid fa-bolt"></i></div>
+            `;
+        }
     }
 
     showInactive(title, desc) {

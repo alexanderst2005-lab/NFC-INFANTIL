@@ -99,11 +99,11 @@ class AdminApp {
     loadProfiles() {
         const stored = localStorage.getItem('nfc_profiles_db');
         if (stored) {
-            try { 
+            try {
                 const parsed = JSON.parse(stored);
                 this.profiles = parsed && parsed.length > 0 ? parsed : DEFAULT_PROFILES;
-            } catch (e) { 
-                this.profiles = DEFAULT_PROFILES; 
+            } catch (e) {
+                this.profiles = DEFAULT_PROFILES;
             }
         } else {
             this.profiles = DEFAULT_PROFILES;
