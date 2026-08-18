@@ -191,17 +191,14 @@ class ProfileApp {
             if (p && p.id && !deletedIds.includes(p.id)) {
                 if (profileMap.has(p.id)) {
                     const existing = profileMap.get(p.id);
-                    const merged = {
-                        ...existing,
-                        ...p,
-                        name: (p.name && String(p.name).trim() !== '' && String(p.name).trim() !== 'Perfil') ? p.name : existing.name,
-                        photoUrl: (p.photoUrl && p.photoUrl.trim() !== '') ? p.photoUrl : existing.photoUrl,
-                        parentPhone: (p.parentPhone && p.parentPhone.trim() !== '') ? p.parentPhone : existing.parentPhone,
-                        whatsappMessage: (p.whatsappMessage && p.whatsappMessage.trim() !== '') ? p.whatsappMessage : existing.whatsappMessage,
-                        locationMapsUrl: (p.locationMapsUrl && p.locationMapsUrl.trim() !== '') ? p.locationMapsUrl : existing.locationMapsUrl,
-                        schoolMapsUrl: (p.schoolMapsUrl && p.schoolMapsUrl.trim() !== '') ? p.schoolMapsUrl : existing.schoolMapsUrl
-                    };
-                    profileMap.set(p.id, merged);
+                    const pTime = p.updatedAt ? new Date(p.updatedAt).getTime() : 0;
+                    const exTime = existing.updatedAt ? new Date(existing.updatedAt).getTime() : 0;
+
+                    if (pTime >= exTime) {
+                        profileMap.set(p.id, { ...existing, ...p });
+                    } else {
+                        profileMap.set(p.id, { ...p, ...existing });
+                    }
                 } else {
                     profileMap.set(p.id, { ...p });
                 }

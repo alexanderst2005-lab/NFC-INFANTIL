@@ -111,7 +111,8 @@ export default async function handler(req, res) {
                     schoolMapsUrl: p.schoolMapsUrl ? String(p.schoolMapsUrl).trim() : '',
                     photoUrl: p.photoUrl ? String(p.photoUrl).trim() : '',
                     active: true,
-                    createdAt: p.createdAt || new Date().toISOString()
+                    createdAt: p.createdAt || new Date().toISOString(),
+                    updatedAt: p.updatedAt || new Date().toISOString()
                 }));
             }
 
