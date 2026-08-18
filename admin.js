@@ -83,6 +83,7 @@ class AdminApp {
     async init() {
         this.loadProfilesLocal();
         this.setupEventListeners();
+        this.setupPullToRefresh();
         this.renderState();
         document.documentElement.classList.add('ready');
         await this.syncFromCloudDB();
@@ -624,6 +625,76 @@ class AdminApp {
 
             this.showToast("¡Fotografía eliminada por completo!");
         });
+    }
+
+    setupPullToRefresh() {
+        const pullEl = document.getElementById('pull-to-refresh');
+        const pullIcon = document.getElementById('pull-icon');
+        const pullText = document.getElementById('pull-text');
+        if (!pullEl) return;
+
+        let startY = 0;
+        let currentY = 0;
+        let isPulling = false;
+        let isRefreshing = false;
+        const PULL_THRESHOLD = 85;
+
+        window.addEventListener('touchstart', (e) => {
+            if (window.scrollY === 0 && !document.body.classList.contains('modal-open')) {
+                startY = e.touches[0].clientY;
+                isPulling = true;
+            }
+        }, { passive: true });
+
+        window.addEventListener('touchmove', (e) => {
+            if (!isPulling || isRefreshing) return;
+            currentY = e.touches[0].clientY;
+            const distance = currentY - startY;
+
+            if (distance > 15 && window.scrollY === 0) {
+                pullEl.classList.add('visible');
+                if (distance >= PULL_THRESHOLD) {
+                    if (pullIcon) pullIcon.className = 'fa-solid fa-arrow-up';
+                    if (pullText) pullText.textContent = 'Suelta para actualizar';
+                } else {
+                    if (pullIcon) pullIcon.className = 'fa-solid fa-arrow-down';
+                    if (pullText) pullText.textContent = 'Desliza para actualizar';
+                }
+            }
+        }, { passive: true });
+
+        window.addEventListener('touchend', async () => {
+            if (!isPulling || isRefreshing) return;
+            const distance = currentY - startY;
+            isPulling = false;
+
+            if (distance >= PULL_THRESHOLD && window.scrollY === 0) {
+                isRefreshing = true;
+                pullEl.classList.add('refreshing');
+                if (pullIcon) pullIcon.className = 'fa-solid fa-rotate';
+                if (pullText) pullText.textContent = 'Actualizando perfiles...';
+
+                try {
+                    await this.syncFromCloudDB();
+                    this.renderProfilesGrid();
+                    this.showToast('¡Información actualizada!');
+                } catch (err) {
+                    console.log('Error al refrescar:', err);
+                }
+
+                setTimeout(() => {
+                    pullEl.classList.remove('visible', 'refreshing');
+                    if (pullIcon) pullIcon.className = 'fa-solid fa-arrow-down';
+                    if (pullText) pullText.textContent = 'Desliza para actualizar';
+                    isRefreshing = false;
+                }, 750);
+            } else {
+                pullEl.classList.remove('visible');
+            }
+
+            startY = 0;
+            currentY = 0;
+        }, { passive: true });
     }
 
     showToast(msg) {
