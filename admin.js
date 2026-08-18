@@ -157,7 +157,7 @@ class AdminApp {
     async syncFromCloudDB() {
         try {
             const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 4500);
+            const timeoutId = setTimeout(() => controller.abort(), 2000);
 
             const cacheBustUrl = `${CLOUD_DB_ENDPOINT}?t=${Date.now()}`;
             const res = await fetch(cacheBustUrl, { cache: 'no-store', signal: controller.signal });
@@ -455,7 +455,7 @@ class AdminApp {
         this.pushToCloudDB(); // Background sync without blocking UI
     }
 
-    compressImage(base64Data, maxWidth = 800, quality = 0.92) {
+    compressImage(base64Data, maxWidth = 500, quality = 0.82) {
         return new Promise((resolve) => {
             const img = new Image();
             img.onload = () => {

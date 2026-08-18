@@ -1211,4 +1211,19 @@ body.modal-open {
         width: 100%;
         justify-content: center;
     }
+
+    /* Mobile Hardware Acceleration & Fluidity Boost */
+    .bg-bubbles, .floating-decorators {
+        display: none !important;
+    }
+
+    .profile-card, .admin-card, .dashboard-banner, .modal-container, .admin-login-card {
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2) !important;
+    }
+
+    .stat-card, .search-input, .admin-card, .btn {
+        will-change: transform;
+    }
 }

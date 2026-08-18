@@ -160,7 +160,7 @@ class ProfileApp {
     async syncFromCloudDB() {
         try {
             const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 4500);
+            const timeoutId = setTimeout(() => controller.abort(), 2000);
 
             const cacheBustUrl = `${CLOUD_DB_ENDPOINT}?t=${Date.now()}`;
             const res = await fetch(cacheBustUrl, { cache: 'no-store', signal: controller.signal });
