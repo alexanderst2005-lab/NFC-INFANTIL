@@ -1,8 +1,10 @@
 /* ==========================================================================
-   NFC INFANTIL - PUBLIC SINGLE CHILD PROFILE VIEWER (REAL-TIME GLOBAL DB)
+   NFC INFANTIL - PUBLIC CHILD PROFILE APP LOGIC
    ========================================================================== */
 
 const CLOUD_DB_ENDPOINT = "/api/sync";
+
+// Neutral SVG Silhouette for profiles without a custom photo
 const NEUTRAL_AVATAR_SVG = "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='%2364748b'%3E%3Ccircle cx='50' cy='35' r='22'/%3E%3Cpath d='M18 85c0-18 14-30 32-30s32 12 32 30Z'/%3E%3C/svg%3E";
 
 const DEFAULT_PROFILES = [
@@ -84,17 +86,53 @@ class ProfileApp {
         this.renderSingleProfile(targetSlug);
     }
 
+    sanitizeProfile(p) {
+        if (!p) return null;
+        let baseDefault = DEFAULT_PROFILES.find(d => d.id === p.id || d.slug === p.slug);
+
+        const name = (p.name && String(p.name).trim() !== '' && String(p.name).trim() !== 'undefined') 
+            ? String(p.name).trim() 
+            : (baseDefault ? baseDefault.name : 'Perfil');
+        
+        const gender = (p.gender === 'girl' || p.gender === 'boy') 
+            ? p.gender 
+            : (baseDefault ? baseDefault.gender : 'boy');
+
+        let slug = (p.slug && String(p.slug).trim() !== '' && String(p.slug).trim() !== 'undefined') 
+            ? String(p.slug).trim() 
+            : (baseDefault ? baseDefault.slug : name.toLowerCase().replace(/[^a-z0-9]/g, '-'));
+
+        return {
+            id: p.id || `prof-${Date.now()}`,
+            slug: slug,
+            name: name,
+            gender: gender,
+            age: parseInt(p.age) > 0 ? parseInt(p.age) : (baseDefault ? baseDefault.age : 5),
+            bloodType: (p.bloodType && String(p.bloodType).trim() !== '' && String(p.bloodType) !== 'undefined') ? String(p.bloodType).trim() : (baseDefault ? baseDefault.bloodType : 'O+'),
+            parentPhone: (p.parentPhone && String(p.parentPhone).trim() !== '' && String(p.parentPhone) !== 'undefined') ? String(p.parentPhone).trim() : (baseDefault ? baseDefault.parentPhone : ''),
+            whatsappMessage: (p.whatsappMessage && String(p.whatsappMessage).trim() !== '') ? String(p.whatsappMessage).trim() : (baseDefault ? baseDefault.whatsappMessage : 'Hola, encontré la información del perfil de {nombre}.'),
+            locationMapsUrl: (p.locationMapsUrl && String(p.locationMapsUrl).trim() !== '') ? String(p.locationMapsUrl).trim() : (baseDefault ? baseDefault.locationMapsUrl : ''),
+            photoUrl: (p.photoUrl && String(p.photoUrl).trim() !== '' && String(p.photoUrl) !== 'undefined') ? String(p.photoUrl).trim() : (baseDefault ? baseDefault.photoUrl : ''),
+            active: true,
+            createdAt: p.createdAt || new Date().toISOString()
+        };
+    }
+
     loadProfilesLocal() {
         const stored = localStorage.getItem('nfc_profiles_db');
         if (stored) {
             try {
                 const parsed = JSON.parse(stored);
-                this.profiles = parsed && parsed.length > 0 ? parsed : DEFAULT_PROFILES;
+                if (Array.isArray(parsed) && parsed.length > 0) {
+                    this.profiles = parsed.map(p => this.sanitizeProfile(p)).filter(Boolean);
+                } else {
+                    this.profiles = DEFAULT_PROFILES.map(p => this.sanitizeProfile(p)).filter(Boolean);
+                }
             } catch (e) {
-                this.profiles = DEFAULT_PROFILES;
+                this.profiles = DEFAULT_PROFILES.map(p => this.sanitizeProfile(p)).filter(Boolean);
             }
         } else {
-            this.profiles = DEFAULT_PROFILES;
+            this.profiles = DEFAULT_PROFILES.map(p => this.sanitizeProfile(p)).filter(Boolean);
             localStorage.setItem('nfc_profiles_db', JSON.stringify(this.profiles));
         }
     }
@@ -117,7 +155,7 @@ class ProfileApp {
                 const cloudProfiles = jsonRes && Array.isArray(jsonRes.profiles) ? jsonRes.profiles : [];
 
                 if (cloudProfiles.length > 0) {
-                    this.profiles = cloudProfiles;
+                    this.profiles = cloudProfiles.map(p => this.sanitizeProfile(p)).filter(Boolean);
                     this.saveProfilesLocal();
                 }
             }
@@ -138,12 +176,8 @@ class ProfileApp {
         let slug = '';
         if (urlParams.has('slug')) {
             slug = urlParams.get('slug');
-        } else if (urlParams.has('p')) {
-            slug = urlParams.get('p');
-        } else if (path !== '' && path !== '/' && path !== '/index.html' && path !== '/admin' && path !== '/admin.html') {
+        } else if (path !== '/' && path !== '/index.html') {
             slug = path.substring(1);
-        } else {
-            slug = '';
         }
 
         try {
@@ -169,7 +203,6 @@ class ProfileApp {
             .replace(/\.html$/, '')
             .replace(/[^a-z0-9]/g, '-');
 
-        // If no slug specified or root, return first profile
         if (!cleanSlug) {
             return this.profiles[0];
         }
@@ -183,12 +216,12 @@ class ProfileApp {
             return s === cleanSlug;
         });
 
-        // 2. Exact match by profile ID
+        // 2. Match profile ID
         if (!profile) {
             profile = this.profiles.find(p => p && p.id && p.id.toLowerCase() === cleanSlug);
         }
 
-        // 3. Match normalized child name (e.g. "Arias santi" -> "arias-santi")
+        // 3. Match normalized child name
         if (!profile) {
             profile = this.profiles.find(p => {
                 if (!p || !p.name) return false;
@@ -208,7 +241,7 @@ class ProfileApp {
             });
         }
 
-        // 5. Fallback: If still no match, default to first profile
+        // 5. Ultimate Fallback: Default to first profile if still not found
         if (!profile) {
             profile = this.profiles[0];
         }
@@ -227,14 +260,15 @@ class ProfileApp {
             return;
         }
 
-        if (!profile.active) {
-            this.showInactive("Perfil No Disponible", `Este perfil no se encuentra disponible actualmente.`);
-            return;
+        // GUARANTEE PROFILE VIEW IS VISIBLE
+        if (profileView) {
+            profileView.classList.remove('hidden');
+            profileView.classList.add('active-view');
         }
-
-        // Make profile view active
-        if (profileView) profileView.classList.add('active-view');
-        if (inactiveView) inactiveView.classList.remove('active-view');
+        if (inactiveView) {
+            inactiveView.classList.remove('active-view');
+            inactiveView.classList.add('hidden');
+        }
 
         // Apply Theme based on gender ('boy' vs 'girl')
         document.body.className = profile.gender === 'girl' ? 'theme-girl' : 'theme-boy';
@@ -249,21 +283,11 @@ class ProfileApp {
         const genderTextEl = document.getElementById('p-gender-text');
         if (genderTextEl) genderTextEl.textContent = profile.gender === 'girl' ? 'Perfil Niña' : 'Perfil Niño';
 
-        const ageEl = document.getElementById('p-age');
-        if (ageEl) ageEl.textContent = profile.age;
+        const ageValEl = document.getElementById('p-age-val');
+        if (ageValEl) ageValEl.textContent = `${profile.age} Años`;
 
-        const bloodEl = document.getElementById('p-blood');
-        if (bloodEl) bloodEl.textContent = profile.bloodType;
-
-        // Badge Icon
-        const badgeEl = document.getElementById('p-badge');
-        if (badgeEl) {
-            if (profile.gender === 'girl') {
-                badgeEl.innerHTML = `<i class="fa-solid fa-child-dress"></i> <span>Perfil Niña</span>`;
-            } else {
-                badgeEl.innerHTML = `<i class="fa-solid fa-child"></i> <span>Perfil Niño</span>`;
-            }
-        }
+        const bloodValEl = document.getElementById('p-blood-val');
+        if (bloodValEl) bloodValEl.textContent = profile.bloodType || 'O+';
 
         // Avatar Photo
         const avatarEl = document.getElementById('p-avatar');
@@ -300,8 +324,14 @@ class ProfileApp {
         const profileView = document.getElementById('view-profile');
         const inactiveView = document.getElementById('view-inactive');
 
-        if (profileView) profileView.classList.remove('active-view');
-        if (inactiveView) inactiveView.classList.add('active-view');
+        if (profileView) {
+            profileView.classList.remove('active-view');
+            profileView.classList.add('hidden');
+        }
+        if (inactiveView) {
+            inactiveView.classList.remove('hidden');
+            inactiveView.classList.add('active-view');
+        }
 
         const titleEl = document.getElementById('inactive-title');
         const descEl = document.getElementById('inactive-desc');
