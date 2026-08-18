@@ -364,6 +364,7 @@ class AdminApp {
         document.getElementById('input-photo-url').value = '';
         document.getElementById('photo-preview').src = NEUTRAL_AVATAR_SVG;
         document.getElementById('modal-profile').classList.remove('hidden');
+        document.body.classList.add('modal-open');
     }
 
     openEditModal(id) {
@@ -388,10 +389,12 @@ class AdminApp {
         document.getElementById('photo-preview').src = currentPhoto;
 
         document.getElementById('modal-profile').classList.remove('hidden');
+        document.body.classList.add('modal-open');
     }
 
     closeModal() {
         document.getElementById('modal-profile').classList.add('hidden');
+        document.body.classList.remove('modal-open');
     }
 
     async saveProfileFromForm() {
