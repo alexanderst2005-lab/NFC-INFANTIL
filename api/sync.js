@@ -1,22 +1,65 @@
 /* ==========================================================================
    VERCEL SERVERLESS API ROUTE: /api/sync
-   100% Real-Time Cloud Database Sync (Zero Stale Caching, Global Persistence)
+   100% Authoritative Central Cloud DB Bridge for Multi-Device Real-Time Sync
    ========================================================================== */
 
-const EXTERNAL_KV_URL = "https://kvdb.io/NFCInfantilVercelServer2026/profiles_master_v8";
+import https from 'https';
+
+const REST_DB_URL = "https://api.restful-api.dev/objects/ff8081819ff5b11001a0131229ea3dd5";
+
+function getCloudDb() {
+    return new Promise((resolve) => {
+        const req = https.get(REST_DB_URL, (res) => {
+            let body = '';
+            res.on('data', chunk => body += chunk);
+            res.on('end', () => {
+                try {
+                    const parsed = JSON.parse(body);
+                    if (parsed && parsed.data && Array.isArray(parsed.data.profiles)) {
+                        resolve(parsed.data.profiles);
+                    } else {
+                        resolve([]);
+                    }
+                } catch (e) {
+                    resolve([]);
+                }
+            });
+        });
+        req.on('error', () => resolve([]));
+        req.setTimeout(4000, () => { req.destroy(); resolve([]); });
+    });
+}
+
+function updateCloudDb(profiles) {
+    return new Promise((resolve) => {
+        const payload = JSON.stringify({ name: 'NFC_Store', data: { profiles: profiles } });
+        const req = https.request(REST_DB_URL, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Content-Length': Buffer.byteLength(payload)
+            }
+        }, (res) => {
+            let body = '';
+            res.on('data', chunk => body += chunk);
+            res.on('end', () => resolve(true));
+        });
+        req.on('error', () => resolve(false));
+        req.setTimeout(4000, () => { req.destroy(); resolve(false); });
+        req.write(payload);
+        req.end();
+    });
+}
 
 export default async function handler(req, res) {
-    // Strict No-Cache Headers to prevent browser & Vercel edge caching
+    // Strict Anti-Caching Headers to force real-time sync on every device
     res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
     res.setHeader('Pragma', 'no-cache');
     res.setHeader('Expires', '0');
     res.setHeader('Access-Control-Allow-Credentials', 'true');
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,POST,PUT');
-    res.setHeader(
-        'Access-Control-Allow-Headers',
-        'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
-    );
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
     if (req.method === 'OPTIONS') {
         res.status(200).end();
@@ -35,36 +78,14 @@ export default async function handler(req, res) {
             }
 
             if (incomingProfiles !== null) {
-                // Save to cloud store server-side
-                try {
-                    await fetch(EXTERNAL_KV_URL, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(incomingProfiles)
-                    });
-                } catch (e) {
-                    console.log("KV push error:", e);
-                }
+                await updateCloudDb(incomingProfiles);
             }
-
             return res.status(200).json({ success: true, profiles: incomingProfiles || [] });
         }
 
-        // GET Request: Always fetch fresh global data from Cloud KV Store
-        let profiles = [];
-        try {
-            const kvRes = await fetch(EXTERNAL_KV_URL, { cache: 'no-store' });
-            if (kvRes.ok) {
-                const data = await kvRes.json();
-                if (Array.isArray(data)) {
-                    profiles = data;
-                }
-            }
-        } catch (e) {
-            console.log("KV get error:", e);
-        }
-
-        return res.status(200).json({ success: true, profiles: profiles });
+        // GET Request: Fetches real-time authoritative profiles from REST DB
+        const cloudProfiles = await getCloudDb();
+        return res.status(200).json({ success: true, profiles: cloudProfiles });
 
     } catch (error) {
         return res.status(500).json({ success: false, error: error.message });

@@ -1,5 +1,5 @@
 /* ==========================================================================
-   NFC INFANTIL - ADMIN PANEL LOGIC (REAL-TIME GLOBAL SYNC & MERGE)
+   NFC INFANTIL - ADMIN PANEL LOGIC (AUTHORITATIVE CENTRAL CLOUD SYNC)
    ========================================================================== */
 
 const DEFAULT_PIN = "1234";
@@ -109,7 +109,6 @@ class AdminApp {
             }
         } else {
             this.profiles = DEFAULT_PROFILES;
-            this.saveProfilesLocal();
         }
     }
 
@@ -117,20 +116,12 @@ class AdminApp {
         localStorage.setItem('nfc_profiles_db', JSON.stringify(this.profiles));
     }
 
-    mergeProfiles(cloudList, localList) {
-        const map = new Map();
-        (cloudList || []).forEach(p => p && p.id && map.set(p.id, p));
-        (localList || []).forEach(p => p && p.id && map.set(p.id, p));
-        return Array.from(map.values());
-    }
-
-    // Real-Time Cloud Sync with Cache-Busting
+    // Fetches Authoritative Profiles from Central Cloud DB (Cache-Busted)
     async syncFromCloudDB() {
         try {
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 4500);
 
-            // Append timestamp ?t= to force browser & network to fetch fresh data
             const cacheBustUrl = `${CLOUD_DB_ENDPOINT}?t=${Date.now()}`;
             const res = await fetch(cacheBustUrl, { cache: 'no-store', signal: controller.signal });
             clearTimeout(timeoutId);
@@ -140,17 +131,11 @@ class AdminApp {
                 const cloudProfiles = jsonRes && Array.isArray(jsonRes.profiles) ? jsonRes.profiles : [];
 
                 if (cloudProfiles.length > 0) {
-                    // Combine cloud profiles with local profiles to merge all created profiles
-                    const merged = this.mergeProfiles(cloudProfiles, this.profiles);
-                    this.profiles = merged;
+                    // Authoritative overwrite: Central Cloud DB is the single source of truth
+                    this.profiles = cloudProfiles;
                     this.saveProfilesLocal();
-
-                    // If local had profiles not yet in cloud, push the unified list to cloud
-                    if (merged.length !== cloudProfiles.length) {
-                        await this.pushToCloudDB();
-                    }
                 } else if (this.profiles.length > 0) {
-                    // Initialize cloud with current local profiles
+                    // Seed Central DB if empty
                     await this.pushToCloudDB();
                 }
 
@@ -279,7 +264,7 @@ class AdminApp {
         });
     }
 
-    // Permanent Deletion across PC, mobile, and cloud database
+    // Permanent Deletion: Overwrites Central DB without deleted profile
     async deleteProfile(id) {
         const profile = this.profiles.find(p => p.id === id);
         if (!profile) return;
@@ -392,7 +377,7 @@ class AdminApp {
             this.profiles.unshift(profileData);
         }
 
-        this.showToast("Guardando y sincronizando...");
+        this.showToast("Guardando cambios en la base de datos...");
         await this.pushToCloudDB();
         this.closeModal();
         this.renderProfilesGrid();
