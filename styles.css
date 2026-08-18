@@ -44,15 +44,15 @@ body.theme-girl {
     background: #f472b6 !important;
 }
 
-/* PET THEME (🐾 Warm Emerald & Soft Amber) */
+/* PET THEME (🐾 Warm Organic Beige, Forest Green & Paw Decorators) */
 html.theme-pet,
 html.theme-pet body,
 body.theme-pet {
-    --bg-page: linear-gradient(180deg, #064e3b 0%, #059669 35%, #10b981 65%, #a7f3d0 100%);
-    --card-bg: rgba(255, 255, 255, 0.96);
-    --text-title: #065f46;
-    --text-sub: #047857;
-    background: #059669 !important;
+    --bg-page: linear-gradient(180deg, #f4efe4 0%, #e6decb 35%, #d8cdb4 100%);
+    --card-bg: #fffdf7;
+    --text-title: #1c3818;
+    --text-sub: #4a5d3e;
+    background: #e6decb !important;
 }
 
 * {
@@ -355,6 +355,104 @@ body.theme-girl .deco-top-right { color: #c084fc; }
 
 html.theme-girl .deco-bottom-right,
 body.theme-girl .deco-bottom-right { color: #fb7185; }
+
+html.theme-pet .deco-top-left,
+body.theme-pet .deco-top-left { color: #2d5a27; }
+
+html.theme-pet .deco-top-right,
+body.theme-pet .deco-top-right { color: #5e8c31; }
+
+html.theme-pet .deco-bottom-right,
+body.theme-pet .deco-bottom-right { color: #84a955; }
+
+html.theme-pet .profile-card,
+body.theme-pet .profile-card {
+    background: #fffdf7;
+    border: 2px solid #a4c27b;
+    box-shadow: 0 25px 60px rgba(45, 90, 39, 0.22);
+}
+
+html.theme-pet .brand-shield-icon,
+body.theme-pet .brand-shield-icon {
+    background: linear-gradient(135deg, #2d5a27 0%, #5e8c31 100%);
+    box-shadow: 0 4px 12px rgba(45, 90, 39, 0.3);
+}
+
+html.theme-pet .verified-badge-pill,
+body.theme-pet .verified-badge-pill {
+    background: #eaf4df;
+    color: #2d5a27;
+    border-color: #a4c27b;
+}
+
+html.theme-pet .arch-photo-container,
+body.theme-pet .arch-photo-container {
+    border: 5px solid #2d5a27;
+    box-shadow: 0 16px 40px rgba(45, 90, 39, 0.3), 0 0 0 5px rgba(94, 140, 49, 0.4);
+    border-radius: 50%;
+}
+
+html.theme-pet .security-ribbon,
+body.theme-pet .security-ribbon {
+    background: linear-gradient(135deg, #2d5a27 0%, #1e401b 100%);
+    color: #ffffff;
+    box-shadow: 0 6px 16px rgba(45, 90, 39, 0.35);
+    border: 1px solid #5e8c31;
+}
+
+html.theme-pet .btn-whatsapp,
+body.theme-pet .btn-whatsapp {
+    background: linear-gradient(135deg, #2d5a27 0%, #1e401b 100%) !important;
+    box-shadow: 0 12px 28px rgba(45, 90, 39, 0.35) !important;
+    border: 1px solid #5e8c31 !important;
+}
+
+html.theme-pet .btn-whatsapp:hover,
+body.theme-pet .btn-whatsapp:hover {
+    box-shadow: 0 16px 36px rgba(45, 90, 39, 0.45) !important;
+}
+
+html.theme-pet .btn-maps,
+body.theme-pet .btn-maps {
+    background: #f2ebe0 !important;
+    color: #1c3818 !important;
+    border: 1.5px solid #a4c27b !important;
+    box-shadow: 0 8px 20px rgba(45, 90, 39, 0.12) !important;
+}
+
+html.theme-pet .btn-maps .btn-icon-circle,
+body.theme-pet .btn-maps .btn-icon-circle {
+    background: #2d5a27 !important;
+    color: #ffffff !important;
+}
+
+html.theme-pet .info-card-box,
+body.theme-pet .info-card-box {
+    background: #f8f4eb;
+    border: 1.5px solid #d8cdb4;
+}
+
+html.theme-pet .icon-age,
+body.theme-pet .icon-age {
+    background: rgba(45, 90, 39, 0.12);
+    color: #2d5a27;
+}
+
+html.theme-pet .icon-parent,
+body.theme-pet .icon-parent {
+    background: rgba(94, 140, 49, 0.12);
+    color: #5e8c31;
+}
+
+html.theme-pet .bg-bubbles .bubble-1,
+body.theme-pet .bg-bubbles .bubble-1 {
+    background: radial-gradient(circle, rgba(94, 140, 49, 0.4) 0%, rgba(0, 0, 0, 0) 70%);
+}
+
+html.theme-pet .bg-bubbles .bubble-2,
+body.theme-pet .bg-bubbles .bubble-2 {
+    background: radial-gradient(circle, rgba(45, 90, 39, 0.35) 0%, rgba(0, 0, 0, 0) 70%);
+}
 
 @keyframes decoPulse {
     0% { transform: translateY(0px) scale(0.95); }

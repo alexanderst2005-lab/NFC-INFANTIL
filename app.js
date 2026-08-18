@@ -409,7 +409,7 @@ class ProfileApp {
 
         const securityRibbonEl = document.getElementById('p-security-ribbon');
         if (securityRibbonEl) {
-            securityRibbonEl.textContent = profile.gender === 'pet' ? 'Perfil de mascota 🐾' : 'Mi perfil de seguridad';
+            securityRibbonEl.innerHTML = profile.gender === 'pet' ? '<i class="fa-solid fa-paw"></i> Mi perfil de seguridad <i class="fa-solid fa-paw"></i>' : 'Mi perfil de seguridad';
         }
 
         const footerTagEl = document.getElementById('p-footer-tag');
@@ -481,7 +481,7 @@ class ProfileApp {
         
         const topLeftDeco = document.getElementById('deco-top-left');
         if (topLeftDeco) {
-            topLeftDeco.innerHTML = isPet ? '<i class="fa-solid fa-paw"></i>' : (isGirl ? '<i class="fa-solid fa-feather-pointed"></i>' : '<i class="fa-solid fa-rocket"></i>');
+            topLeftDeco.innerHTML = isPet ? '<i class="fa-solid fa-house-chimney-window"></i>' : (isGirl ? '<i class="fa-solid fa-feather-pointed"></i>' : '<i class="fa-solid fa-rocket"></i>');
         }
 
         const topRightDeco = document.getElementById('deco-top-right');

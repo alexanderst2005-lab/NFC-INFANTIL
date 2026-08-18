@@ -104,7 +104,7 @@ export default async function handler(req, res) {
                     name: (p.name && String(p.name).trim() !== '' && String(p.name).trim() !== 'undefined') ? String(p.name).trim() : 'Perfil',
                     gender: (p.gender === 'girl' || p.gender === 'pet') ? p.gender : 'boy',
                     age: parseInt(p.age) >= 0 ? parseInt(p.age) : 5,
-                    bloodType: p.bloodType ? String(p.bloodType).trim() : 'O+',
+                    bloodType: p.gender === 'pet' ? '' : (p.bloodType ? String(p.bloodType).trim() : 'O+'),
                     parentPhone: p.parentPhone ? String(p.parentPhone).trim() : '',
                     whatsappMessage: p.whatsappMessage ? String(p.whatsappMessage).trim() : 'Hola, encontré el perfil de {nombre}.',
                     locationMapsUrl: p.locationMapsUrl ? String(p.locationMapsUrl).trim() : '',

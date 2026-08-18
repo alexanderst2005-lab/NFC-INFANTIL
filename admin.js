@@ -136,7 +136,7 @@ class AdminApp {
             name: name,
             gender: gender,
             age: parseInt(p.age) >= 0 ? parseInt(p.age) : (baseDefault ? baseDefault.age : 5),
-            bloodType: (p.bloodType && String(p.bloodType).trim() !== '' && String(p.bloodType) !== 'undefined') ? String(p.bloodType).trim() : (gender === 'pet' ? 'N/A' : (baseDefault ? baseDefault.bloodType : 'O+')),
+            bloodType: gender === 'pet' ? '' : ((p.bloodType && String(p.bloodType).trim() !== '' && String(p.bloodType) !== 'undefined') ? String(p.bloodType).trim() : (baseDefault ? baseDefault.bloodType : 'O+')),
             parentPhone: (p.parentPhone && String(p.parentPhone).trim() !== '' && String(p.parentPhone) !== 'undefined') ? String(p.parentPhone).trim() : (baseDefault ? baseDefault.parentPhone : ''),
             whatsappMessage: (p.whatsappMessage && String(p.whatsappMessage).trim() !== '') ? String(p.whatsappMessage).trim() : (baseDefault ? baseDefault.whatsappMessage : defaultWaMsg),
             locationMapsUrl: locationMapsUrl,
@@ -427,10 +427,12 @@ class AdminApp {
                                 <i class="fa-solid fa-calendar-day" style="color: var(--accent-main);"></i>
                                 <span>${p.age} Años</span>
                             </div>
+                            ${p.gender !== 'pet' ? `
                             <div class="meta-item">
                                 <i class="fa-solid fa-droplet" style="color: #f87171;"></i>
-                                <span>${p.bloodType}</span>
+                                <span>${p.bloodType || 'O+'}</span>
                             </div>
+                            ` : ''}
                             <div class="meta-item meta-item-full">
                                 <i class="fa-solid fa-phone" style="color: #34d399;"></i>
                                 <span>${p.parentPhone ? '+' + p.parentPhone : 'Sin WhatsApp'}</span>
@@ -531,7 +533,10 @@ class AdminApp {
             if (eduSection) eduSection.style.display = 'none';
             if (nameLbl) nameLbl.textContent = 'Nombre de la Mascota *';
             if (phoneLbl) phoneLbl.textContent = 'Teléfono del Dueño (WhatsApp) *';
-            if (bloodInput) bloodInput.value = 'N/A';
+            if (bloodInput) {
+                bloodInput.removeAttribute('required');
+                bloodInput.value = '';
+            }
             if (waInput && (!waInput.value || waInput.value.includes('perfil de'))) {
                 waInput.value = 'Hola, encontré a la mascota {nombre} y quiero comunicarme con su dueño.';
             }
@@ -540,6 +545,7 @@ class AdminApp {
             if (eduSection) eduSection.style.display = '';
             if (nameLbl) nameLbl.textContent = 'Nombre Completo del Niño/a *';
             if (phoneLbl) phoneLbl.textContent = 'Teléfono WhatsApp (Con código país) *';
+            if (bloodInput) bloodInput.setAttribute('required', 'true');
         }
     }
 
