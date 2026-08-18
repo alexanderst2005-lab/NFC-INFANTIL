@@ -108,6 +108,23 @@ class ProfileApp {
         this.renderSingleProfile(targetSlug);
     }
 
+    calculateAgeFromBirthDate(birthDateStr, fallbackAge = 5) {
+        if (!birthDateStr || String(birthDateStr).trim() === '') {
+            return parseInt(fallbackAge) >= 0 ? parseInt(fallbackAge) : 5;
+        }
+        const birthDate = new Date(birthDateStr);
+        if (isNaN(birthDate.getTime())) {
+            return parseInt(fallbackAge) >= 0 ? parseInt(fallbackAge) : 5;
+        }
+        const today = new Date();
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const monthDiff = today.getMonth() - birthDate.getMonth();
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
+        }
+        return age >= 0 ? age : 0;
+    }
+
     sanitizeProfile(p) {
         if (!p) return null;
         let baseDefault = DEFAULT_PROFILES.find(d => d.id === p.id || d.slug === p.slug);
@@ -116,7 +133,7 @@ class ProfileApp {
             ? String(p.name).trim() 
             : (baseDefault ? baseDefault.name : 'Perfil');
         
-        const gender = (p.gender === 'girl' || p.gender === 'boy') 
+        const gender = (p.gender === 'girl' || p.gender === 'boy' || p.gender === 'pet') 
             ? p.gender 
             : (baseDefault ? baseDefault.gender : 'boy');
 
@@ -134,13 +151,16 @@ class ProfileApp {
         }
 
         let schoolMapsUrl = (p.schoolMapsUrl !== undefined && p.schoolMapsUrl !== null) ? String(p.schoolMapsUrl).trim() : '';
+        const birthDate = p.birthDate ? String(p.birthDate).trim() : (baseDefault && baseDefault.birthDate ? baseDefault.birthDate : '');
+        const computedAge = this.calculateAgeFromBirthDate(birthDate, p.age !== undefined ? p.age : (baseDefault ? baseDefault.age : 5));
 
         return {
             id: p.id || `prof-${Date.now()}`,
             slug: slug,
             name: name,
             gender: gender,
-            age: parseInt(p.age) > 0 ? parseInt(p.age) : (baseDefault ? baseDefault.age : 5),
+            birthDate: birthDate,
+            age: computedAge,
             bloodType: (p.bloodType && String(p.bloodType).trim() !== '' && String(p.bloodType) !== 'undefined') ? String(p.bloodType).trim() : (baseDefault ? baseDefault.bloodType : 'O+'),
             parentPhone: (p.parentPhone && String(p.parentPhone).trim() !== '' && String(p.parentPhone) !== 'undefined') ? String(p.parentPhone).trim() : (baseDefault ? baseDefault.parentPhone : ''),
             whatsappMessage: (p.whatsappMessage && String(p.whatsappMessage).trim() !== '') ? String(p.whatsappMessage).trim() : (baseDefault ? baseDefault.whatsappMessage : 'Hola, encontré la información del perfil de {nombre}.'),
@@ -457,8 +477,9 @@ class ProfileApp {
             }
         }
 
+        const computedAge = this.calculateAgeFromBirthDate(profile.birthDate, profile.age);
         const ageValEl = document.getElementById('p-age-val') || document.getElementById('p-age');
-        if (ageValEl) ageValEl.textContent = `${profile.age} años`;
+        if (ageValEl) ageValEl.textContent = `${computedAge} ${computedAge === 1 ? 'año' : 'años'}`;
 
         const ageIconEl = document.getElementById('p-age-icon');
         if (ageIconEl) {

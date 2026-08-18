@@ -121,6 +121,7 @@ export default async function handler(req, res) {
                     slug: (p.slug && String(p.slug).trim() !== '' && String(p.slug).trim() !== 'undefined') ? String(p.slug).trim() : 'perfil',
                     name: (p.name && String(p.name).trim() !== '' && String(p.name).trim() !== 'undefined') ? String(p.name).trim() : 'Perfil',
                     gender: (p.gender === 'girl' || p.gender === 'pet') ? p.gender : 'boy',
+                    birthDate: p.birthDate ? String(p.birthDate).trim() : '',
                     age: parseInt(p.age) >= 0 ? parseInt(p.age) : 5,
                     bloodType: p.gender === 'pet' ? '' : (p.bloodType ? String(p.bloodType).trim() : 'O+'),
                     parentPhone: p.parentPhone ? String(p.parentPhone).trim() : '',

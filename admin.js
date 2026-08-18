@@ -114,6 +114,23 @@ class AdminApp {
         }, 3500);
     }
 
+    calculateAgeFromBirthDate(birthDateStr, fallbackAge = 5) {
+        if (!birthDateStr || String(birthDateStr).trim() === '') {
+            return parseInt(fallbackAge) >= 0 ? parseInt(fallbackAge) : 5;
+        }
+        const birthDate = new Date(birthDateStr);
+        if (isNaN(birthDate.getTime())) {
+            return parseInt(fallbackAge) >= 0 ? parseInt(fallbackAge) : 5;
+        }
+        const today = new Date();
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const monthDiff = today.getMonth() - birthDate.getMonth();
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
+        }
+        return age >= 0 ? age : 0;
+    }
+
     sanitizeProfile(p) {
         if (!p) return null;
         let baseDefault = DEFAULT_PROFILES.find(d => d.id === p.id || d.slug === p.slug);
@@ -148,12 +165,16 @@ class AdminApp {
             ? 'Hola, encontré a la mascota {nombre} y quiero comunicarme con su dueño.'
             : 'Hola, encontré la información del perfil de {nombre}.';
 
+        const birthDate = p.birthDate ? String(p.birthDate).trim() : (baseDefault && baseDefault.birthDate ? baseDefault.birthDate : '');
+        const computedAge = this.calculateAgeFromBirthDate(birthDate, p.age !== undefined ? p.age : (baseDefault ? baseDefault.age : 5));
+
         return {
             id: p.id || `prof-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
             slug: slug,
             name: name,
             gender: gender,
-            age: parseInt(p.age) >= 0 ? parseInt(p.age) : (baseDefault ? baseDefault.age : 5),
+            birthDate: birthDate,
+            age: computedAge,
             bloodType: gender === 'pet' ? '' : ((p.bloodType && String(p.bloodType).trim() !== '' && String(p.bloodType) !== 'undefined') ? String(p.bloodType).trim() : (baseDefault ? baseDefault.bloodType : 'O+')),
             parentPhone: (p.parentPhone && String(p.parentPhone).trim() !== '' && String(p.parentPhone) !== 'undefined') ? String(p.parentPhone).trim() : (baseDefault ? baseDefault.parentPhone : ''),
             whatsappMessage: (p.whatsappMessage && String(p.whatsappMessage).trim() !== '') ? String(p.whatsappMessage).trim() : (baseDefault ? baseDefault.whatsappMessage : defaultWaMsg),
@@ -450,7 +471,7 @@ class AdminApp {
                         <div class="card-meta-grid">
                             <div class="meta-item">
                                 <i class="fa-solid fa-calendar-day" style="color: var(--accent-main);"></i>
-                                <span>${p.age} Años</span>
+                                <span>${this.calculateAgeFromBirthDate(p.birthDate, p.age)} Años</span>
                             </div>
                             ${p.gender !== 'pet' ? `
                             <div class="meta-item">
@@ -581,6 +602,7 @@ class AdminApp {
         document.getElementById('input-name').value = '';
         document.getElementById('input-slug').value = '';
         document.getElementById('input-gender').value = initialGender;
+        if (document.getElementById('input-birthdate')) document.getElementById('input-birthdate').value = '';
         document.getElementById('input-age').value = '';
         document.getElementById('input-blood').value = initialGender === 'pet' ? 'N/A' : '';
         document.getElementById('input-phone').value = '';
@@ -617,7 +639,8 @@ class AdminApp {
         document.getElementById('input-name').value = p.name;
         document.getElementById('input-slug').value = p.slug;
         document.getElementById('input-gender').value = p.gender;
-        document.getElementById('input-age').value = p.age;
+        if (document.getElementById('input-birthdate')) document.getElementById('input-birthdate').value = p.birthDate || '';
+        document.getElementById('input-age').value = this.calculateAgeFromBirthDate(p.birthDate, p.age);
         document.getElementById('input-blood').value = p.bloodType || (p.gender === 'pet' ? 'N/A' : '');
         document.getElementById('input-phone').value = p.parentPhone || '';
         
@@ -692,12 +715,17 @@ class AdminApp {
         const gradeVal = document.getElementById('input-grade')?.value.trim() || '';
         const medicalVal = document.getElementById('input-medical')?.value.trim() || '';
 
+        const birthDateVal = document.getElementById('input-birthdate')?.value || '';
+        const ageInputVal = document.getElementById('input-age')?.value;
+        const computedAge = this.calculateAgeFromBirthDate(birthDateVal, ageInputVal);
+
         const rawProfile = {
             id: id || `prof-${Date.now()}`,
             slug: slug,
             name: name,
             gender: gender,
-            age: parseInt(document.getElementById('input-age').value) >= 0 ? parseInt(document.getElementById('input-age').value) : 5,
+            birthDate: birthDateVal,
+            age: computedAge,
             bloodType: document.getElementById('input-blood').value || (gender === 'pet' ? 'N/A' : 'O+'),
             parentPhone: document.getElementById('input-phone').value.trim(),
             whatsappMessage: document.getElementById('input-whatsapp-msg').value.trim(),
@@ -769,6 +797,19 @@ class AdminApp {
         document.getElementById('input-gender')?.addEventListener('change', (e) => {
             this.updateModalFormForCategory(e.target.value);
         });
+
+        // Auto calculate age when birthdate is selected
+        const handleBirthDateChange = (e) => {
+            const birthVal = e.target.value;
+            if (birthVal) {
+                const currentAgeVal = document.getElementById('input-age')?.value || 5;
+                const computed = this.calculateAgeFromBirthDate(birthVal, currentAgeVal);
+                const ageInput = document.getElementById('input-age');
+                if (ageInput) ageInput.value = computed;
+            }
+        };
+        document.getElementById('input-birthdate')?.addEventListener('input', handleBirthDateChange);
+        document.getElementById('input-birthdate')?.addEventListener('change', handleBirthDateChange);
         document.getElementById('form-admin-login')?.addEventListener('submit', (e) => {
             e.preventDefault();
             const user = document.getElementById('input-admin-user')?.value.trim();
