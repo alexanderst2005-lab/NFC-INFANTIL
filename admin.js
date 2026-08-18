@@ -202,10 +202,12 @@ class AdminApp {
         const logoutBtn = document.getElementById('btn-admin-logout');
 
         if (!this.isAuthenticated) {
+            document.body.classList.remove('admin-page-active');
             loginScreen.classList.add('active-view');
             dashboardScreen.classList.remove('active-view');
             logoutBtn?.classList.add('hidden');
         } else {
+            document.body.classList.add('admin-page-active');
             loginScreen.classList.remove('active-view');
             dashboardScreen.classList.add('active-view');
             logoutBtn?.classList.remove('hidden');
@@ -290,10 +292,13 @@ class AdminApp {
 
                     <!-- Card Footer Actions -->
                     <div class="admin-card-footer">
-                        <button onclick="adminApp.openEditModal('${p.id}')" class="btn btn-secondary btn-sm" style="flex: 1;">
-                            <i class="fa-solid fa-pen-to-square"></i> Editar Perfil
+                        <button onclick="adminApp.openEditModal('${p.id}')" class="btn btn-primary btn-sm" style="flex: 1;">
+                            <i class="fa-solid fa-pen-to-square"></i> Editar
                         </button>
-                        <button onclick="adminApp.deleteProfile('${p.id}')" class="btn btn-danger btn-sm" title="Eliminar Definitivamente">
+                        <a href="/${p.slug}" target="_blank" class="btn btn-secondary btn-sm" title="Ver Perfil Público" style="display: inline-flex; align-items: center; justify-content: center; text-decoration: none; padding: 0.6rem 0.9rem;">
+                            <i class="fa-solid fa-arrow-up-right-from-square"></i> Ver
+                        </a>
+                        <button onclick="adminApp.deleteProfile('${p.id}')" class="btn btn-danger btn-sm" title="Eliminar Definitivamente" style="padding: 0.6rem 0.9rem;">
                             <i class="fa-solid fa-trash"></i>
                         </button>
                     </div>
