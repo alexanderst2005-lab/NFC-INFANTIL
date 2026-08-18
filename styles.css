@@ -1215,24 +1215,43 @@ input:checked + .slider:before { transform: translateX(20px); }
     border-radius: var(--radius-md);
 }
 
-.btn-remove-photo {
-    background: rgba(239, 68, 68, 0.15);
-    color: #f87171;
-    border: 1px solid rgba(239, 68, 68, 0.35);
-    padding: 0.6rem 1rem;
-    border-radius: var(--radius-md);
-    font-size: 0.85rem;
-    font-weight: 700;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    transition: var(--transition);
+.photo-avatar-wrapper {
+    position: relative;
+    display: inline-block;
     flex-shrink: 0;
 }
-.btn-remove-photo:hover {
+
+.photo-preview-img {
+    width: 84px;
+    height: 84px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--accent-main);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+    display: block;
+}
+
+.btn-remove-photo-badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
     background: #ef4444;
     color: #ffffff;
-    border-color: #ef4444;
+    border: 2px solid #1e293b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 0.9rem;
+    box-shadow: 0 4px 10px rgba(239, 68, 68, 0.5);
+    transition: transform 0.2s ease, background-color 0.2s ease;
+    z-index: 10;
+}
+.btn-remove-photo-badge:hover {
+    background: #dc2626;
+    transform: scale(1.15);
 }
 
