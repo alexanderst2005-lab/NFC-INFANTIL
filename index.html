@@ -15,14 +15,14 @@
 </head>
 <body class="theme-default">
 
-    <!-- Dynamic Background Decorator Bubbles -->
+    <!-- Ambient Dynamic Glow Bubbles -->
     <div class="bg-bubbles">
         <div class="bubble bubble-1"></div>
         <div class="bubble bubble-2"></div>
         <div class="bubble bubble-3"></div>
     </div>
 
-    <!-- Official Header Nav -->
+    <!-- Navigation Header -->
     <header class="app-header">
         <a href="/" class="brand-logo" id="brand-home-link">
             <div class="brand-icon">
@@ -48,9 +48,9 @@
                 <div class="brand-icon" style="width: 65px; height: 65px; font-size: 2rem; margin: 0 auto 1rem;">
                     <i class="fa-solid fa-shield-cat"></i>
                 </div>
-                <h1 style="font-size: 2.2rem; font-weight: 800; margin-bottom: 0.5rem;">Página Oficial NFC Seguridad Infantil</h1>
+                <h1 style="font-size: 2.3rem; font-weight: 800; margin-bottom: 0.5rem;">Página Oficial NFC Seguridad Infantil</h1>
                 <p style="color: var(--text-secondary); max-width: 620px; margin: 0 auto 1.5rem; font-size: 1.05rem;">
-                    Selecciona cualquier perfil para ingresar a su página única o copia su enlace personalizado.
+                    Selecciona cualquier perfil para ingresar a su página única o copia su enlace personalizado de seguridad.
                 </p>
 
                 <!-- Search Bar -->
@@ -73,7 +73,7 @@
 
 
         <!-- ===================================================================
-             PÁGINA PÚBLICA ÚNICA DEL NIÑO / NIÑA (EXCLUSIVAMENTE LOS 5 CAMPOS CLAVE)
+             PÁGINA PÚBLICA ÚNICA DEL NIÑO / NIÑA (DISEÑO ADAPTABLE PC Y MOVIL)
              =================================================================== -->
         <section id="view-profile" class="view-section hidden">
             <div class="profile-container" style="margin-top: 0;">
@@ -87,82 +87,95 @@
                     </button>
                 </div>
 
+                <!-- MAIN CARD (MOBILE STACKED & PC DUAL-COLUMN SPLIT) -->
                 <div class="profile-card">
-                    
-                    <!-- Badge & NFC Status Bar -->
-                    <div class="profile-badge-bar">
-                        <span class="theme-badge" id="p-badge">
-                            <i class="fa-solid fa-child"></i> <span id="p-gender-text">Perfil Infantil</span>
-                        </span>
-                        <div class="nfc-live-dot">
-                            <span class="pulse-dot"></span>
-                            <span>NFC Activo</span>
-                        </div>
-                    </div>
-
-                    <!-- 1. FOTO DEL NIÑO / NIÑA -->
-                    <div class="profile-avatar-wrapper">
-                        <img src="" alt="Foto Niño/a" id="p-avatar" class="profile-avatar-img">
-                    </div>
-
-                    <!-- 2. LOGO NFC SEGURIDAD INFANTIL -->
-                    <div class="logo-banner-wrapper">
-                        <img src="assets/logo-nfc-seguridad.png" alt="NFC Seguridad Infantil" class="logo-banner-img">
-                    </div>
-
-                    <!-- 3. INFORMACIÓN CLAVE (NOMBRE, EDAD, TIPO DE SANGRE) -->
-                    <div class="info-cards-grid" style="grid-template-columns: 1fr; gap: 0.8rem; margin-bottom: 1.5rem;">
-                        <!-- Nombre -->
-                        <div class="info-box">
-                            <div class="info-icon icon-parent">
-                                <i class="fa-solid fa-user"></i>
-                            </div>
-                            <div class="info-content">
-                                <span class="label">Nombre</span>
-                                <span class="val" id="p-name" style="font-size: 1.25rem;">Cargando...</span>
-                            </div>
-                        </div>
-
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem;">
-                            <!-- Edad -->
-                            <div class="info-box">
-                                <div class="info-icon icon-age">
-                                    <i class="fa-solid fa-cake-candles"></i>
-                                </div>
-                                <div class="info-content">
-                                    <span class="label">Edad</span>
-                                    <span class="val"><span id="p-age">0</span> años</span>
-                                </div>
-                            </div>
-                            <!-- Tipo de Sangre -->
-                            <div class="info-box">
-                                <div class="info-icon icon-blood">
-                                    <i class="fa-solid fa-droplet"></i>
-                                </div>
-                                <div class="info-content">
-                                    <span class="label">Tipo de sangre</span>
-                                    <span class="val" id="p-blood">O+</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 4. BOTONES DE ACCIÓN (CONTACTAR A MIS PAPÁS & UBICACIÓN) -->
-                    <div class="profile-actions-stack">
-                        <a href="#" id="btn-whatsapp-action" target="_blank" class="btn btn-whatsapp btn-block">
-                            <i class="fa-brands fa-whatsapp"></i> CONTACTAR A MIS PAPÁS
-                        </a>
+                    <div class="profile-card-desktop-split">
                         
-                        <a href="#" id="btn-location-action" target="_blank" class="btn btn-maps btn-block">
-                            <i class="fa-solid fa-location-dot"></i> UBICACIÓN
-                        </a>
-                    </div>
+                        <!-- LEFT COLUMN: PHOTO & LOGO -->
+                        <div class="profile-left-column">
+                            <!-- Badge Bar -->
+                            <div class="profile-badge-bar">
+                                <span class="theme-badge" id="p-badge">
+                                    <i class="fa-solid fa-child"></i> <span id="p-gender-text">Perfil Infantil</span>
+                                </span>
+                                <div class="nfc-live-dot">
+                                    <span class="pulse-dot"></span>
+                                    <span>NFC Activo</span>
+                                </div>
+                            </div>
 
-                    <!-- 5. PIE DE PÁGINA -->
-                    <div class="footer-credits" style="font-size: 1.1rem; font-weight: 800; color: var(--accent-main); margin-top: 2rem;">
-                        <i class="fa-solid fa-heart" style="color: var(--danger)"></i> GRACIAS POR AYUDARME
+                            <!-- Photo Avatar -->
+                            <div class="profile-avatar-wrapper">
+                                <img src="" alt="Foto Niño/a" id="p-avatar" class="profile-avatar-img">
+                            </div>
+
+                            <!-- Logo Banner below Photo -->
+                            <div class="logo-banner-wrapper">
+                                <img src="assets/logo-nfc-seguridad.png" alt="NFC Seguridad Infantil" class="logo-banner-img">
+                            </div>
+                        </div>
+
+                        <!-- RIGHT COLUMN: CORE INFO & ACTION BUTTONS -->
+                        <div class="profile-right-column">
+                            
+                            <!-- Information Grid -->
+                            <div class="info-cards-grid">
+                                <!-- Nombre -->
+                                <div class="info-box">
+                                    <div class="info-icon icon-parent">
+                                        <i class="fa-solid fa-user"></i>
+                                    </div>
+                                    <div class="info-content">
+                                        <span class="label">Nombre</span>
+                                        <span class="val" id="p-name" style="font-size: 1.35rem;">Cargando...</span>
+                                    </div>
+                                </div>
+
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem;">
+                                    <!-- Edad -->
+                                    <div class="info-box">
+                                        <div class="info-icon icon-age">
+                                            <i class="fa-solid fa-cake-candles"></i>
+                                        </div>
+                                        <div class="info-content">
+                                            <span class="label">Edad</span>
+                                            <span class="val"><span id="p-age">0</span> años</span>
+                                        </div>
+                                    </div>
+                                    <!-- Tipo de Sangre -->
+                                    <div class="info-box">
+                                        <div class="info-icon icon-blood">
+                                            <i class="fa-solid fa-droplet"></i>
+                                        </div>
+                                        <div class="info-content">
+                                            <span class="label">Tipo de sangre</span>
+                                            <span class="val" id="p-blood">O+</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Action Buttons Stack (WhatsApp & Maps) -->
+                            <div class="profile-actions-stack">
+                                <a href="#" id="btn-whatsapp-action" target="_blank" class="btn btn-whatsapp btn-block">
+                                    <i class="fa-brands fa-whatsapp"></i> CONTACTAR A MIS PAPÁS
+                                </a>
+                                
+                                <a href="#" id="btn-location-action" target="_blank" class="btn btn-maps btn-block">
+                                    <i class="fa-solid fa-location-dot"></i> UBICACIÓN
+                                </a>
+                            </div>
+
+                            <!-- Footer Tagline -->
+                            <div class="footer-credits">
+                                <i class="fa-solid fa-heart" style="color: var(--danger)"></i> GRACIAS POR AYUDARME
+                            </div>
+
+                        </div>
+
                     </div>
                 </div>
+
             </div>
         </section>
 
