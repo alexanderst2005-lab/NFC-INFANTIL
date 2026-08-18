@@ -1,8 +1,8 @@
 /* ==========================================================================
-   NFC INFANTIL - PUBLIC SINGLE CHILD PROFILE VIEWER (INSTANT CLOUD SYNC)
+   NFC INFANTIL - PUBLIC SINGLE CHILD PROFILE VIEWER (INSTANT CLOUD DB SYNC)
    ========================================================================== */
 
-const CLOUD_SYNC_GET = "https://keyvalue.immanuel.co/api/KeyVal/GetValue/nfc_infantil_db_store_2026";
+const CLOUD_DB_ENDPOINT = "https://kvdb.io/NFCInfantil2026SecureKey/profiles_v2";
 
 const DEFAULT_PROFILES = [
     {
@@ -93,11 +93,10 @@ class IsolatedProfileApp {
     async init() {
         this.loadProfilesLocal();
         
-        // Fast initial render from LocalStorage
         const targetSlug = this.getSlugFromUrl();
         this.currentSlug = targetSlug;
         
-        // Check if slug is immediately available
+        // Fast initial render from LocalStorage if profile is found
         const hasMatchLocal = this.findProfileBySlug(targetSlug);
         if (hasMatchLocal) {
             this.renderSingleProfile(targetSlug);
@@ -106,7 +105,7 @@ class IsolatedProfileApp {
         // Fetch latest Cloud DB
         await this.syncFromCloudDB();
 
-        // Final re-render with cloud data
+        // Re-render with updated cloud data
         this.renderSingleProfile(targetSlug);
     }
 
@@ -132,19 +131,16 @@ class IsolatedProfileApp {
     async syncFromCloudDB() {
         try {
             const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 3500);
+            const timeoutId = setTimeout(() => controller.abort(), 4000);
 
-            const res = await fetch(CLOUD_SYNC_GET, { signal: controller.signal });
+            const res = await fetch(CLOUD_DB_ENDPOINT, { cache: 'no-cache', signal: controller.signal });
             clearTimeout(timeoutId);
 
             if (res.ok) {
-                const rawText = await res.text();
-                if (rawText && rawText !== "null" && rawText !== '""') {
-                    const cloudData = JSON.parse(decodeURIComponent(rawText));
-                    if (Array.isArray(cloudData) && cloudData.length > 0) {
-                        this.profiles = cloudData;
-                        this.saveProfilesLocal();
-                    }
+                const cloudData = await res.json();
+                if (Array.isArray(cloudData) && cloudData.length > 0) {
+                    this.profiles = cloudData;
+                    this.saveProfilesLocal();
                 }
             }
         } catch (err) {

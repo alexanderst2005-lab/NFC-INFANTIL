@@ -1,10 +1,9 @@
 /* ==========================================================================
-   NFC INFANTIL - ADMIN PANEL LOGIC (INSTANT CLOUD DB SYNC)
+   NFC INFANTIL - ADMIN PANEL LOGIC (BULLETPROOF CLOUD SYNC & IMAGE COMPRESSOR)
    ========================================================================== */
 
 const DEFAULT_PIN = "1234";
-const CLOUD_SYNC_GET = "https://keyvalue.immanuel.co/api/KeyVal/GetValue/nfc_infantil_db_store_2026";
-const CLOUD_SYNC_POST = "https://keyvalue.immanuel.co/api/KeyVal/UpdateValue/nfc_infantil_db_store_2026/";
+const CLOUD_DB_ENDPOINT = "https://kvdb.io/NFCInfantil2026SecureKey/profiles_v2";
 
 const DEFAULT_PROFILES = [
     {
@@ -122,21 +121,18 @@ class AdminApp {
     async syncFromCloudDB() {
         try {
             const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 3500);
+            const timeoutId = setTimeout(() => controller.abort(), 4000);
 
-            const res = await fetch(CLOUD_SYNC_GET, { signal: controller.signal });
+            const res = await fetch(CLOUD_DB_ENDPOINT, { cache: 'no-cache', signal: controller.signal });
             clearTimeout(timeoutId);
 
             if (res.ok) {
-                const rawText = await res.text();
-                if (rawText && rawText !== "null" && rawText !== '""') {
-                    const cloudData = JSON.parse(decodeURIComponent(rawText));
-                    if (Array.isArray(cloudData) && cloudData.length > 0) {
-                        this.profiles = cloudData;
-                        this.saveProfilesLocal();
-                        if (this.isAuthenticated) {
-                            this.renderProfilesGrid();
-                        }
+                const cloudData = await res.json();
+                if (Array.isArray(cloudData) && cloudData.length > 0) {
+                    this.profiles = cloudData;
+                    this.saveProfilesLocal();
+                    if (this.isAuthenticated) {
+                        this.renderProfilesGrid();
                     }
                 }
             }
@@ -148,9 +144,11 @@ class AdminApp {
     async pushToCloudDB() {
         this.saveProfilesLocal();
         try {
-            const jsonStr = JSON.stringify(this.profiles);
-            const encoded = encodeURIComponent(jsonStr);
-            await fetch(`${CLOUD_SYNC_POST}${encoded}`, { method: 'POST' });
+            await fetch(CLOUD_DB_ENDPOINT, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(this.profiles)
+            });
         } catch (err) {
             console.log("Cloud sync push error:", err);
         }
@@ -371,10 +369,33 @@ class AdminApp {
             this.profiles.unshift(profileData);
         }
 
+        this.showToast("Guardando y sincronizando con la nube...");
         await this.pushToCloudDB();
         this.closeModal();
         this.renderProfilesGrid();
         this.showToast(`¡Perfil de ${name} guardado! URL: /${slug}`);
+    }
+
+    compressImage(base64Data, maxWidth = 300, quality = 0.75) {
+        return new Promise((resolve) => {
+            const img = new Image();
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                let width = img.width;
+                let height = img.height;
+                if (width > maxWidth) {
+                    height = Math.round((height * maxWidth) / width);
+                    width = maxWidth;
+                }
+                canvas.width = width;
+                canvas.height = height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, width, height);
+                resolve(canvas.toDataURL('image/jpeg', quality));
+            };
+            img.onerror = () => resolve(base64Data);
+            img.src = base64Data;
+        });
     }
 
     setupEventListeners() {
@@ -406,9 +427,9 @@ class AdminApp {
         document.getElementById('modal-close-btn')?.addEventListener('click', () => this.closeModal());
         document.getElementById('modal-cancel-btn')?.addEventListener('click', () => this.closeModal());
 
-        document.getElementById('form-save-profile')?.addEventListener('submit', (e) => {
+        document.getElementById('form-save-profile')?.addEventListener('submit', async (e) => {
             e.preventDefault();
-            this.saveProfileFromForm();
+            await this.saveProfileFromForm();
         });
 
         document.getElementById('input-name')?.addEventListener('input', (e) => {
@@ -418,7 +439,7 @@ class AdminApp {
             }
         });
 
-        // Photo file uploader
+        // Photo file uploader with instant Canvas compression
         const dropzone = document.getElementById('dropzone-photo');
         const fileInput = document.getElementById('file-photo-input');
         const previewImg = document.getElementById('photo-preview');
@@ -431,8 +452,9 @@ class AdminApp {
             const file = e.target.files[0];
             if (file) {
                 const reader = new FileReader();
-                reader.onload = (evt) => {
-                    previewImg.src = evt.target.result;
+                reader.onload = async (evt) => {
+                    const compressedBase64 = await this.compressImage(evt.target.result);
+                    previewImg.src = compressedBase64;
                     document.getElementById('input-photo-url').value = '';
                 };
                 reader.readAsDataURL(file);
