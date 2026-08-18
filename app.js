@@ -301,10 +301,10 @@ class ProfileApp {
         const genderTextEl = document.getElementById('p-gender-text');
         if (genderTextEl) genderTextEl.textContent = profile.gender === 'girl' ? 'Perfil Niña' : 'Perfil Niño';
 
-        const ageValEl = document.getElementById('p-age-val');
+        const ageValEl = document.getElementById('p-age-val') || document.getElementById('p-age');
         if (ageValEl) ageValEl.textContent = `${profile.age} Años`;
 
-        const bloodValEl = document.getElementById('p-blood-val');
+        const bloodValEl = document.getElementById('p-blood-val') || document.getElementById('p-blood');
         if (bloodValEl) bloodValEl.textContent = profile.bloodType || 'O+';
 
         // Avatar Photo
@@ -367,8 +367,8 @@ class ProfileApp {
         const container = document.getElementById('floating-decorators-container');
         if (!container) return;
 
-        const boyIcons = ['fa-soccer-ball', 'fa-rocket', 'fa-star', 'fa-gamepad', 'fa-car', 'fa-plane'];
-        const girlIcons = ['fa-heart', 'fa-sparkles', 'fa-star', 'fa-wand-magic-sparkles', 'fa-flower-tulip', 'fa-sun'];
+        const boyIcons = ['fa-rocket', 'fa-user-astronaut', 'fa-star', 'fa-cloud-moon', 'fa-compass', 'fa-shuttle-space'];
+        const girlIcons = ['fa-wand-magic-sparkles', 'fa-heart', 'fa-sun', 'fa-cloud', 'fa-feather', 'fa-spa'];
         const icons = gender === 'girl' ? girlIcons : boyIcons;
 
         container.innerHTML = icons.map((icon, idx) => `
