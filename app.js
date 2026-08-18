@@ -132,19 +132,22 @@ class OfficialApp {
         const profileView = document.getElementById('view-profile');
         const inactiveView = document.getElementById('view-inactive');
 
-        homeView.classList.remove('hidden');
-        homeView.classList.add('active-view');
-        profileView.classList.add('hidden');
-        inactiveView.classList.add('hidden');
+        if (homeView) {
+            homeView.classList.remove('hidden');
+            homeView.classList.add('active-view');
+        }
+        if (profileView) profileView.classList.add('hidden');
+        if (inactiveView) inactiveView.classList.add('hidden');
 
         const activeKids = this.profiles.filter(p => p.active);
         const filtered = activeKids.filter(k =>
             k.name.toLowerCase().includes(filterText.toLowerCase()) ||
-            k.school.toLowerCase().includes(filterText.toLowerCase()) ||
             k.bloodType.toLowerCase().includes(filterText.toLowerCase())
         );
 
-        document.getElementById('public-kids-count').textContent = activeKids.length;
+        const countEl = document.getElementById('public-kids-count');
+        if (countEl) countEl.textContent = activeKids.length;
+
         const grid = document.getElementById('public-kids-grid');
         if (!grid) return;
 
@@ -175,11 +178,7 @@ class OfficialApp {
                         </div>
                     </div>
 
-                    <div style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">
-                        <div><i class="fa-solid fa-school"></i> ${k.school || 'Sin escuela registrada'}</div>
-                    </div>
-
-                    <div class="admin-card-actions" style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 0.5rem;">
+                    <div class="admin-card-actions" style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 0.5rem; margin-top: 1rem;">
                         <a href="/${k.slug}" onclick="officialApp.navigateToProfile('/${k.slug}', event)" class="btn btn-primary btn-sm">
                             <i class="fa-solid fa-eye"></i> Ver Ficha Única
                         </a>
@@ -221,70 +220,101 @@ class OfficialApp {
         // Set Theme (theme-boy vs theme-girl)
         document.body.className = profile.gender === 'girl' ? 'theme-girl' : 'theme-boy';
 
-        // Render Values
+        // Render Values safely with null checks
         document.title = `Perfil de ${profile.name} | NFC Seguridad Infantil`;
-        document.getElementById('p-name').textContent = profile.name;
-        document.getElementById('p-age').textContent = profile.age;
-        document.getElementById('p-blood').textContent = profile.bloodType;
-        document.getElementById('p-parent').textContent = profile.parentName;
-        document.getElementById('p-school').textContent = profile.school || 'No especificado';
-        document.getElementById('p-allergies').textContent = profile.allergies || 'Ninguna registrada';
+        
+        const nameEl = document.getElementById('p-name');
+        if (nameEl) nameEl.textContent = profile.name;
+
+        const ageEl = document.getElementById('p-age');
+        if (ageEl) ageEl.textContent = profile.age;
+
+        const bloodEl = document.getElementById('p-blood');
+        if (bloodEl) bloodEl.textContent = profile.bloodType;
+
+        const parentEl = document.getElementById('p-parent');
+        if (parentEl) parentEl.textContent = profile.parentName;
+
+        const schoolEl = document.getElementById('p-school');
+        if (schoolEl) schoolEl.textContent = profile.school || '';
+
+        const allergiesEl = document.getElementById('p-allergies');
+        if (allergiesEl) allergiesEl.textContent = profile.allergies || '';
 
         const notesContainer = document.getElementById('p-notes-container');
-        if (profile.medicalNotes && profile.medicalNotes.trim() !== '') {
-            document.getElementById('p-notes').textContent = profile.medicalNotes;
-            notesContainer.classList.remove('hidden');
-        } else {
-            notesContainer.classList.add('hidden');
+        const notesEl = document.getElementById('p-notes');
+        if (notesContainer && notesEl) {
+            if (profile.medicalNotes && profile.medicalNotes.trim() !== '') {
+                notesEl.textContent = profile.medicalNotes;
+                notesContainer.classList.remove('hidden');
+            } else {
+                notesContainer.classList.add('hidden');
+            }
         }
 
         // Badge
         const badgeEl = document.getElementById('p-badge');
-        if (profile.gender === 'girl') {
-            badgeEl.innerHTML = `<i class="fa-solid fa-child-dress"></i> <span>Perfil Niña</span>`;
-        } else {
-            badgeEl.innerHTML = `<i class="fa-solid fa-child"></i> <span>Perfil Niño</span>`;
+        if (badgeEl) {
+            if (profile.gender === 'girl') {
+                badgeEl.innerHTML = `<i class="fa-solid fa-child-dress"></i> <span>Perfil Niña</span>`;
+            } else {
+                badgeEl.innerHTML = `<i class="fa-solid fa-child"></i> <span>Perfil Niño</span>`;
+            }
         }
 
         // Avatar
         const avatarEl = document.getElementById('p-avatar');
-        avatarEl.src = profile.photoUrl || (profile.gender === 'girl' 
-            ? 'https://images.unsplash.com/photo-1595454223600-91fb272189d5?w=400&auto=format&fit=crop&q=80'
-            : 'https://images.unsplash.com/photo-1543332164-6e82f355badc?w=400&auto=format&fit=crop&q=80');
+        if (avatarEl) {
+            avatarEl.src = profile.photoUrl || (profile.gender === 'girl' 
+                ? 'https://images.unsplash.com/photo-1595454223600-91fb272189d5?w=400&auto=format&fit=crop&q=80'
+                : 'https://images.unsplash.com/photo-1543332164-6e82f355badc?w=400&auto=format&fit=crop&q=80');
+        }
 
         // WhatsApp Link Generator
         const waBtn = document.getElementById('btn-whatsapp-action');
-        const customMsg = profile.whatsappMessage || `Hola, encontré el perfil de ${profile.name} y me gustaría comunicarme con sus padres.`;
-        const formattedMsg = customMsg.replace('{nombre}', profile.name);
-        const waCleanPhone = profile.parentPhone.replace(/[^0-9]/g, '');
-        waBtn.href = `https://wa.me/${waCleanPhone}?text=${encodeURIComponent(formattedMsg)}`;
+        if (waBtn) {
+            const customMsg = profile.whatsappMessage || `Hola, encontré el perfil de ${profile.name} y me gustaría comunicarme con sus padres.`;
+            const formattedMsg = customMsg.replace('{nombre}', profile.name);
+            const waCleanPhone = profile.parentPhone.replace(/[^0-9]/g, '');
+            waBtn.href = `https://wa.me/${waCleanPhone}?text=${encodeURIComponent(formattedMsg)}`;
+        }
 
         // Maps Link Generator
         const mapsBtn = document.getElementById('btn-location-action');
-        if (profile.locationMapsUrl && profile.locationMapsUrl.trim() !== '') {
-            mapsBtn.href = profile.locationMapsUrl;
-            mapsBtn.classList.remove('hidden');
-        } else if (profile.locationAddress && profile.locationAddress.trim() !== '') {
-            mapsBtn.href = `https://maps.google.com/?q=${encodeURIComponent(profile.locationAddress)}`;
-            mapsBtn.classList.remove('hidden');
-        } else {
-            mapsBtn.classList.add('hidden');
+        if (mapsBtn) {
+            if (profile.locationMapsUrl && profile.locationMapsUrl.trim() !== '') {
+                mapsBtn.href = profile.locationMapsUrl;
+                mapsBtn.classList.remove('hidden');
+            } else if (profile.locationAddress && profile.locationAddress.trim() !== '') {
+                mapsBtn.href = `https://maps.google.com/?q=${encodeURIComponent(profile.locationAddress)}`;
+                mapsBtn.classList.remove('hidden');
+            } else {
+                mapsBtn.classList.add('hidden');
+            }
         }
 
-        homeView.classList.add('hidden');
-        profileView.classList.remove('hidden');
-        profileView.classList.add('active-view');
-        inactiveView.classList.add('hidden');
+        if (homeView) homeView.classList.add('hidden');
+        if (profileView) {
+            profileView.classList.remove('hidden');
+            profileView.classList.add('active-view');
+        }
+        if (inactiveView) inactiveView.classList.add('hidden');
     }
 
     showInactive(title, desc) {
         document.body.className = 'theme-default';
-        document.getElementById('inactive-title').textContent = title;
-        document.getElementById('inactive-desc').textContent = desc;
+        const titleEl = document.getElementById('inactive-title');
+        const descEl = document.getElementById('inactive-desc');
+        if (titleEl) titleEl.textContent = title;
+        if (descEl) descEl.textContent = desc;
         
-        document.getElementById('view-home').classList.add('hidden');
-        document.getElementById('view-profile').classList.add('hidden');
-        document.getElementById('view-inactive').classList.remove('hidden');
+        const homeView = document.getElementById('view-home');
+        const profileView = document.getElementById('view-profile');
+        const inactiveView = document.getElementById('view-inactive');
+
+        if (homeView) homeView.classList.add('hidden');
+        if (profileView) profileView.classList.add('hidden');
+        if (inactiveView) inactiveView.classList.remove('hidden');
     }
 
     copyUrl(url) {
