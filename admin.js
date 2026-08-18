@@ -175,10 +175,44 @@ class AdminApp {
         localStorage.setItem('nfc_profiles_db', JSON.stringify(this.profiles));
     }
 
+    mergeAndPreserveProfiles(localProfiles = [], cloudProfiles = []) {
+        const deletedIds = JSON.parse(localStorage.getItem('nfc_deleted_ids') || '[]');
+        const profileMap = new Map();
+
+        cloudProfiles.forEach(p => {
+            if (p && p.id && !deletedIds.includes(p.id)) {
+                profileMap.set(p.id, { ...p });
+            }
+        });
+
+        localProfiles.forEach(p => {
+            if (p && p.id && !deletedIds.includes(p.id)) {
+                if (profileMap.has(p.id)) {
+                    const existing = profileMap.get(p.id);
+                    const merged = {
+                        ...existing,
+                        ...p,
+                        name: (p.name && String(p.name).trim() !== '' && String(p.name).trim() !== 'Perfil') ? p.name : existing.name,
+                        photoUrl: (p.photoUrl && p.photoUrl.trim() !== '') ? p.photoUrl : existing.photoUrl,
+                        parentPhone: (p.parentPhone && p.parentPhone.trim() !== '') ? p.parentPhone : existing.parentPhone,
+                        whatsappMessage: (p.whatsappMessage && p.whatsappMessage.trim() !== '') ? p.whatsappMessage : existing.whatsappMessage,
+                        locationMapsUrl: (p.locationMapsUrl && p.locationMapsUrl.trim() !== '') ? p.locationMapsUrl : existing.locationMapsUrl,
+                        schoolMapsUrl: (p.schoolMapsUrl && p.schoolMapsUrl.trim() !== '') ? p.schoolMapsUrl : existing.schoolMapsUrl
+                    };
+                    profileMap.set(p.id, merged);
+                } else {
+                    profileMap.set(p.id, { ...p });
+                }
+            }
+        });
+
+        return Array.from(profileMap.values());
+    }
+
     async syncFromCloudDB() {
         try {
             const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 2000);
+            const timeoutId = setTimeout(() => controller.abort(), 2500);
 
             const cacheBustUrl = `${CLOUD_DB_ENDPOINT}?t=${Date.now()}`;
             const res = await fetch(cacheBustUrl, { cache: 'no-store', signal: controller.signal });
@@ -188,15 +222,16 @@ class AdminApp {
                 const jsonRes = await res.json();
                 const cloudProfiles = jsonRes && Array.isArray(jsonRes.profiles) ? jsonRes.profiles : [];
 
-                if (Array.isArray(cloudProfiles) && cloudProfiles.length > 0) {
-                    // Authoritative Master Sync: Cloud DB is single source of truth for C.R.U.D.
-                    this.profiles = this.deduplicateProfiles(cloudProfiles);
-                    this.saveProfilesLocal();
-                    if (this.isAuthenticated) {
-                        this.renderProfilesGrid();
-                    }
-                } else if (this.profiles.length > 0) {
+                const merged = this.mergeAndPreserveProfiles(this.profiles, cloudProfiles);
+                this.profiles = this.deduplicateProfiles(merged);
+                this.saveProfilesLocal();
+
+                if (JSON.stringify(this.profiles) !== JSON.stringify(cloudProfiles)) {
                     await this.pushToCloudDB();
+                }
+
+                if (this.isAuthenticated) {
+                    this.renderProfilesGrid();
                 }
             }
         } catch (err) {
@@ -354,6 +389,12 @@ class AdminApp {
         if (!profile) return;
 
         if (confirm(`¿Deseas eliminar permanentemente el perfil de ${profile.name}?`)) {
+            const deletedIds = JSON.parse(localStorage.getItem('nfc_deleted_ids') || '[]');
+            if (!deletedIds.includes(id)) {
+                deletedIds.push(id);
+                localStorage.setItem('nfc_deleted_ids', JSON.stringify(deletedIds));
+            }
+
             this.profiles = this.profiles.filter(p => p.id !== id);
             this.saveProfilesLocal();
             await this.pushToCloudDB();
