@@ -1,5 +1,5 @@
 /* ==========================================================================
-   NFC INFANTIL - PUBLIC SINGLE CHILD PROFILE VIEWER (100% ULTRA ROBUST)
+   NFC INFANTIL - PUBLIC SINGLE CHILD PROFILE VIEWER (UNIVERSAL NFC SYNC)
    ========================================================================== */
 
 const DEFAULT_PROFILES = [
@@ -89,6 +89,7 @@ class IsolatedProfileApp {
 
     init() {
         this.loadProfiles();
+        this.checkUniversalPayloadInUrl();
         this.handleRouting();
     }
 
@@ -97,7 +98,6 @@ class IsolatedProfileApp {
         if (stored) {
             try {
                 const parsed = JSON.parse(stored);
-                // Ensure default profiles exist
                 this.profiles = parsed && parsed.length > 0 ? parsed : DEFAULT_PROFILES;
             } catch (e) {
                 this.profiles = DEFAULT_PROFILES;
@@ -105,6 +105,34 @@ class IsolatedProfileApp {
         } else {
             this.profiles = DEFAULT_PROFILES;
             localStorage.setItem('nfc_profiles_db', JSON.stringify(this.profiles));
+        }
+    }
+
+    saveProfiles() {
+        localStorage.setItem('nfc_profiles_db', JSON.stringify(this.profiles));
+    }
+
+    // Decodes universal pdata parameter if present in NFC URL
+    checkUniversalPayloadInUrl() {
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('pdata')) {
+            try {
+                const rawB64 = decodeURIComponent(urlParams.get('pdata'));
+                const jsonStr = atob(rawB64);
+                const p = JSON.parse(jsonStr);
+
+                if (p && p.slug && p.name) {
+                    const existingIdx = this.profiles.findIndex(item => item.slug === p.slug || item.id === p.id);
+                    if (existingIdx !== -1) {
+                        this.profiles[existingIdx] = { ...this.profiles[existingIdx], ...p };
+                    } else {
+                        this.profiles.unshift(p);
+                    }
+                    this.saveProfiles();
+                }
+            } catch (e) {
+                console.log("Error decoding universal NFC profile payload:", e);
+            }
         }
     }
 
@@ -121,7 +149,6 @@ class IsolatedProfileApp {
         } else if (path !== '/' && path !== '/index.html') {
             slug = path.substring(1);
         } else {
-            // Default to 'samuel' if root index
             slug = 'samuel';
         }
 
@@ -136,7 +163,7 @@ class IsolatedProfileApp {
             .replace(/^\/+|\/+$/g, '')
             .replace(/\.html$/, '');
 
-        // Flexible search matching exact slug or slug prefix/name match
+        // Search matching exact slug or slug prefix/name match
         let profile = this.profiles.find(p => p.slug.toLowerCase().trim() === cleanSlug);
         
         if (!profile) {
@@ -150,7 +177,7 @@ class IsolatedProfileApp {
         const inactiveView = document.getElementById('view-inactive');
 
         if (!profile) {
-            this.showInactive("Perfil No Encontrado", `No existe ningún perfil registrado con la dirección '/${cleanSlug}'.`);
+            this.showInactive("Perfil No Encontrado", `No existe ningún perfil registrado con el enlace '/${cleanSlug}'.`);
             return;
         }
 
