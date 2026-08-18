@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NFC Seguridad Infantil | Plataforma Oficial de Perfiles</title>
-    <meta name="description" content="Plataforma oficial de identificación, seguridad y perfiles infantiles mediante código QR y pulseras NFC.">
+    <title>NFC Seguridad Infantil | Perfil de Identificación</title>
+    <meta name="description" content="Plataforma oficial de seguridad e identificación infantil mediante código QR y pulseras NFC.">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -22,7 +22,7 @@
         <div class="bubble bubble-3"></div>
     </div>
 
-    <!-- Official Navigation Header -->
+    <!-- Official Header Nav -->
     <header class="app-header">
         <a href="/" class="brand-logo" id="brand-home-link">
             <div class="brand-icon">
@@ -32,7 +32,7 @@
         </a>
         <nav class="header-nav">
             <a href="/admin.html" class="btn btn-secondary btn-sm">
-                <i class="fa-solid fa-user-gear"></i> Editar en Panel Admin
+                <i class="fa-solid fa-user-gear"></i> Panel Admin
             </a>
         </nav>
     </header>
@@ -40,24 +40,23 @@
     <main class="container">
 
         <!-- ===================================================================
-             PÁGINA OFICIAL PRINCIPAL (DIRECTORIO DE TODOS LOS NIÑOS)
+             PÁGINA OFICIAL PRINCIPAL (DIRECTORIO DE PERFILES)
              =================================================================== -->
         <section id="view-home" class="view-section active-view">
             
-            <!-- Hero Official Banner -->
             <div class="official-hero-banner" style="text-align: center; margin-bottom: 2.5rem; padding: 2.5rem 1.5rem; background: var(--bg-card); border-radius: var(--radius-xl); border: 1px solid var(--border-color); backdrop-filter: blur(16px);">
                 <div class="brand-icon" style="width: 65px; height: 65px; font-size: 2rem; margin: 0 auto 1rem;">
                     <i class="fa-solid fa-shield-cat"></i>
                 </div>
                 <h1 style="font-size: 2.2rem; font-weight: 800; margin-bottom: 0.5rem;">Página Oficial NFC Seguridad Infantil</h1>
                 <p style="color: var(--text-secondary); max-width: 620px; margin: 0 auto 1.5rem; font-size: 1.05rem;">
-                    Selecciona cualquier perfil para ingresar a su página única o copia su enlace personalizado de seguridad.
+                    Selecciona cualquier perfil para ingresar a su página única o copia su enlace personalizado.
                 </p>
 
                 <!-- Search Bar -->
                 <div class="search-input-wrap" style="max-width: 480px; margin: 0 auto;">
                     <i class="fa-solid fa-magnifying-glass"></i>
-                    <input type="text" id="public-search-input" placeholder="Buscar por nombre, colegio o tipo de sangre...">
+                    <input type="text" id="public-search-input" placeholder="Buscar por nombre o tipo de sangre...">
                 </div>
             </div>
 
@@ -74,17 +73,17 @@
 
 
         <!-- ===================================================================
-             PÁGINA PÚBLICA ÚNICA DE CADA NIÑO (/samuel, /valentina, etc.)
+             PÁGINA PÚBLICA ÚNICA DEL NIÑO / NIÑA (EXCLUSIVAMENTE LOS 5 CAMPOS CLAVE)
              =================================================================== -->
         <section id="view-profile" class="view-section hidden">
             <div class="profile-container" style="margin-top: 0;">
                 
-                <div style="margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center;">
+                <div style="margin-bottom: 1.2rem; display: flex; justify-content: space-between; align-items: center;">
                     <a href="/" id="btn-back-home" class="btn btn-secondary btn-sm">
-                        <i class="fa-solid fa-arrow-left"></i> Volver a la Página Oficial
+                        <i class="fa-solid fa-arrow-left"></i> Volver al Inicio
                     </a>
                     <button id="btn-copy-current-link" class="btn btn-secondary btn-sm">
-                        <i class="fa-solid fa-copy"></i> Copiar Enlace Único
+                        <i class="fa-solid fa-copy"></i> Copiar Enlace
                     </button>
                 </div>
 
@@ -97,86 +96,77 @@
                         </span>
                         <div class="nfc-live-dot">
                             <span class="pulse-dot"></span>
-                            <span>NFC Verificado</span>
+                            <span>NFC Activo</span>
                         </div>
                     </div>
 
-                    <!-- Avatar Photo -->
+                    <!-- 1. FOTO DEL NIÑO / NIÑA -->
                     <div class="profile-avatar-wrapper">
                         <img src="" alt="Foto Niño/a" id="p-avatar" class="profile-avatar-img">
                     </div>
 
-                    <!-- LOGO DEBAJO DE LA FOTO DEL NIÑO/A -->
+                    <!-- 2. LOGO NFC SEGURIDAD INFANTIL -->
                     <div class="logo-banner-wrapper">
                         <img src="assets/logo-nfc-seguridad.png" alt="NFC Seguridad Infantil" class="logo-banner-img">
                     </div>
 
-                    <!-- Identity Header -->
-                    <div class="profile-identity">
-                        <h1 class="profile-name" id="p-name">Cargando perfil...</h1>
-                        <p class="profile-subtext" id="p-subtext">
-                            <span><i class="fa-solid fa-cake-candles"></i> <span id="p-age">0</span> Años</span>
-                            <span>•</span>
-                            <span><i class="fa-solid fa-droplet text-danger"></i> Sangre: <span id="p-blood">O+</span></span>
-                        </p>
-                    </div>
-
-                    <!-- Key Info Grid -->
-                    <div class="info-cards-grid">
+                    <!-- 3. INFORMACIÓN CLAVE (NOMBRE, EDAD, TIPO DE SANGRE) -->
+                    <div class="info-cards-grid" style="grid-template-columns: 1fr; gap: 0.8rem; margin-bottom: 1.5rem;">
+                        <!-- Nombre -->
                         <div class="info-box">
                             <div class="info-icon icon-parent">
-                                <i class="fa-solid fa-user-nurse"></i>
+                                <i class="fa-solid fa-user"></i>
                             </div>
                             <div class="info-content">
-                                <span class="label">Padres / Acudiente</span>
-                                <span class="val" id="p-parent">Cargando...</span>
+                                <span class="label">Nombre</span>
+                                <span class="val" id="p-name" style="font-size: 1.25rem;">Cargando...</span>
                             </div>
                         </div>
-                        <div class="info-box">
-                            <div class="info-icon icon-school">
-                                <i class="fa-solid fa-school"></i>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem;">
+                            <!-- Edad -->
+                            <div class="info-box">
+                                <div class="info-icon icon-age">
+                                    <i class="fa-solid fa-cake-candles"></i>
+                                </div>
+                                <div class="info-content">
+                                    <span class="label">Edad</span>
+                                    <span class="val"><span id="p-age">0</span> años</span>
+                                </div>
                             </div>
-                            <div class="info-content">
-                                <span class="label">Colegio / Jardín</span>
-                                <span class="val" id="p-school">Cargando...</span>
+                            <!-- Tipo de Sangre -->
+                            <div class="info-box">
+                                <div class="info-icon icon-blood">
+                                    <i class="fa-solid fa-droplet"></i>
+                                </div>
+                                <div class="info-content">
+                                    <span class="label">Tipo de sangre</span>
+                                    <span class="val" id="p-blood">O+</span>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Medical & Emergency Info -->
-                    <div class="section-block">
-                        <div class="section-title">
-                            <i class="fa-solid fa-hand-dots text-warning"></i> Alergias y Condiciones Médicas
-                        </div>
-                        <p class="section-desc" id="p-allergies">Sin información registrada.</p>
-                    </div>
-
-                    <div class="section-block" id="p-notes-container">
-                        <div class="section-title">
-                            <i class="fa-solid fa-notes-medical" style="color: var(--accent-main);"></i> Información Adicional
-                        </div>
-                        <p class="section-desc" id="p-notes">Sin notas adicionales.</p>
-                    </div>
-
-                    <!-- Direct Action Buttons Stack (WhatsApp & Location) -->
+                    <!-- 4. BOTONES DE ACCIÓN (CONTACTAR A MIS PAPÁS & UBICACIÓN) -->
                     <div class="profile-actions-stack">
                         <a href="#" id="btn-whatsapp-action" target="_blank" class="btn btn-whatsapp btn-block">
-                            <i class="fa-brands fa-whatsapp"></i> Contactar a mis papás
+                            <i class="fa-brands fa-whatsapp"></i> CONTACTAR A MIS PAPÁS
                         </a>
                         
                         <a href="#" id="btn-location-action" target="_blank" class="btn btn-maps btn-block">
-                            <i class="fa-solid fa-location-dot"></i> Ver Ubicación
+                            <i class="fa-solid fa-location-dot"></i> UBICACIÓN
                         </a>
                     </div>
 
-                    <div class="footer-credits">
-                        Plataforma Oficial de Seguridad e Identificación NFC Infantil
+                    <!-- 5. PIE DE PÁGINA -->
+                    <div class="footer-credits" style="font-size: 1.1rem; font-weight: 800; color: var(--accent-main); margin-top: 2rem;">
+                        <i class="fa-solid fa-heart" style="color: var(--danger)"></i> GRACIAS POR AYUDARME
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- INACTIVE / NOT FOUND PROFILE SCREEN -->
+        <!-- INACTIVE PROFILE SCREEN -->
         <section id="view-inactive" class="view-section hidden">
             <div class="inactive-screen">
                 <div style="font-size: 3.5rem; color: var(--warning); margin-bottom: 1rem;">
@@ -186,7 +176,7 @@
                 <p style="color: var(--text-secondary); margin-bottom: 2rem;" id="inactive-desc">
                     Este perfil no se encuentra disponible actualmente.
                 </p>
-                <a href="/" class="btn btn-primary"><i class="fa-solid fa-house"></i> Volver a la Página Oficial</a>
+                <a href="/" class="btn btn-primary"><i class="fa-solid fa-house"></i> Volver al Inicio</a>
             </div>
         </section>
     </main>
