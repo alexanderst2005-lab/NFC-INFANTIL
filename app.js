@@ -1,6 +1,8 @@
 /* ==========================================================================
-   NFC INFANTIL - PUBLIC SINGLE CHILD PROFILE VIEWER (ULTRA-PREMIUM)
+   NFC INFANTIL - PUBLIC SINGLE CHILD PROFILE VIEWER (CLOUD SYNC + UNIQUE)
    ========================================================================== */
+
+const CLOUD_SYNC_URL = "https://kvdb.io/NFCInfantil2026SecureKey/profiles";
 
 const DEFAULT_PROFILES = [
     {
@@ -84,15 +86,17 @@ const DEFAULT_PROFILES = [
 class IsolatedProfileApp {
     constructor() {
         this.profiles = [];
+        this.currentSlug = '';
         this.init();
     }
 
-    init() {
-        this.loadProfiles();
+    async init() {
+        this.loadProfilesLocal();
         this.handleRouting();
+        await this.syncFromCloudDB();
     }
 
-    loadProfiles() {
+    loadProfilesLocal() {
         const stored = localStorage.getItem('nfc_profiles_db');
         if (stored) {
             try {
@@ -104,6 +108,29 @@ class IsolatedProfileApp {
         } else {
             this.profiles = DEFAULT_PROFILES;
             localStorage.setItem('nfc_profiles_db', JSON.stringify(this.profiles));
+        }
+    }
+
+    saveProfilesLocal() {
+        localStorage.setItem('nfc_profiles_db', JSON.stringify(this.profiles));
+    }
+
+    // Sync profiles asynchronously from Cloud DB
+    async syncFromCloudDB() {
+        try {
+            const res = await fetch(CLOUD_SYNC_URL, { cache: 'no-cache' });
+            if (res.ok) {
+                const cloudData = await res.json();
+                if (Array.isArray(cloudData) && cloudData.length > 0) {
+                    this.profiles = cloudData;
+                    this.saveProfilesLocal();
+                    if (this.currentSlug) {
+                        this.renderSingleProfile(this.currentSlug);
+                    }
+                }
+            }
+        } catch (err) {
+            console.log("Cloud sync load offline, using LocalStorage:", err);
         }
     }
 
@@ -123,6 +150,7 @@ class IsolatedProfileApp {
             slug = 'samuel';
         }
 
+        this.currentSlug = slug;
         this.renderSingleProfile(slug);
     }
 
@@ -163,10 +191,6 @@ class IsolatedProfileApp {
 
         // Render Title
         document.title = `Perfil de ${profile.name} | NFC Seguridad Infantil`;
-        
-        // Render Names
-        const nameEl = document.getElementById('p-name');
-        if (nameEl) nameEl.textContent = profile.name;
 
         const heroNameEl = document.getElementById('p-hero-name');
         if (heroNameEl) heroNameEl.textContent = profile.name;

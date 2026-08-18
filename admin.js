@@ -1,8 +1,9 @@
 /* ==========================================================================
-   NFC INFANTIL - ADMIN PANEL LOGIC (CLEAN SHORT URLS)
+   NFC INFANTIL - ADMIN PANEL LOGIC (CLOUD DB SYNC + CLEAN SHORT URLS)
    ========================================================================== */
 
 const DEFAULT_PIN = "1234";
+const CLOUD_SYNC_URL = "https://kvdb.io/NFCInfantil2026SecureKey/profiles";
 
 const DEFAULT_PROFILES = [
     {
@@ -18,8 +19,8 @@ const DEFAULT_PROFILES = [
         locationAddress: "Calle 100 #15-20, Bogotá",
         locationMapsUrl: "https://maps.google.com/?q=4.6853,-74.0435",
         allergies: "Ninguna",
-        medicalNotes: "",
-        school: "",
+        medicalNotes: "Usa inhalador en caso de crisis asmática. Entregar únicamente a acudientes registrados.",
+        school: "Gimnasio Campestre Los Laureles",
         photoUrl: "https://images.unsplash.com/photo-1543332164-6e82f355badc?w=400&auto=format&fit=crop&q=80",
         active: true,
         createdAt: new Date().toISOString()
@@ -36,9 +37,9 @@ const DEFAULT_PROFILES = [
         whatsappMessage: "Hola, encontré la información del perfil de Valentina y quiero comunicarme con sus padres.",
         locationAddress: "Carrera 43A #1-50, Medellín",
         locationMapsUrl: "https://maps.google.com/?q=6.2088,-75.5674",
-        allergies: "Ninguna conocida",
-        medicalNotes: "",
-        school: "",
+        allergies: "Alergias leves a la penicilina",
+        medicalNotes: "Lleva su carnet de vacunación completo.",
+        school: "Colegio San José Infantil",
         photoUrl: "https://images.unsplash.com/photo-1595454223600-91fb272189d5?w=400&auto=format&fit=crop&q=80",
         active: true,
         createdAt: new Date().toISOString()
@@ -55,9 +56,9 @@ const DEFAULT_PROFILES = [
         whatsappMessage: "Hola, encontré la información del perfil de Juan Diego y me comunico con sus padres.",
         locationAddress: "Calle 26 #68-80, Bogotá",
         locationMapsUrl: "https://maps.google.com/?q=4.6581,-74.1084",
-        allergies: "",
-        medicalNotes: "",
-        school: "",
+        allergies: "Intolerancia a la lactosa",
+        medicalNotes: "Utiliza gafas formuladas.",
+        school: "Jardín Exploradores del Futuro",
         photoUrl: "https://images.unsplash.com/photo-1519238263530-99bdd11df2ea?w=400&auto=format&fit=crop&q=80",
         active: true,
         createdAt: new Date().toISOString()
@@ -74,9 +75,9 @@ const DEFAULT_PROFILES = [
         whatsappMessage: "Hola, estoy escaneando la pulsera NFC de Sofía y me comunico con sus padres.",
         locationAddress: "Avenida 4 Norte #10-15, Cali",
         locationMapsUrl: "https://maps.google.com/?q=3.4516,-76.5320",
-        allergies: "",
-        medicalNotes: "",
-        school: "",
+        allergies: "Alergia al maní",
+        medicalNotes: "Siempre porta su pulsera de identificación NFC.",
+        school: "Jardín Infantil Mis Primeros Pasos",
         photoUrl: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400&auto=format&fit=crop&q=80",
         active: true,
         createdAt: new Date().toISOString()
@@ -90,13 +91,14 @@ class AdminApp {
         this.init();
     }
 
-    init() {
-        this.loadProfiles();
+    async init() {
+        this.loadProfilesLocal();
         this.setupEventListeners();
         this.renderState();
+        await this.syncFromCloudDB();
     }
 
-    loadProfiles() {
+    loadProfilesLocal() {
         const stored = localStorage.getItem('nfc_profiles_db');
         if (stored) {
             try {
@@ -107,12 +109,44 @@ class AdminApp {
             }
         } else {
             this.profiles = DEFAULT_PROFILES;
-            this.saveProfiles();
+            this.saveProfilesLocal();
         }
     }
 
-    saveProfiles() {
+    saveProfilesLocal() {
         localStorage.setItem('nfc_profiles_db', JSON.stringify(this.profiles));
+    }
+
+    // Sync profiles across PC, mobile and all browsers over the internet
+    async syncFromCloudDB() {
+        try {
+            const res = await fetch(CLOUD_SYNC_URL, { cache: 'no-cache' });
+            if (res.ok) {
+                const cloudData = await res.json();
+                if (Array.isArray(cloudData) && cloudData.length > 0) {
+                    this.profiles = cloudData;
+                    this.saveProfilesLocal();
+                    if (this.isAuthenticated) {
+                        this.renderProfilesGrid();
+                    }
+                }
+            }
+        } catch (err) {
+            console.log("Cloud sync load offline, using LocalStorage:", err);
+        }
+    }
+
+    async pushToCloudDB() {
+        this.saveProfilesLocal();
+        try {
+            await fetch(CLOUD_SYNC_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(this.profiles)
+            });
+        } catch (err) {
+            console.log("Cloud sync push error:", err);
+        }
     }
 
     renderState() {
@@ -154,7 +188,6 @@ class AdminApp {
         const origin = window.location.origin;
 
         grid.innerHTML = filtered.map(p => {
-            // Short clean URL for NFC tags and sharing
             const publicUrl = `${origin}/${p.slug}`;
 
             return `
@@ -201,11 +234,11 @@ class AdminApp {
         }).join('');
     }
 
-    toggleProfileActive(id, isActive) {
+    async toggleProfileActive(id, isActive) {
         const profile = this.profiles.find(p => p.id === id);
         if (profile) {
             profile.active = isActive;
-            this.saveProfiles();
+            await this.pushToCloudDB();
             this.renderProfilesGrid();
             this.showToast(`Estado de ${profile.name} actualizado: ${isActive ? 'Activo' : 'Inactivo'}`);
         }
@@ -219,13 +252,13 @@ class AdminApp {
         });
     }
 
-    deleteProfile(id) {
+    async deleteProfile(id) {
         const profile = this.profiles.find(p => p.id === id);
         if (!profile) return;
 
         if (confirm(`¿Deseas eliminar permanentemente el perfil de ${profile.name}?`)) {
             this.profiles = this.profiles.filter(p => p.id !== id);
-            this.saveProfiles();
+            await this.pushToCloudDB();
             this.renderProfilesGrid();
             this.showToast(`Perfil de ${profile.name} eliminado.`);
         }
@@ -291,7 +324,7 @@ class AdminApp {
         document.getElementById('modal-profile').classList.add('hidden');
     }
 
-    saveProfileFromForm() {
+    async saveProfileFromForm() {
         const id = document.getElementById('input-profile-id').value;
         const name = document.getElementById('input-name').value.trim();
         let slug = document.getElementById('input-slug').value.trim();
@@ -331,10 +364,10 @@ class AdminApp {
             this.profiles.unshift(profileData);
         }
 
-        this.saveProfiles();
+        await this.pushToCloudDB();
         this.closeModal();
         this.renderProfilesGrid();
-        this.showToast(`¡Perfil de ${name} guardado correctamente! URL: /${slug}`);
+        this.showToast(`¡Perfil de ${name} guardado! URL: /${slug}`);
     }
 
     setupEventListeners() {
