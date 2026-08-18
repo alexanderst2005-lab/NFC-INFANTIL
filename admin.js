@@ -518,6 +518,31 @@ class AdminApp {
         return slug;
     }
 
+    updateModalFormForCategory(genderVal) {
+        const bloodGroup = document.getElementById('group-blood');
+        const eduSection = document.getElementById('section-education-health');
+        const nameLbl = document.getElementById('lbl-input-name');
+        const phoneLbl = document.getElementById('lbl-input-phone');
+        const bloodInput = document.getElementById('input-blood');
+        const waInput = document.getElementById('input-whatsapp-msg');
+
+        if (genderVal === 'pet') {
+            if (bloodGroup) bloodGroup.style.display = 'none';
+            if (eduSection) eduSection.style.display = 'none';
+            if (nameLbl) nameLbl.textContent = 'Nombre de la Mascota *';
+            if (phoneLbl) phoneLbl.textContent = 'Teléfono del Dueño (WhatsApp) *';
+            if (bloodInput) bloodInput.value = 'N/A';
+            if (waInput && (!waInput.value || waInput.value.includes('perfil de'))) {
+                waInput.value = 'Hola, encontré a la mascota {nombre} y quiero comunicarme con su dueño.';
+            }
+        } else {
+            if (bloodGroup) bloodGroup.style.display = '';
+            if (eduSection) eduSection.style.display = '';
+            if (nameLbl) nameLbl.textContent = 'Nombre Completo del Niño/a *';
+            if (phoneLbl) phoneLbl.textContent = 'Teléfono WhatsApp (Con código país) *';
+        }
+    }
+
     openCreateModal() {
         this.photoRemoved = false;
         const initialGender = (this.currentCategoryTab === 'girl' || this.currentCategoryTab === 'pet') ? this.currentCategoryTab : 'boy';
@@ -545,6 +570,9 @@ class AdminApp {
         if (document.getElementById('input-medical')) document.getElementById('input-medical').value = '';
         document.getElementById('input-photo-url').value = '';
         document.getElementById('photo-preview').src = NEUTRAL_AVATAR_SVG;
+        
+        this.updateModalFormForCategory(initialGender);
+
         document.getElementById('modal-profile').classList.remove('hidden');
         document.body.classList.add('modal-open');
     }
@@ -581,6 +609,8 @@ class AdminApp {
         const isBase64 = p.photoUrl && p.photoUrl.startsWith('data:');
         document.getElementById('input-photo-url').value = (p.photoUrl && p.photoUrl !== NEUTRAL_AVATAR_SVG && !isBase64) ? p.photoUrl : '';
         document.getElementById('photo-preview').src = currentPhoto;
+
+        this.updateModalFormForCategory(p.gender);
 
         document.getElementById('modal-profile').classList.remove('hidden');
         document.body.classList.add('modal-open');
@@ -712,15 +742,7 @@ class AdminApp {
 
         // Dynamic gender selector change helper for default WhatsApp & Blood type
         document.getElementById('input-gender')?.addEventListener('change', (e) => {
-            const val = e.target.value;
-            const waInput = document.getElementById('input-whatsapp-msg');
-            const bloodInput = document.getElementById('input-blood');
-            if (val === 'pet') {
-                if (bloodInput && !bloodInput.value) bloodInput.value = 'N/A';
-                if (waInput && (!waInput.value || waInput.value.includes('perfil de'))) {
-                    waInput.value = 'Hola, encontré a la mascota {nombre} y quiero comunicarme con su dueño.';
-                }
-            }
+            this.updateModalFormForCategory(e.target.value);
         });
         document.getElementById('form-admin-login')?.addEventListener('submit', (e) => {
             e.preventDefault();

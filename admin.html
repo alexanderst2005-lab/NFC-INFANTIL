@@ -228,7 +228,7 @@
                         <input type="number" id="input-age" class="form-input" min="0" max="30" placeholder="Ej: 5" required>
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group" id="group-blood">
                         <label class="form-label" for="input-blood">Tipo de Sangre *</label>
                         <select id="input-blood" class="form-select" required>
                             <option value="" disabled selected>Seleccionar...</option>
@@ -245,27 +245,29 @@
                     </div>
                 </div>
 
-                <!-- 3. EDUCACIÓN Y CONDICIONES MÉDICAS (OPCIONAL) -->
-                <div class="modal-section-title">
-                    <i class="fa-solid fa-graduation-cap"></i> Educación y Salud / Cuidados (Opcional)
-                </div>
+                <!-- 3. EDUCACIÓN Y CONDICIONES MÉDICAS (OPCIONAL PARA NIÑOS) -->
+                <div id="section-education-health">
+                    <div class="modal-section-title">
+                        <i class="fa-solid fa-graduation-cap"></i> Educación y Salud / Cuidados (Opcional)
+                    </div>
 
-                <div class="form-row">
-                    <div class="form-group">
-                        <label class="form-label" for="input-school">Colegio / Institución (Opcional)</label>
-                        <input type="text" id="input-school" class="form-input" placeholder="Ej: Colegio San José">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="input-school">Colegio / Institución (Opcional)</label>
+                            <input type="text" id="input-school" class="form-input" placeholder="Ej: Colegio San José">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="input-grade">Grado / Curso (Opcional)</label>
+                            <input type="text" id="input-grade" class="form-input" placeholder="Ej: 3° de Primaria">
+                        </div>
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label" for="input-grade">Grado / Curso (Opcional)</label>
-                        <input type="text" id="input-grade" class="form-input" placeholder="Ej: 3° de Primaria">
+                        <label class="form-label" for="input-medical">Enfermedades / Condiciones / Cuidados Importantes (Opcional)</label>
+                        <textarea id="input-medical" class="form-textarea" rows="2" placeholder="Ej: Alérgico a la Penicilina, Asma leve, Requiere dieta especial..." style="resize: vertical; min-height: 70px; width: 100%;"></textarea>
+                        <span class="field-hint">Solo se muestra en el perfil público si contiene información.</span>
                     </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label" for="input-medical">Enfermedades / Condiciones / Cuidados Importantes (Opcional)</label>
-                    <textarea id="input-medical" class="form-textarea" rows="2" placeholder="Ej: Alérgico a la Penicilina, Asma leve, Requiere dieta especial..." style="resize: vertical; min-height: 70px; width: 100%;"></textarea>
-                    <span class="field-hint">Solo se muestra en el perfil público si contiene información.</span>
                 </div>
 
                 <!-- 4. BOTÓN CONTACTAR A PADRES / DUEÑO (WHATSAPP) -->

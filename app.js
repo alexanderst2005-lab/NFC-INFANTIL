@@ -435,8 +435,14 @@ class ProfileApp {
         if (bloodValEl) bloodValEl.textContent = profile.bloodType || (profile.gender === 'pet' ? 'N/A' : 'O+');
 
         const boxBloodEl = document.getElementById('box-blood');
-        if (boxBloodEl && profile.gender === 'pet' && (profile.bloodType === 'N/A' || !profile.bloodType)) {
-            // For pets with N/A blood, keep card clean
+        if (boxBloodEl) {
+            if (profile.gender === 'pet') {
+                boxBloodEl.classList.add('hidden');
+                boxBloodEl.style.display = 'none';
+            } else {
+                boxBloodEl.classList.remove('hidden');
+                boxBloodEl.style.display = '';
+            }
         }
 
         // 1. School Optional Box
