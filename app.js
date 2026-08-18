@@ -177,6 +177,40 @@ class ProfileApp {
         localStorage.setItem('nfc_profiles_db', JSON.stringify(this.profiles));
     }
 
+    mergeAndPreserveProfiles(localProfiles = [], cloudProfiles = []) {
+        const deletedIds = JSON.parse(localStorage.getItem('nfc_deleted_ids') || '[]');
+        const profileMap = new Map();
+
+        // 1. Load Cloud Profiles (excluding explicitly deleted ones)
+        cloudProfiles.forEach(p => {
+            if (p && p.id && !deletedIds.includes(p.id)) {
+                profileMap.set(p.id, { ...p });
+            }
+        });
+
+        // 2. Merge Local Profiles (preserving user custom data across serverless cold-starts)
+        localProfiles.forEach(p => {
+            if (p && p.id && !deletedIds.includes(p.id)) {
+                if (profileMap.has(p.id)) {
+                    const existing = profileMap.get(p.id);
+                    const pTime = p.updatedAt ? new Date(p.updatedAt).getTime() : 0;
+                    const exTime = existing.updatedAt ? new Date(existing.updatedAt).getTime() : 0;
+
+                    if (pTime >= exTime) {
+                        profileMap.set(p.id, { ...existing, ...p });
+                    } else {
+                        profileMap.set(p.id, { ...p, ...existing });
+                    }
+                } else {
+                    // Local profile not in cloud (user created it & serverless cold-started) -> PRESERVE IT!
+                    profileMap.set(p.id, { ...p });
+                }
+            }
+        });
+
+        return Array.from(profileMap.values());
+    }
+
     async syncFromCloudDB() {
         try {
             const controller = new AbortController();
@@ -190,14 +224,14 @@ class ProfileApp {
                 const jsonRes = await res.json();
                 const cloudProfiles = jsonRes && Array.isArray(jsonRes.profiles) ? jsonRes.profiles : [];
 
-                if (Array.isArray(cloudProfiles) && cloudProfiles.length > 0) {
-                    const sanitized = this.deduplicateProfiles(cloudProfiles);
-                    if (JSON.stringify(sanitized) !== JSON.stringify(this.profiles)) {
-                        this.profiles = sanitized;
-                        this.saveProfilesLocal();
-                        const currentSlug = this.getSlugFromUrl();
-                        if (currentSlug) this.renderSingleProfile(currentSlug);
-                    }
+                const merged = this.mergeAndPreserveProfiles(this.profiles, cloudProfiles);
+                const sanitized = this.deduplicateProfiles(merged);
+
+                if (JSON.stringify(sanitized) !== JSON.stringify(this.profiles)) {
+                    this.profiles = sanitized;
+                    this.saveProfilesLocal();
+                    const currentSlug = this.getSlugFromUrl();
+                    if (currentSlug) this.renderSingleProfile(currentSlug);
                 }
             }
         } catch (err) {
