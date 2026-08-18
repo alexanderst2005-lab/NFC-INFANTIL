@@ -11,6 +11,44 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- FontAwesome icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Instant Head Theme Pre-Detector to Prevent Theme Flicker -->
+    <script>
+        (function() {
+            try {
+                var rawPath = window.location.pathname;
+                var rawSearch = window.location.search;
+                var slug = '';
+                if (rawSearch.indexOf('slug=') !== -1) {
+                    slug = rawSearch.split('slug=')[1].split('&')[0];
+                } else if (rawPath && rawPath !== '/' && rawPath !== '/index.html') {
+                    slug = rawPath.substring(1);
+                }
+                slug = decodeURIComponent(slug).toLowerCase().trim()
+                    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+                    .replace(/^\/+|\/+$/g, '')
+                    .replace(/\.html$/, '')
+                    .replace(/[^a-z0-9]/g, '-');
+
+                var stored = localStorage.getItem('nfc_profiles_db');
+                if (stored) {
+                    var profiles = JSON.parse(stored);
+                    if (profiles && profiles.length > 0) {
+                        var p = profiles.find(function(item) {
+                            if (!item) return false;
+                            var s = item.slug ? item.slug.toLowerCase().trim().replace(/[^a-z0-9]/g, '-') : '';
+                            return s === slug || (item.id && item.id.toLowerCase() === slug) || (item.name && item.name.toLowerCase().replace(/[^a-z0-9]/g, '-') === slug);
+                        });
+                        if (!p && (slug === 'valentina' || slug === 'sofia')) p = { gender: 'girl' };
+                        if (p && p.gender === 'girl') {
+                            document.documentElement.className = 'theme-girl';
+                        }
+                    }
+                } else if (slug === 'valentina' || slug === 'sofia') {
+                    document.documentElement.className = 'theme-girl';
+                }
+            } catch(e) {}
+        })();
+    </script>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body class="theme-default">

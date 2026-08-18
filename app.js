@@ -287,7 +287,9 @@ class ProfileApp {
         }
 
         // Apply Theme based on gender ('boy' vs 'girl')
-        document.body.className = profile.gender === 'girl' ? 'theme-girl' : 'theme-boy';
+        const themeClass = profile.gender === 'girl' ? 'theme-girl' : 'theme-boy';
+        document.body.className = themeClass;
+        document.documentElement.className = themeClass;
         this.renderFloatingDecorators(profile.gender);
 
         // Render Title
