@@ -1255,3 +1255,39 @@ input:checked + .slider:before { transform: translateX(20px); }
     transform: scale(1.15);
 }
 
+/* Floating Ambient Infantile Decorators */
+.floating-decorators {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 0;
+}
+
+.decorator {
+    position: absolute;
+    color: var(--accent-main);
+    opacity: 0.14;
+    font-size: 1.6rem;
+    animation: floatAnimation 8s ease-in-out infinite alternate;
+}
+
+.dec-1 { top: 8%; left: 6%; animation-delay: 0s; font-size: 1.8rem; }
+.dec-2 { top: 25%; right: 8%; animation-delay: 1.5s; font-size: 2rem; }
+.dec-3 { top: 55%; left: 5%; animation-delay: 3s; font-size: 1.5rem; }
+.dec-4 { top: 78%; right: 6%; animation-delay: 2s; font-size: 1.9rem; }
+.dec-5 { top: 40%; left: 88%; animation-delay: 4s; font-size: 1.7rem; }
+.dec-6 { top: 88%; left: 12%; animation-delay: 2.5s; font-size: 1.8rem; }
+
+@keyframes floatAnimation {
+    0% {
+        transform: translateY(0px) rotate(0deg);
+    }
+    100% {
+        transform: translateY(-18px) rotate(12deg);
+    }
+}
+
