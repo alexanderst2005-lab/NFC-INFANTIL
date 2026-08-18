@@ -1,12 +1,12 @@
 /* ==========================================================================
-   NFC INFANTIL - ADMIN PANEL LOGIC (STRUCTURED DASHBOARD & CLOUD SYNC)
+   NFC INFANTIL - ADMIN PANEL LOGIC (100% COMPLETE PHOTO DELETION)
    ========================================================================== */
 
 const DEFAULT_PIN = "1234";
 const CLOUD_DB_ENDPOINT = "/api/sync";
 
-const DEFAULT_BOY_PHOTO = "https://images.unsplash.com/photo-1543332164-6e82f355badc?w=400&auto=format&fit=crop&q=80";
-const DEFAULT_GIRL_PHOTO = "https://images.unsplash.com/photo-1595454223600-91fb272189d5?w=400&auto=format&fit=crop&q=80";
+// Neutral SVG Silhouette for profiles without a photo
+const NEUTRAL_AVATAR_SVG = "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='%2364748b'%3E%3Ccircle cx='50' cy='35' r='22'/%3E%3Cpath d='M18 85c0-18 14-30 32-30s32 12 32 30Z'/%3E%3C/svg%3E";
 
 const DEFAULT_PROFILES = [
     {
@@ -24,7 +24,7 @@ const DEFAULT_PROFILES = [
         allergies: "Ninguna",
         medicalNotes: "Usa inhalador en caso de crisis asmática. Entregar únicamente a acudientes registrados.",
         school: "Gimnasio Campestre Los Laureles",
-        photoUrl: DEFAULT_BOY_PHOTO,
+        photoUrl: "https://images.unsplash.com/photo-1543332164-6e82f355badc?w=400&auto=format&fit=crop&q=80",
         active: true,
         createdAt: new Date().toISOString()
     },
@@ -43,7 +43,7 @@ const DEFAULT_PROFILES = [
         allergies: "Alergias leves a la penicilina",
         medicalNotes: "Lleva su carnet de vacunación completo.",
         school: "Colegio San José Infantil",
-        photoUrl: DEFAULT_GIRL_PHOTO,
+        photoUrl: "https://images.unsplash.com/photo-1595454223600-91fb272189d5?w=400&auto=format&fit=crop&q=80",
         active: true,
         createdAt: new Date().toISOString()
     },
@@ -62,7 +62,7 @@ const DEFAULT_PROFILES = [
         allergies: "Intolerancia a la lactosa",
         medicalNotes: "Utiliza gafas formuladas.",
         school: "Jardín Exploradores del Futuro",
-        photoUrl: DEFAULT_BOY_PHOTO,
+        photoUrl: "https://images.unsplash.com/photo-1519238263530-99bdd11df2ea?w=400&auto=format&fit=crop&q=80",
         active: true,
         createdAt: new Date().toISOString()
     },
@@ -81,7 +81,7 @@ const DEFAULT_PROFILES = [
         allergies: "Alergia al maní",
         medicalNotes: "Siempre porta su pulsera de identificación NFC.",
         school: "Jardín Infantil Mis Primeros Pasos",
-        photoUrl: DEFAULT_GIRL_PHOTO,
+        photoUrl: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400&auto=format&fit=crop&q=80",
         active: true,
         createdAt: new Date().toISOString()
     }
@@ -210,7 +210,7 @@ class AdminApp {
 
         grid.innerHTML = filtered.map(p => {
             const publicUrl = `${origin}/${p.slug}`;
-            const photo = p.photoUrl || (p.gender === 'girl' ? DEFAULT_GIRL_PHOTO : DEFAULT_BOY_PHOTO);
+            const photo = (p.photoUrl && p.photoUrl.trim() !== '') ? p.photoUrl : NEUTRAL_AVATAR_SVG;
 
             return `
                 <div class="admin-card ${!p.active ? 'is-inactive' : ''}">
@@ -347,7 +347,7 @@ class AdminApp {
         document.getElementById('form-save-profile').reset();
         document.getElementById('input-profile-id').value = '';
         document.getElementById('input-active').checked = true;
-        document.getElementById('photo-preview').src = DEFAULT_BOY_PHOTO;
+        document.getElementById('photo-preview').src = NEUTRAL_AVATAR_SVG;
         document.getElementById('input-whatsapp-msg').value = 'Hola, encontré la información del perfil de {nombre} y me gustaría comunicarme con sus padres.';
         document.getElementById('modal-profile').classList.remove('hidden');
     }
@@ -357,7 +357,7 @@ class AdminApp {
         if (!p) return;
 
         this.photoRemoved = false;
-        const defaultPhoto = p.gender === 'girl' ? DEFAULT_GIRL_PHOTO : DEFAULT_BOY_PHOTO;
+        const currentPhoto = (p.photoUrl && p.photoUrl.trim() !== '') ? p.photoUrl : NEUTRAL_AVATAR_SVG;
 
         document.getElementById('modal-title').innerHTML = `<i class="fa-solid fa-pen-to-square"></i> Editar Perfil de ${p.name}`;
         document.getElementById('input-profile-id').value = p.id;
@@ -374,8 +374,8 @@ class AdminApp {
         document.getElementById('input-maps-url').value = p.locationMapsUrl || '';
         document.getElementById('input-allergies').value = p.allergies || '';
         document.getElementById('input-notes').value = p.medicalNotes || '';
-        document.getElementById('input-photo-url').value = p.photoUrl || '';
-        document.getElementById('photo-preview').src = p.photoUrl || defaultPhoto;
+        document.getElementById('input-photo-url').value = (p.photoUrl && p.photoUrl !== NEUTRAL_AVATAR_SVG) ? p.photoUrl : '';
+        document.getElementById('photo-preview').src = currentPhoto;
         document.getElementById('input-active').checked = p.active;
 
         document.getElementById('modal-profile').classList.remove('hidden');
@@ -396,13 +396,19 @@ class AdminApp {
         slug = this.generateUniqueSlug(slug || name, id);
 
         const photoUrlInput = document.getElementById('input-photo-url').value.trim();
-        const defaultPhoto = gender === 'girl' ? DEFAULT_GIRL_PHOTO : DEFAULT_BOY_PHOTO;
 
         let finalPhoto;
         if (this.photoRemoved) {
-            finalPhoto = defaultPhoto;
+            finalPhoto = '';
         } else {
-            finalPhoto = photoUrlInput || document.getElementById('photo-preview').src || defaultPhoto;
+            const previewSrc = document.getElementById('photo-preview').src;
+            if (photoUrlInput) {
+                finalPhoto = photoUrlInput;
+            } else if (previewSrc && previewSrc !== NEUTRAL_AVATAR_SVG && !previewSrc.includes('data:image/svg+xml')) {
+                finalPhoto = previewSrc;
+            } else {
+                finalPhoto = '';
+            }
         }
 
         const profileData = {
@@ -505,16 +511,7 @@ class AdminApp {
         document.getElementById('input-photo-url')?.addEventListener('input', () => {
             this.photoRemoved = false;
             const url = document.getElementById('input-photo-url').value.trim();
-            if (url) {
-                document.getElementById('photo-preview').src = url;
-            }
-        });
-
-        document.getElementById('input-gender')?.addEventListener('change', (e) => {
-            if (this.photoRemoved || !document.getElementById('input-photo-url').value) {
-                const defaultPhoto = e.target.value === 'girl' ? DEFAULT_GIRL_PHOTO : DEFAULT_BOY_PHOTO;
-                document.getElementById('photo-preview').src = defaultPhoto;
-            }
+            document.getElementById('photo-preview').src = url || NEUTRAL_AVATAR_SVG;
         });
 
         // Photo file uploader with instant Canvas compression
@@ -540,13 +537,11 @@ class AdminApp {
             }
         });
 
-        // Remove Photo Button: Erases custom photo immediately & syncs to Cloud DB
+        // Remove Photo Button: Sets photoUrl = '' in Cloud DB immediately!
         document.getElementById('btn-remove-photo')?.addEventListener('click', async () => {
             this.photoRemoved = true;
-            const gender = document.getElementById('input-gender').value;
-            const defaultPhoto = gender === 'girl' ? DEFAULT_GIRL_PHOTO : DEFAULT_BOY_PHOTO;
             
-            if (previewImg) previewImg.src = defaultPhoto;
+            if (previewImg) previewImg.src = NEUTRAL_AVATAR_SVG;
             document.getElementById('input-photo-url').value = '';
             if (fileInput) fileInput.value = '';
 
@@ -554,13 +549,13 @@ class AdminApp {
             if (currentId) {
                 const profile = this.profiles.find(p => p.id === currentId);
                 if (profile) {
-                    profile.photoUrl = defaultPhoto;
+                    profile.photoUrl = '';
                     await this.pushToCloudDB();
                     this.renderProfilesGrid();
                 }
             }
 
-            this.showToast("¡Fotografía eliminada e inmediatamente guardada!");
+            this.showToast("¡Fotografía eliminada por completo!");
         });
     }
 

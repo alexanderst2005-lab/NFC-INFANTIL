@@ -269,9 +269,8 @@ class IsolatedProfileApp {
         // Avatar Photo
         const avatarEl = document.getElementById('p-avatar');
         if (avatarEl) {
-            avatarEl.src = profile.photoUrl || (profile.gender === 'girl' 
-                ? 'https://images.unsplash.com/photo-1595454223600-91fb272189d5?w=400&auto=format&fit=crop&q=80'
-                : 'https://images.unsplash.com/photo-1543332164-6e82f355badc?w=400&auto=format&fit=crop&q=80');
+            const neutralAvatar = "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='%2364748b'%3E%3Ccircle cx='50' cy='35' r='22'/%3E%3Cpath d='M18 85c0-18 14-30 32-30s32 12 32 30Z'/%3E%3C/svg%3E";
+            avatarEl.src = (profile.photoUrl && profile.photoUrl.trim() !== '') ? profile.photoUrl : neutralAvatar;
         }
 
         // WhatsApp Link Generator
