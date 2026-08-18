@@ -249,7 +249,7 @@ class ProfileApp {
     async syncFromCloudDB() {
         try {
             const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 2500);
+            const timeoutId = setTimeout(() => controller.abort(), 3000);
 
             const cacheBustUrl = `${CLOUD_DB_ENDPOINT}?t=${Date.now()}`;
             const res = await fetch(cacheBustUrl, { cache: 'no-store', signal: controller.signal });
@@ -257,10 +257,8 @@ class ProfileApp {
 
             if (res.ok) {
                 const jsonRes = await res.json();
-                const cloudProfiles = jsonRes && Array.isArray(jsonRes.profiles) ? jsonRes.profiles : [];
-
-                if (Array.isArray(cloudProfiles) && cloudProfiles.length > 0) {
-                    const sanitizedCloud = this.deduplicateProfiles(cloudProfiles);
+                if (jsonRes && Array.isArray(jsonRes.profiles)) {
+                    const sanitizedCloud = this.deduplicateProfiles(jsonRes.profiles);
                     if (JSON.stringify(sanitizedCloud) !== JSON.stringify(this.profiles)) {
                         this.profiles = sanitizedCloud;
                         this.saveProfilesLocal();
