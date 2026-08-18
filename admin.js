@@ -389,13 +389,6 @@ class AdminApp {
                 </div>
             `;
         }).join('');
-                        <button onclick="adminApp.deleteProfile('${p.id}')" class="btn btn-danger btn-sm" title="Eliminar Definitivamente" style="padding: 0.6rem 0.9rem;">
-                            <i class="fa-solid fa-trash"></i>
-                        </button>
-                    </div>
-                </div>
-            `;
-        }).join('');
 
         if (grid.innerHTML !== cardsHtml) {
             grid.innerHTML = cardsHtml;
