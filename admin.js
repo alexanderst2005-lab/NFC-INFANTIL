@@ -1,9 +1,9 @@
 /* ==========================================================================
-   NFC INFANTIL - ADMIN PANEL LOGIC (BULLETPROOF MERGE & CLOUD SYNC)
+   NFC INFANTIL - ADMIN PANEL LOGIC (RESTFUL API CLOUD DB SYNC + AUTO MERGE)
    ========================================================================== */
 
 const DEFAULT_PIN = "1234";
-const CLOUD_DB_ENDPOINT = "https://kvdb.io/NFCInfantil2026SecureKey/profiles_master_v3";
+const CLOUD_DB_ENDPOINT = "https://api.restful-api.dev/objects/ff8081819ff5b11001a0131229ea3dd5";
 
 const DEFAULT_PROFILES = [
     {
@@ -117,10 +117,10 @@ class AdminApp {
         localStorage.setItem('nfc_profiles_db', JSON.stringify(this.profiles));
     }
 
-    mergeProfiles(listA, listB) {
+    mergeProfiles(cloudList, localList) {
         const map = new Map();
-        (listA || []).forEach(p => p && p.id && map.set(p.id, p));
-        (listB || []).forEach(p => p && p.id && map.set(p.id, p));
+        (cloudList || []).forEach(p => p && p.id && map.set(p.id, p));
+        (localList || []).forEach(p => p && p.id && map.set(p.id, p));
         return Array.from(map.values());
     }
 
@@ -128,26 +128,30 @@ class AdminApp {
     async syncFromCloudDB() {
         try {
             const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 4000);
+            const timeoutId = setTimeout(() => controller.abort(), 4500);
 
             const res = await fetch(CLOUD_DB_ENDPOINT, { cache: 'no-cache', signal: controller.signal });
             clearTimeout(timeoutId);
 
             if (res.ok) {
-                const cloudData = await res.json();
-                if (Array.isArray(cloudData) && cloudData.length > 0) {
-                    // Merge local profiles with cloud profiles to never lose newly created ones
-                    this.profiles = this.mergeProfiles(cloudData, this.profiles);
-                    this.saveProfilesLocal();
-                    // Push merged list back to cloud
+                const jsonRes = await res.json();
+                const cloudProfiles = jsonRes && jsonRes.data && Array.isArray(jsonRes.data.profiles)
+                    ? jsonRes.data.profiles
+                    : [];
+
+                // Bidirectional merge so local profiles created on PC are NEVER overwritten
+                const merged = this.mergeProfiles(cloudProfiles, this.profiles);
+                this.profiles = merged;
+                this.saveProfilesLocal();
+
+                // If local had extra profiles not in cloud yet, push merged result to cloud
+                if (merged.length !== cloudProfiles.length) {
                     await this.pushToCloudDB();
-                    if (this.isAuthenticated) {
-                        this.renderProfilesGrid();
-                    }
                 }
-            } else {
-                // If cloud DB endpoint is fresh/empty, push current profiles to initialize it
-                await this.pushToCloudDB();
+
+                if (this.isAuthenticated) {
+                    this.renderProfilesGrid();
+                }
             }
         } catch (err) {
             console.log("Cloud sync load offline, using LocalStorage:", err);
@@ -158,13 +162,24 @@ class AdminApp {
         this.saveProfilesLocal();
         try {
             await fetch(CLOUD_DB_ENDPOINT, {
-                method: 'POST',
+                method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(this.profiles)
+                body: JSON.stringify({
+                    name: 'NFC_Infantil_DB_Store',
+                    data: { profiles: this.profiles }
+                })
             });
         } catch (err) {
             console.log("Cloud sync push error:", err);
         }
+    }
+
+    async forceSyncCloud() {
+        this.showToast("⏳ Sincronizando con la nube...");
+        await this.syncFromCloudDB();
+        await this.pushToCloudDB();
+        this.renderProfilesGrid();
+        this.showToast(`🟢 ¡Nube sincronizada! (${this.profiles.length} perfiles)`);
     }
 
     renderState() {

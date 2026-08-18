@@ -1,8 +1,8 @@
 /* ==========================================================================
-   NFC INFANTIL - PUBLIC SINGLE CHILD PROFILE VIEWER (MERGED CLOUD SYNC)
+   NFC INFANTIL - PUBLIC SINGLE CHILD PROFILE VIEWER (RESTFUL API CLOUD DB)
    ========================================================================== */
 
-const CLOUD_DB_ENDPOINT = "https://kvdb.io/NFCInfantil2026SecureKey/profiles_master_v3";
+const CLOUD_DB_ENDPOINT = "https://api.restful-api.dev/objects/ff8081819ff5b11001a0131229ea3dd5";
 
 const DEFAULT_PROFILES = [
     {
@@ -128,27 +128,29 @@ class IsolatedProfileApp {
         localStorage.setItem('nfc_profiles_db', JSON.stringify(this.profiles));
     }
 
-    mergeProfiles(listA, listB) {
+    mergeProfiles(cloudList, localList) {
         const map = new Map();
-        (listA || []).forEach(p => p && p.id && map.set(p.id, p));
-        (listB || []).forEach(p => p && p.id && map.set(p.id, p));
+        (cloudList || []).forEach(p => p && p.id && map.set(p.id, p));
+        (localList || []).forEach(p => p && p.id && map.set(p.id, p));
         return Array.from(map.values());
     }
 
     async syncFromCloudDB() {
         try {
             const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 4000);
+            const timeoutId = setTimeout(() => controller.abort(), 4500);
 
             const res = await fetch(CLOUD_DB_ENDPOINT, { cache: 'no-cache', signal: controller.signal });
             clearTimeout(timeoutId);
 
             if (res.ok) {
-                const cloudData = await res.json();
-                if (Array.isArray(cloudData) && cloudData.length > 0) {
-                    this.profiles = this.mergeProfiles(cloudData, this.profiles);
-                    this.saveProfilesLocal();
-                }
+                const jsonRes = await res.json();
+                const cloudProfiles = jsonRes && jsonRes.data && Array.isArray(jsonRes.data.profiles)
+                    ? jsonRes.data.profiles
+                    : [];
+
+                this.profiles = this.mergeProfiles(cloudProfiles, this.profiles);
+                this.saveProfilesLocal();
             }
         } catch (err) {
             console.log("Cloud sync load offline, using LocalStorage:", err);
