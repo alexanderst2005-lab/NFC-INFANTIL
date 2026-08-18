@@ -510,6 +510,19 @@ class AdminApp {
                 reader.readAsDataURL(file);
             }
         });
+
+        // Remove Photo Button
+        document.getElementById('btn-remove-photo')?.addEventListener('click', () => {
+            const gender = document.getElementById('input-gender').value;
+            const defaultPhoto = gender === 'girl' 
+                ? 'https://images.unsplash.com/photo-1595454223600-91fb272189d5?w=400&auto=format&fit=crop&q=80'
+                : 'https://images.unsplash.com/photo-1543332164-6e82f355badc?w=400&auto=format&fit=crop&q=80';
+            
+            if (previewImg) previewImg.src = defaultPhoto;
+            document.getElementById('input-photo-url').value = '';
+            if (fileInput) fileInput.value = '';
+            this.showToast("Fotografía removida.");
+        });
     }
 
     showToast(msg) {

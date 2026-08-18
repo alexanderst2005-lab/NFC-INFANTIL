@@ -1215,3 +1215,24 @@ input:checked + .slider:before { transform: translateX(20px); }
     border-radius: var(--radius-md);
 }
 
+.btn-remove-photo {
+    background: rgba(239, 68, 68, 0.15);
+    color: #f87171;
+    border: 1px solid rgba(239, 68, 68, 0.35);
+    padding: 0.6rem 1rem;
+    border-radius: var(--radius-md);
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    transition: var(--transition);
+    flex-shrink: 0;
+}
+.btn-remove-photo:hover {
+    background: #ef4444;
+    color: #ffffff;
+    border-color: #ef4444;
+}
+
