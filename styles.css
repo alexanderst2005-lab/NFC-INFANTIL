@@ -47,12 +47,15 @@ body.theme-girl {
 /* PET THEME (🐾 Warm Organic Beige, Forest Green & Paw Decorators) */
 html.theme-pet,
 html.theme-pet body,
-body.theme-pet {
-    --bg-page: linear-gradient(180deg, #f4efe4 0%, #e6decb 35%, #d8cdb4 100%);
-    --card-bg: #fffdf7;
-    --text-title: #1c3818;
-    --text-sub: #4a5d3e;
-    background: #e6decb !important;
+body.theme-pet,
+html[class*="theme-pet"],
+body[class*="theme-pet"] {
+    --bg-page: linear-gradient(180deg, #f4efe4 0%, #e6decb 35%, #d8cdb4 100%) !important;
+    --card-bg: #fffdf7 !important;
+    --text-title: #1c3818 !important;
+    --text-sub: #4a5d3e !important;
+    background: linear-gradient(180deg, #f4efe4 0%, #e6decb 35%, #d8cdb4 100%) !important;
+    background-color: #e6decb !important;
 }
 
 * {
@@ -367,37 +370,37 @@ body.theme-pet .deco-bottom-right { color: #84a955; }
 
 html.theme-pet .profile-card,
 body.theme-pet .profile-card {
-    background: #fffdf7;
-    border: 2px solid #a4c27b;
-    box-shadow: 0 25px 60px rgba(45, 90, 39, 0.22);
+    background: #fffdf7 !important;
+    border: 2px solid #a4c27b !important;
+    box-shadow: 0 25px 60px rgba(45, 90, 39, 0.22) !important;
 }
 
 html.theme-pet .brand-shield-icon,
 body.theme-pet .brand-shield-icon {
-    background: linear-gradient(135deg, #2d5a27 0%, #5e8c31 100%);
-    box-shadow: 0 4px 12px rgba(45, 90, 39, 0.3);
+    background: linear-gradient(135deg, #2d5a27 0%, #5e8c31 100%) !important;
+    box-shadow: 0 4px 12px rgba(45, 90, 39, 0.3) !important;
 }
 
 html.theme-pet .verified-badge-pill,
 body.theme-pet .verified-badge-pill {
-    background: #eaf4df;
-    color: #2d5a27;
-    border-color: #a4c27b;
+    background: #eaf4df !important;
+    color: #2d5a27 !important;
+    border-color: #a4c27b !important;
 }
 
 html.theme-pet .arch-photo-container,
 body.theme-pet .arch-photo-container {
-    border: 5px solid #2d5a27;
-    box-shadow: 0 16px 40px rgba(45, 90, 39, 0.3), 0 0 0 5px rgba(94, 140, 49, 0.4);
-    border-radius: 50%;
+    border: 5px solid #2d5a27 !important;
+    box-shadow: 0 16px 40px rgba(45, 90, 39, 0.3), 0 0 0 5px rgba(94, 140, 49, 0.4) !important;
+    border-radius: 50% !important;
 }
 
 html.theme-pet .security-ribbon,
 body.theme-pet .security-ribbon {
-    background: linear-gradient(135deg, #2d5a27 0%, #1e401b 100%);
-    color: #ffffff;
-    box-shadow: 0 6px 16px rgba(45, 90, 39, 0.35);
-    border: 1px solid #5e8c31;
+    background: linear-gradient(135deg, #2d5a27 0%, #1e401b 100%) !important;
+    color: #ffffff !important;
+    box-shadow: 0 6px 16px rgba(45, 90, 39, 0.35) !important;
+    border: 1px solid #5e8c31 !important;
 }
 
 html.theme-pet .btn-whatsapp,
