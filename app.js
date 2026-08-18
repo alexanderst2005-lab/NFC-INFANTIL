@@ -1,8 +1,8 @@
 /* ==========================================================================
-   NFC INFANTIL - PUBLIC SINGLE CHILD PROFILE VIEWER (RESTFUL API CLOUD DB)
+   NFC INFANTIL - PUBLIC SINGLE CHILD PROFILE VIEWER (SAME-ORIGIN CLOUD DB)
    ========================================================================== */
 
-const CLOUD_DB_ENDPOINT = "https://api.restful-api.dev/objects/ff8081819ff5b11001a0131229ea3dd5";
+const CLOUD_DB_ENDPOINT = "/api/sync";
 
 const DEFAULT_PROFILES = [
     {
@@ -145,9 +145,7 @@ class IsolatedProfileApp {
 
             if (res.ok) {
                 const jsonRes = await res.json();
-                const cloudProfiles = jsonRes && jsonRes.data && Array.isArray(jsonRes.data.profiles)
-                    ? jsonRes.data.profiles
-                    : [];
+                const cloudProfiles = jsonRes && Array.isArray(jsonRes.profiles) ? jsonRes.profiles : [];
 
                 this.profiles = this.mergeProfiles(cloudProfiles, this.profiles);
                 this.saveProfilesLocal();

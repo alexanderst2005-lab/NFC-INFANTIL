@@ -1,9 +1,9 @@
 /* ==========================================================================
-   NFC INFANTIL - ADMIN PANEL LOGIC (RESTFUL API CLOUD DB SYNC + AUTO MERGE)
+   NFC INFANTIL - ADMIN PANEL LOGIC (SAME-ORIGIN VERCEL SERVERLESS SYNC)
    ========================================================================== */
 
 const DEFAULT_PIN = "1234";
-const CLOUD_DB_ENDPOINT = "https://api.restful-api.dev/objects/ff8081819ff5b11001a0131229ea3dd5";
+const CLOUD_DB_ENDPOINT = "/api/sync";
 
 const DEFAULT_PROFILES = [
     {
@@ -135,17 +135,14 @@ class AdminApp {
 
             if (res.ok) {
                 const jsonRes = await res.json();
-                const cloudProfiles = jsonRes && jsonRes.data && Array.isArray(jsonRes.data.profiles)
-                    ? jsonRes.data.profiles
-                    : [];
+                const cloudProfiles = jsonRes && Array.isArray(jsonRes.profiles) ? jsonRes.profiles : [];
 
-                // Bidirectional merge so local profiles created on PC are NEVER overwritten
                 const merged = this.mergeProfiles(cloudProfiles, this.profiles);
                 this.profiles = merged;
                 this.saveProfilesLocal();
 
-                // If local had extra profiles not in cloud yet, push merged result to cloud
-                if (merged.length !== cloudProfiles.length) {
+                // If local profiles had new items, push merged list to Vercel Serverless Sync
+                if (merged.length > cloudProfiles.length || cloudProfiles.length === 0) {
                     await this.pushToCloudDB();
                 }
 
@@ -162,12 +159,9 @@ class AdminApp {
         this.saveProfilesLocal();
         try {
             await fetch(CLOUD_DB_ENDPOINT, {
-                method: 'PUT',
+                method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    name: 'NFC_Infantil_DB_Store',
-                    data: { profiles: this.profiles }
-                })
+                body: JSON.stringify({ profiles: this.profiles })
             });
         } catch (err) {
             console.log("Cloud sync push error:", err);
@@ -175,9 +169,9 @@ class AdminApp {
     }
 
     async forceSyncCloud() {
-        this.showToast("⏳ Sincronizando con la nube...");
-        await this.syncFromCloudDB();
+        this.showToast("⏳ Sincronizando perfiles...");
         await this.pushToCloudDB();
+        await this.syncFromCloudDB();
         this.renderProfilesGrid();
         this.showToast(`🟢 ¡Nube sincronizada! (${this.profiles.length} perfiles)`);
     }
