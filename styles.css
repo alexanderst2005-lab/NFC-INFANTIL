@@ -970,25 +970,30 @@ body.theme-girl .scene-item {
     border-radius: 10px;
 }
 
-/* Scroll Lock for Background when Modal is Active */
+/* Scroll Lock & Hide Background Panel when Modal is Active */
 body.modal-open {
     overflow: hidden !important;
     height: 100vh !important;
     touch-action: none;
 }
 
-/* Modal Form Overlay */
+body.modal-open .app-header,
+body.modal-open .container {
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
+/* Modal Form Overlay - 100% Solid Clean View */
 .modal-overlay {
     position: fixed;
     top: 0; left: 0;
     width: 100vw; height: 100vh;
-    background: rgba(7, 13, 24, 0.9);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
+    background: #070d18 !important;
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 99999;
+    z-index: 999999;
     padding: 1rem;
 }
 .modal-container {
