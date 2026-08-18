@@ -383,7 +383,7 @@ class AdminApp {
         this.showToast(`¡Perfil de ${name} guardado! URL: /${slug}`);
     }
 
-    compressImage(base64Data, maxWidth = 300, quality = 0.75) {
+    compressImage(base64Data, maxWidth = 200, quality = 0.65) {
         return new Promise((resolve) => {
             const img = new Image();
             img.onload = () => {

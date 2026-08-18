@@ -26,7 +26,7 @@ function getCloudDb() {
             });
         });
         req.on('error', () => resolve([]));
-        req.setTimeout(4000, () => { req.destroy(); resolve([]); });
+        req.setTimeout(4500, () => { req.destroy(); resolve([]); });
     });
 }
 
@@ -45,7 +45,7 @@ function updateCloudDb(profiles) {
             res.on('end', () => resolve(true));
         });
         req.on('error', () => resolve(false));
-        req.setTimeout(4000, () => { req.destroy(); resolve(false); });
+        req.setTimeout(4500, () => { req.destroy(); resolve(false); });
         req.write(payload);
         req.end();
     });
@@ -68,18 +68,24 @@ export default async function handler(req, res) {
 
     try {
         if (req.method === 'POST' || req.method === 'PUT') {
-            const body = req.body;
-            let incomingProfiles = null;
+            let body = req.body;
+            if (typeof body === 'string') {
+                try {
+                    body = JSON.parse(body);
+                } catch (e) {}
+            }
 
+            let incomingProfiles = null;
             if (Array.isArray(body)) {
                 incomingProfiles = body;
             } else if (body && Array.isArray(body.profiles)) {
                 incomingProfiles = body.profiles;
             }
 
-            if (incomingProfiles !== null) {
+            if (incomingProfiles !== null && incomingProfiles.length > 0) {
                 await updateCloudDb(incomingProfiles);
             }
+
             return res.status(200).json({ success: true, profiles: incomingProfiles || [] });
         }
 
