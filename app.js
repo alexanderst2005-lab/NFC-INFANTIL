@@ -151,6 +151,10 @@ class ProfileApp {
         }
 
         let schoolMapsUrl = (p.schoolMapsUrl !== undefined && p.schoolMapsUrl !== null) ? String(p.schoolMapsUrl).trim() : '';
+        let school = (p.school !== undefined && p.school !== null) ? String(p.school).trim() : '';
+        let grade = (p.grade !== undefined && p.grade !== null) ? String(p.grade).trim() : '';
+        let medicalConditions = (p.medicalConditions !== undefined && p.medicalConditions !== null) ? String(p.medicalConditions).trim() : '';
+
         const birthDate = p.birthDate ? String(p.birthDate).trim() : (baseDefault && baseDefault.birthDate ? baseDefault.birthDate : '');
         const computedAge = this.calculateAgeFromBirthDate(birthDate, p.age !== undefined ? p.age : (baseDefault ? baseDefault.age : 5));
 
@@ -166,6 +170,9 @@ class ProfileApp {
             whatsappMessage: (p.whatsappMessage && String(p.whatsappMessage).trim() !== '') ? String(p.whatsappMessage).trim() : (baseDefault ? baseDefault.whatsappMessage : 'Hola, encontré la información del perfil de {nombre}.'),
             locationMapsUrl: locationMapsUrl,
             schoolMapsUrl: schoolMapsUrl,
+            school: school,
+            grade: grade,
+            medicalConditions: medicalConditions,
             photoUrl: (p.photoUrl && String(p.photoUrl).trim() !== '' && String(p.photoUrl) !== 'undefined') ? String(p.photoUrl).trim() : '',
             active: true,
             createdAt: p.createdAt || new Date().toISOString()
@@ -505,9 +512,13 @@ class ProfileApp {
         const schoolValEl = document.getElementById('p-school');
         if (profile.school && String(profile.school).trim() !== '') {
             if (schoolValEl) schoolValEl.textContent = profile.school.trim();
-            if (schoolBoxEl) schoolBoxEl.classList.remove('hidden');
+            if (schoolBoxEl) {
+                schoolBoxEl.classList.remove('hidden');
+                schoolBoxEl.style.display = 'flex';
+            }
         } else if (schoolBoxEl) {
             schoolBoxEl.classList.add('hidden');
+            schoolBoxEl.style.display = 'none';
         }
 
         // 2. Grade Optional Box
@@ -515,9 +526,13 @@ class ProfileApp {
         const gradeValEl = document.getElementById('p-grade');
         if (profile.grade && String(profile.grade).trim() !== '') {
             if (gradeValEl) gradeValEl.textContent = profile.grade.trim();
-            if (gradeBoxEl) gradeBoxEl.classList.remove('hidden');
+            if (gradeBoxEl) {
+                gradeBoxEl.classList.remove('hidden');
+                gradeBoxEl.style.display = 'flex';
+            }
         } else if (gradeBoxEl) {
             gradeBoxEl.classList.add('hidden');
+            gradeBoxEl.style.display = 'none';
         }
 
         // 3. Medical / Special Care Notes Optional Box
@@ -525,9 +540,13 @@ class ProfileApp {
         const medicalValEl = document.getElementById('p-medical-notes');
         if (profile.medicalConditions && String(profile.medicalConditions).trim() !== '') {
             if (medicalValEl) medicalValEl.textContent = profile.medicalConditions.trim();
-            if (medicalBoxEl) medicalBoxEl.classList.remove('hidden');
+            if (medicalBoxEl) {
+                medicalBoxEl.classList.remove('hidden');
+                medicalBoxEl.style.display = 'block';
+            }
         } else if (medicalBoxEl) {
             medicalBoxEl.classList.add('hidden');
+            medicalBoxEl.style.display = 'none';
         }
 
         // Update Mockup Deco Icons per Gender
