@@ -106,6 +106,17 @@ class ProfileApp {
             ? String(p.slug).trim() 
             : (baseDefault ? baseDefault.slug : name.toLowerCase().replace(/[^a-z0-9]/g, '-'));
 
+        // Purge old demo Google Maps URLs out of localStorage
+        let locationMapsUrl = (p.locationMapsUrl !== undefined && p.locationMapsUrl !== null) ? String(p.locationMapsUrl).trim() : '';
+        if (locationMapsUrl.includes('maps.google.com/?q=4.6853') || 
+            locationMapsUrl.includes('maps.google.com/?q=6.2088') || 
+            locationMapsUrl.includes('maps.google.com/?q=4.6581') || 
+            locationMapsUrl.includes('maps.google.com/?q=3.4516')) {
+            locationMapsUrl = '';
+        }
+
+        let schoolMapsUrl = (p.schoolMapsUrl !== undefined && p.schoolMapsUrl !== null) ? String(p.schoolMapsUrl).trim() : '';
+
         return {
             id: p.id || `prof-${Date.now()}`,
             slug: slug,
@@ -115,8 +126,8 @@ class ProfileApp {
             bloodType: (p.bloodType && String(p.bloodType).trim() !== '' && String(p.bloodType) !== 'undefined') ? String(p.bloodType).trim() : (baseDefault ? baseDefault.bloodType : 'O+'),
             parentPhone: (p.parentPhone && String(p.parentPhone).trim() !== '' && String(p.parentPhone) !== 'undefined') ? String(p.parentPhone).trim() : (baseDefault ? baseDefault.parentPhone : ''),
             whatsappMessage: (p.whatsappMessage && String(p.whatsappMessage).trim() !== '') ? String(p.whatsappMessage).trim() : (baseDefault ? baseDefault.whatsappMessage : 'Hola, encontré la información del perfil de {nombre}.'),
-            locationMapsUrl: (p.locationMapsUrl !== undefined && p.locationMapsUrl !== null) ? String(p.locationMapsUrl).trim() : '',
-            schoolMapsUrl: (p.schoolMapsUrl !== undefined && p.schoolMapsUrl !== null) ? String(p.schoolMapsUrl).trim() : '',
+            locationMapsUrl: locationMapsUrl,
+            schoolMapsUrl: schoolMapsUrl,
             photoUrl: (p.photoUrl && String(p.photoUrl).trim() !== '' && String(p.photoUrl) !== 'undefined') ? String(p.photoUrl).trim() : '',
             active: true,
             createdAt: p.createdAt || new Date().toISOString()
@@ -138,8 +149,8 @@ class ProfileApp {
             }
         } else {
             this.profiles = DEFAULT_PROFILES.map(p => this.sanitizeProfile(p)).filter(Boolean);
-            localStorage.setItem('nfc_profiles_db', JSON.stringify(this.profiles));
         }
+        this.saveProfilesLocal();
     }
 
     saveProfilesLocal() {
