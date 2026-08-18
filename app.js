@@ -74,13 +74,13 @@ class ProfileApp {
         const targetSlug = this.getSlugFromUrl();
         this.loadProfilesLocal();
 
-        // Render immediately from local memory/storage if available
+        // 1. Render immediately from local memory
         this.renderSingleProfile(targetSlug);
 
-        // Fetch latest Cloud DB automatically
+        // 2. Fetch latest Cloud DB automatically
         await this.syncFromCloudDB();
 
-        // Re-render immediately with updated authoritative cloud data
+        // 3. Re-render immediately with updated cloud data
         this.renderSingleProfile(targetSlug);
     }
 
@@ -126,7 +126,6 @@ class ProfileApp {
         }
     }
 
-    // Client Router: Extracts URL Slug (/samuel, /arias-santi, ?slug=samuel, or ?p=samuel)
     getSlugFromUrl() {
         let rawPath = window.location.pathname;
         try {
@@ -141,10 +140,10 @@ class ProfileApp {
             slug = urlParams.get('slug');
         } else if (urlParams.has('p')) {
             slug = urlParams.get('p');
-        } else if (path !== '/' && path !== '/index.html') {
+        } else if (path !== '' && path !== '/' && path !== '/index.html' && path !== '/admin' && path !== '/admin.html') {
             slug = path.substring(1);
         } else {
-            slug = 'samuel';
+            slug = '';
         }
 
         try {
@@ -155,19 +154,25 @@ class ProfileApp {
     }
 
     findProfileBySlug(rawSlug) {
-        if (!rawSlug) rawSlug = 'samuel';
+        if (!this.profiles || this.profiles.length === 0) {
+            return null;
+        }
 
-        let decoded = rawSlug;
+        let decoded = rawSlug || '';
         try {
-            decoded = decodeURIComponent(rawSlug);
+            decoded = decodeURIComponent(decoded);
         } catch(e) {}
 
-        // Clean slug string (e.g. "arias-santi" or "Arias santi")
         const cleanSlug = decoded.toLowerCase().trim()
             .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
             .replace(/^\/+|\/+$/g, '')
             .replace(/\.html$/, '')
             .replace(/[^a-z0-9]/g, '-');
+
+        // If no slug specified or root, return first profile
+        if (!cleanSlug) {
+            return this.profiles[0];
+        }
 
         // 1. Direct exact slug match
         let profile = this.profiles.find(p => {
@@ -197,16 +202,20 @@ class ProfileApp {
         // 4. Fallback: match slug substring
         if (!profile) {
             profile = this.profiles.find(p => {
-                if (!p) return false;
-                const pSlug = (p.slug || '').toLowerCase();
+                if (!p || !p.slug) return false;
+                const pSlug = p.slug.toLowerCase().trim().replace(/[^a-z0-9]/g, '-');
                 return pSlug && (pSlug.includes(cleanSlug) || cleanSlug.includes(pSlug));
             });
+        }
+
+        // 5. Fallback: If still no match, default to first profile
+        if (!profile) {
+            profile = this.profiles[0];
         }
 
         return profile;
     }
 
-    // Renders strictly the single child profile corresponding to the URL
     renderSingleProfile(rawSlug) {
         const profile = this.findProfileBySlug(rawSlug);
 
@@ -214,10 +223,7 @@ class ProfileApp {
         const inactiveView = document.getElementById('view-inactive');
 
         if (!profile) {
-            let cleanSlug = (rawSlug || 'samuel').toLowerCase().trim();
-            try { cleanSlug = decodeURIComponent(cleanSlug); } catch(e){}
-            cleanSlug = cleanSlug.replace(/^\/+|\/+$/g, '').replace(/\.html$/, '');
-            this.showInactive("Perfil No Encontrado", `No existe ningún perfil registrado con el enlace '/${cleanSlug}'.`);
+            this.showInactive("Perfil No Encontrado", `No existe ningún perfil registrado.`);
             return;
         }
 
@@ -273,9 +279,9 @@ class ProfileApp {
                 const formattedMsg = customMsg.replace('{nombre}', profile.name);
                 const waCleanPhone = profile.parentPhone.replace(/[^0-9]/g, '');
                 waBtn.href = `https://wa.me/${waCleanPhone}?text=${encodeURIComponent(formattedMsg)}`;
-                waBtn.parentElement.style.display = 'block';
+                waBtn.style.display = 'inline-flex';
             } else {
-                waBtn.parentElement.style.display = 'none';
+                waBtn.style.display = 'none';
             }
         }
 
@@ -285,9 +291,9 @@ class ProfileApp {
             if (profile.locationMapsUrl && profile.locationMapsUrl.trim() !== '') {
                 const url = profile.locationMapsUrl.trim();
                 mapsBtn.href = url.startsWith('http') ? url : `https://maps.google.com/?q=${encodeURIComponent(url)}`;
-                mapsBtn.parentElement.style.display = 'block';
+                mapsBtn.style.display = 'inline-flex';
             } else {
-                mapsBtn.parentElement.style.display = 'none';
+                mapsBtn.style.display = 'none';
             }
         }
     }
@@ -300,9 +306,9 @@ class ProfileApp {
         if (inactiveView) inactiveView.classList.add('active-view');
 
         const titleEl = document.getElementById('inactive-title');
-        const msgEl = document.getElementById('inactive-msg');
+        const descEl = document.getElementById('inactive-desc');
         if (titleEl) titleEl.textContent = title;
-        if (msgEl) msgEl.textContent = message;
+        if (descEl) descEl.textContent = message;
     }
 
     renderFloatingDecorators(gender) {
