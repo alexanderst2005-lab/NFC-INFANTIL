@@ -278,16 +278,10 @@ class AdminApp {
                                 <i class="fa-solid fa-phone" style="color: #34d399;"></i>
                                 <span>${p.parentPhone ? '+' + p.parentPhone : 'Sin WhatsApp'}</span>
                             </div>
-                            ${p.locationMapsUrl ? `
+                            ${(p.locationMapsUrl && p.locationMapsUrl.trim() !== '') ? `
                             <div class="meta-item meta-item-full">
-                                <i class="fa-solid fa-house-user" style="color: #fbbf24;"></i>
-                                <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px;">Casa: ${p.locationMapsUrl}</span>
-                            </div>
-                            ` : ''}
-                            ${p.schoolMapsUrl ? `
-                            <div class="meta-item meta-item-full">
-                                <i class="fa-solid fa-school" style="color: #f59e0b;"></i>
-                                <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px;">Colegio: ${p.schoolMapsUrl}</span>
+                                <i class="fa-solid fa-location-dot" style="color: #fbbf24;"></i>
+                                <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px;">${p.locationMapsUrl}</span>
                             </div>
                             ` : ''}
                         </div>
