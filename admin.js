@@ -1,5 +1,5 @@
 /* ==========================================================================
-   NFC INFANTIL - ADMIN PANEL LOGIC (100% MATCHED TO PUBLIC CHILD PROFILE)
+   NFC INFANTIL - ADMIN PANEL LOGIC (SANITY-CHECKED REAL-TIME CLOUD DB)
    ========================================================================== */
 
 const DEFAULT_PIN = "1234";
@@ -82,17 +82,45 @@ class AdminApp {
         await this.syncFromCloudDB();
     }
 
+    sanitizeProfile(p) {
+        if (!p) return null;
+        const name = (p.name && String(p.name).trim() !== '' && String(p.name).trim() !== 'undefined') ? String(p.name).trim() : 'Perfil';
+        
+        let slug = (p.slug && String(p.slug).trim() !== '' && String(p.slug).trim() !== 'undefined') 
+            ? String(p.slug).trim() 
+            : this.generateUniqueSlug(name, p.id);
+
+        return {
+            id: p.id || `prof-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
+            slug: slug,
+            name: name,
+            gender: p.gender === 'girl' ? 'girl' : 'boy',
+            age: parseInt(p.age) > 0 ? parseInt(p.age) : 5,
+            bloodType: (p.bloodType && String(p.bloodType).trim() !== '' && String(p.bloodType) !== 'undefined') ? String(p.bloodType).trim() : 'O+',
+            parentPhone: (p.parentPhone && String(p.parentPhone).trim() !== '' && String(p.parentPhone) !== 'undefined') ? String(p.parentPhone).trim() : '',
+            whatsappMessage: (p.whatsappMessage && String(p.whatsappMessage).trim() !== '') ? String(p.whatsappMessage).trim() : 'Hola, encontré la información del perfil de {nombre}.',
+            locationMapsUrl: (p.locationMapsUrl && String(p.locationMapsUrl).trim() !== '') ? String(p.locationMapsUrl).trim() : '',
+            photoUrl: (p.photoUrl && String(p.photoUrl).trim() !== '' && String(p.photoUrl) !== 'undefined') ? String(p.photoUrl).trim() : '',
+            active: true,
+            createdAt: p.createdAt || new Date().toISOString()
+        };
+    }
+
     loadProfilesLocal() {
         const stored = localStorage.getItem('nfc_profiles_db');
         if (stored) {
             try {
                 const parsed = JSON.parse(stored);
-                this.profiles = parsed && parsed.length > 0 ? parsed : DEFAULT_PROFILES;
+                if (Array.isArray(parsed) && parsed.length > 0) {
+                    this.profiles = parsed.map(p => this.sanitizeProfile(p)).filter(Boolean);
+                } else {
+                    this.profiles = DEFAULT_PROFILES.map(p => this.sanitizeProfile(p)).filter(Boolean);
+                }
             } catch (e) {
-                this.profiles = DEFAULT_PROFILES;
+                this.profiles = DEFAULT_PROFILES.map(p => this.sanitizeProfile(p)).filter(Boolean);
             }
         } else {
-            this.profiles = DEFAULT_PROFILES;
+            this.profiles = DEFAULT_PROFILES.map(p => this.sanitizeProfile(p)).filter(Boolean);
         }
     }
 
@@ -114,7 +142,8 @@ class AdminApp {
                 const cloudProfiles = jsonRes && Array.isArray(jsonRes.profiles) ? jsonRes.profiles : [];
 
                 if (cloudProfiles.length > 0) {
-                    this.profiles = cloudProfiles;
+                    // Sanitize all cloud profiles so no undefined values ever exist
+                    this.profiles = cloudProfiles.map(p => this.sanitizeProfile(p)).filter(Boolean);
                     this.saveProfilesLocal();
                 } else if (this.profiles.length > 0) {
                     await this.pushToCloudDB();
@@ -190,20 +219,19 @@ class AdminApp {
 
             return `
                 <div class="admin-card">
-                    <!-- Card Top Header -->
+                    <!-- Clean Header (Avatar Left, Name & Gender Pill Right) -->
                     <div class="admin-card-header">
-                        <div class="avatar-wrapper">
-                            <img src="${photo}" alt="${p.name}" class="admin-card-avatar" style="${p.gender === 'girl' ? 'border-color: #f472b6;' : ''}">
-                            <span class="gender-tag ${p.gender === 'girl' ? 'tag-girl' : 'tag-boy'}">
-                                ${p.gender === 'girl' ? '👧 Tema Niña (Rosa)' : '👦 Tema Niño (Azul)'}
+                        <img src="${photo}" alt="${p.name}" class="admin-card-avatar" style="${p.gender === 'girl' ? 'border-color: #f472b6;' : ''}">
+                        <div class="admin-card-header-info">
+                            <h4 class="admin-card-name" title="${p.name}">${p.name}</h4>
+                            <span class="gender-pill ${p.gender === 'girl' ? 'pill-girl' : 'pill-boy'}">
+                                ${p.gender === 'girl' ? '👧 Niña (Rosa)' : '👦 Niño (Azul)'}
                             </span>
                         </div>
                     </div>
 
                     <!-- Card Body Info -->
                     <div class="admin-card-body">
-                        <h4 class="admin-card-name">${p.name}</h4>
-                        
                         <!-- URL Link Pill Bar -->
                         <div class="url-pill-bar">
                             <span class="url-slug-text">/${p.slug}</span>
@@ -212,10 +240,10 @@ class AdminApp {
                             </button>
                         </div>
 
-                        <!-- Metadata Badges Grid -->
+                        <!-- Metadata Grid -->
                         <div class="card-meta-grid">
                             <div class="meta-item">
-                                <i class="fa-solid fa-calendar-day"></i>
+                                <i class="fa-solid fa-calendar-day" style="color: var(--accent-main);"></i>
                                 <span>${p.age} Años</span>
                             </div>
                             <div class="meta-item">
@@ -223,13 +251,13 @@ class AdminApp {
                                 <span>${p.bloodType}</span>
                             </div>
                             <div class="meta-item meta-item-full">
-                                <i class="fa-solid fa-phone"></i>
-                                <span>+${p.parentPhone || 'Sin WhatsApp'}</span>
+                                <i class="fa-solid fa-phone" style="color: #34d399;"></i>
+                                <span>${p.parentPhone ? '+' + p.parentPhone : 'Sin WhatsApp'}</span>
                             </div>
                             ${p.locationMapsUrl ? `
                             <div class="meta-item meta-item-full">
-                                <i class="fa-solid fa-location-dot"></i>
-                                <span>${p.locationMapsUrl}</span>
+                                <i class="fa-solid fa-location-dot" style="color: #fbbf24;"></i>
+                                <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px;">${p.locationMapsUrl}</span>
                             </div>
                             ` : ''}
                         </div>
@@ -237,14 +265,12 @@ class AdminApp {
 
                     <!-- Card Footer Actions -->
                     <div class="admin-card-footer">
-                        <div class="footer-btn-group" style="width: 100%; justify-content: flex-end;">
-                            <button onclick="adminApp.openEditModal('${p.id}')" class="btn btn-secondary btn-sm">
-                                <i class="fa-solid fa-pen-to-square"></i> Editar
-                            </button>
-                            <button onclick="adminApp.deleteProfile('${p.id}')" class="btn btn-danger btn-sm" title="Eliminar Definitivamente">
-                                <i class="fa-solid fa-trash"></i>
-                            </button>
-                        </div>
+                        <button onclick="adminApp.openEditModal('${p.id}')" class="btn btn-secondary btn-sm" style="flex: 1;">
+                            <i class="fa-solid fa-pen-to-square"></i> Editar Perfil
+                        </button>
+                        <button onclick="adminApp.deleteProfile('${p.id}')" class="btn btn-danger btn-sm" title="Eliminar Definitivamente">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
                     </div>
                 </div>
             `;
@@ -272,7 +298,7 @@ class AdminApp {
     }
 
     generateUniqueSlug(name, currentId = null) {
-        let baseSlug = name.toLowerCase()
+        let baseSlug = (name || 'perfil').toLowerCase()
             .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
             .replace(/[^a-z0-9]/g, '-')
             .replace(/-+/g, '-')
@@ -354,7 +380,7 @@ class AdminApp {
             }
         }
 
-        const profileData = {
+        const rawProfile = {
             id: id || `prof-${Date.now()}`,
             slug: slug,
             name: name,
@@ -368,6 +394,8 @@ class AdminApp {
             active: true,
             createdAt: new Date().toISOString()
         };
+
+        const profileData = this.sanitizeProfile(rawProfile);
 
         if (id) {
             const idx = this.profiles.findIndex(p => p.id === id);
