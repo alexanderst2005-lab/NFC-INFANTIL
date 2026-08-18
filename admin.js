@@ -407,7 +407,8 @@ class AdminApp {
         const origin = window.location.origin;
 
         const cardsHtml = filtered.map(p => {
-            const publicUrl = `${origin}/${p.slug}`;
+            const genderParam = p.gender === 'pet' ? '?gender=pet' : (p.gender === 'girl' ? '?gender=girl' : '');
+            const publicUrl = `${origin}/${p.slug}${genderParam}`;
             const photo = (p.photoUrl && p.photoUrl.trim() !== '') ? p.photoUrl : NEUTRAL_AVATAR_SVG;
 
             let avatarBorder = '';
@@ -419,7 +420,7 @@ class AdminApp {
                 pillClass = 'pill-girl';
                 pillText = '👧 Niña';
             } else if (p.gender === 'pet') {
-                avatarBorder = 'border-color: #10b981;';
+                avatarBorder = 'border-color: #5e8c31;';
                 pillClass = 'pill-pet';
                 pillText = '🐾 Mascota';
             }
@@ -483,7 +484,7 @@ class AdminApp {
                         <button onclick="adminApp.openEditModal('${p.id}')" class="btn btn-primary btn-sm" style="flex: 1;">
                             <i class="fa-solid fa-pen-to-square"></i> Editar
                         </button>
-                        <a href="/${p.slug}" target="_blank" class="btn btn-secondary btn-sm" title="Ver Perfil Público" style="display: inline-flex; align-items: center; justify-content: center; text-decoration: none; padding: 0.6rem 0.9rem;">
+                        <a href="/${p.slug}${genderParam}" target="_blank" class="btn btn-secondary btn-sm" title="Ver Perfil Público" style="display: inline-flex; align-items: center; justify-content: center; text-decoration: none; padding: 0.6rem 0.9rem;">
                             <i class="fa-solid fa-arrow-up-right-from-square"></i> Ver
                         </a>
                         <button onclick="adminApp.deleteProfile('${p.id}')" class="btn btn-danger btn-sm" title="Eliminar Definitivamente" style="padding: 0.6rem 0.9rem;">

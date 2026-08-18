@@ -406,9 +406,17 @@ class ProfileApp {
         }
 
         // Apply Theme based on gender ('boy', 'girl', 'pet')
+        const urlParams = new URLSearchParams(window.location.search);
+        const explicitGender = urlParams.get('gender');
+
         let themeClass = 'theme-boy';
-        if (profile.gender === 'girl') themeClass = 'theme-girl';
-        else if (profile.gender === 'pet') themeClass = 'theme-pet';
+        if (explicitGender === 'pet' || profile.gender === 'pet') {
+            themeClass = 'theme-pet';
+            profile.gender = 'pet';
+        } else if (explicitGender === 'girl' || profile.gender === 'girl') {
+            themeClass = 'theme-girl';
+            profile.gender = 'girl';
+        }
 
         document.body.className = themeClass;
         document.documentElement.className = themeClass;

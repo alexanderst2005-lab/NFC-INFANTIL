@@ -29,30 +29,39 @@
                     .replace(/\.html$/, '')
                     .replace(/[^a-z0-9]/g, '-');
 
-                var stored = localStorage.getItem('nfc_profiles_db');
-                if (stored) {
-                    var profiles = JSON.parse(stored);
-                    if (profiles && profiles.length > 0) {
-                        var p = profiles.find(function(item) {
-                            if (!item) return false;
-                            var s = item.slug ? item.slug.toLowerCase().trim().replace(/[^a-z0-9]/g, '-') : '';
-                            return s === slug || (item.id && item.id.toLowerCase() === slug) || (item.name && item.name.toLowerCase().replace(/[^a-z0-9]/g, '-') === slug);
-                        });
-                        if (!p && (slug === 'valentina' || slug === 'sofia')) p = { gender: 'girl' };
-                        if (!p && (slug === 'max' || slug === 'firulais' || slug === 'mascota')) p = { gender: 'pet' };
+                var isExplicitPet = rawSearch.indexOf('gender=pet') !== -1;
+                var isExplicitGirl = rawSearch.indexOf('gender=girl') !== -1;
 
-                        if (p && p.gender === 'girl') {
-                            document.documentElement.className = 'theme-girl';
-                        } else if (p && p.gender === 'pet') {
-                            document.documentElement.className = 'theme-pet';
-                        } else if (p && p.gender === 'boy') {
-                            document.documentElement.className = 'theme-boy';
-                        }
-                    }
-                } else if (slug === 'valentina' || slug === 'sofia') {
-                    document.documentElement.className = 'theme-girl';
-                } else if (slug === 'max' || slug === 'firulais' || slug === 'mascota') {
+                if (isExplicitPet) {
                     document.documentElement.className = 'theme-pet';
+                } else if (isExplicitGirl) {
+                    document.documentElement.className = 'theme-girl';
+                } else {
+                    var stored = localStorage.getItem('nfc_profiles_db');
+                    if (stored) {
+                        var profiles = JSON.parse(stored);
+                        if (profiles && profiles.length > 0) {
+                            var p = profiles.find(function(item) {
+                                if (!item) return false;
+                                var s = item.slug ? item.slug.toLowerCase().trim().replace(/[^a-z0-9]/g, '-') : '';
+                                return s === slug || (item.id && item.id.toLowerCase() === slug) || (item.name && item.name.toLowerCase().replace(/[^a-z0-9]/g, '-') === slug);
+                            });
+                            if (!p && (slug === 'valentina' || slug === 'sofia')) p = { gender: 'girl' };
+                            if (!p && (slug === 'max' || slug === 'firulais' || slug === 'mascota')) p = { gender: 'pet' };
+
+                            if (p && p.gender === 'girl') {
+                                document.documentElement.className = 'theme-girl';
+                            } else if (p && p.gender === 'pet') {
+                                document.documentElement.className = 'theme-pet';
+                            } else if (p && p.gender === 'boy') {
+                                document.documentElement.className = 'theme-boy';
+                            }
+                        }
+                    } else if (slug === 'valentina' || slug === 'sofia') {
+                        document.documentElement.className = 'theme-girl';
+                    } else if (slug === 'max' || slug === 'firulais' || slug === 'mascota') {
+                        document.documentElement.className = 'theme-pet';
+                    }
                 }
             } catch(e) {}
         })();
