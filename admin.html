@@ -11,12 +11,23 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- FontAwesome icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="styles.css?v=6.0">
+    <link rel="stylesheet" href="styles.css?v=7.0">
+    <style>
+        /* Zero-latency View Resolution - Prevents Login Screen Flash on Refresh */
+        #admin-login-screen, #admin-dashboard-screen {
+            display: none !important;
+        }
+        html.is-auth #admin-dashboard-screen {
+            display: block !important;
+        }
+        html.is-no-auth #admin-login-screen {
+            display: block !important;
+        }
+    </style>
     <script>
         (function() {
-            if (localStorage.getItem('nfc_admin_auth') === 'true') {
-                document.documentElement.classList.add('is-authenticated-init');
-            }
+            var isAuth = localStorage.getItem('nfc_admin_auth') === 'true';
+            document.documentElement.className += isAuth ? ' is-auth' : ' is-no-auth';
         })();
     </script>
 </head>
@@ -49,7 +60,7 @@
         <!-- ===================================================================
              PANTALLA DE ACCESO / LOGIN PIN
              =================================================================== -->
-        <section id="admin-login-screen" class="view-section active-view">
+        <section id="admin-login-screen" class="view-section">
             <div class="admin-login-card">
                 <div class="brand-icon" style="margin: 0 auto 1.2rem auto; width: 64px; height: 64px; font-size: 2.2rem;">
                     <i class="fa-solid fa-lock"></i>

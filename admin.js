@@ -227,14 +227,18 @@ class AdminApp {
         const logoutBtn = document.getElementById('btn-admin-logout');
 
         if (!this.isAuthenticated) {
+            document.documentElement.classList.remove('is-auth');
+            document.documentElement.classList.add('is-no-auth');
             document.body.classList.remove('admin-page-active');
-            loginScreen.classList.add('active-view');
-            dashboardScreen.classList.remove('active-view');
+            loginScreen?.classList.add('active-view');
+            dashboardScreen?.classList.remove('active-view');
             logoutBtn?.classList.add('hidden');
         } else {
+            document.documentElement.classList.remove('is-no-auth');
+            document.documentElement.classList.add('is-auth');
             document.body.classList.add('admin-page-active');
-            loginScreen.classList.remove('active-view');
-            dashboardScreen.classList.add('active-view');
+            loginScreen?.classList.remove('active-view');
+            dashboardScreen?.classList.add('active-view');
             logoutBtn?.classList.remove('hidden');
             this.renderProfilesGrid();
         }
