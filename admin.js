@@ -189,16 +189,14 @@ class AdminApp {
                 const cloudProfiles = jsonRes && Array.isArray(jsonRes.profiles) ? jsonRes.profiles : [];
 
                 if (cloudProfiles.length > 0) {
-                    // Combine LOCAL profiles FIRST + CLOUD profiles so user data is NEVER lost!
-                    const combined = [...this.profiles, ...cloudProfiles];
+                    // CLOUD PROFILES FIRST so mobile edits/updates immediately override stale PC local cache!
+                    const combined = [...cloudProfiles, ...this.profiles];
                     const deduplicated = this.deduplicateProfiles(combined);
 
-                    if (JSON.stringify(deduplicated) !== JSON.stringify(this.profiles)) {
-                        this.profiles = deduplicated;
-                        this.saveProfilesLocal();
-                        if (this.isAuthenticated) {
-                            this.renderProfilesGrid();
-                        }
+                    this.profiles = deduplicated;
+                    this.saveProfilesLocal();
+                    if (this.isAuthenticated) {
+                        this.renderProfilesGrid();
                     }
                 } else if (this.profiles.length > 0) {
                     await this.pushToCloudDB();
@@ -505,7 +503,7 @@ class AdminApp {
         this.closeModal();
         this.renderProfilesGrid();
         this.showToast(`¡Perfil de ${name} guardado! URL: /${slug}`);
-        this.pushToCloudDB(); // Background sync without blocking UI
+        await this.pushToCloudDB();
     }
 
     compressImage(base64Data, maxWidth = 500, quality = 0.82) {

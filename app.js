@@ -191,15 +191,13 @@ class ProfileApp {
                 const cloudProfiles = jsonRes && Array.isArray(jsonRes.profiles) ? jsonRes.profiles : [];
 
                 if (cloudProfiles.length > 0) {
-                    const combined = [...this.profiles, ...cloudProfiles];
+                    const combined = [...cloudProfiles, ...this.profiles];
                     const deduplicated = this.deduplicateProfiles(combined);
 
-                    if (JSON.stringify(deduplicated) !== JSON.stringify(this.profiles)) {
-                        this.profiles = deduplicated;
-                        this.saveProfilesLocal();
-                        const currentSlug = this.getSlugFromUrl();
-                        if (currentSlug) this.renderSingleProfile(currentSlug);
-                    }
+                    this.profiles = deduplicated;
+                    this.saveProfilesLocal();
+                    const currentSlug = this.getSlugFromUrl();
+                    if (currentSlug) this.renderSingleProfile(currentSlug);
                 }
             }
         } catch (err) {
