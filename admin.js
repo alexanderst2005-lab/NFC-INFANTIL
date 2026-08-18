@@ -1,5 +1,5 @@
 /* ==========================================================================
-   NFC INFANTIL - ADMIN PANEL LOGIC (100% AUTOMATIC CLOUD SYNC & DELETION)
+   NFC INFANTIL - ADMIN PANEL LOGIC (REAL-TIME GLOBAL SYNC & MERGE)
    ========================================================================== */
 
 const DEFAULT_PIN = "1234";
@@ -117,13 +117,22 @@ class AdminApp {
         localStorage.setItem('nfc_profiles_db', JSON.stringify(this.profiles));
     }
 
-    // Automatically sync profiles with cloud database on load
+    mergeProfiles(cloudList, localList) {
+        const map = new Map();
+        (cloudList || []).forEach(p => p && p.id && map.set(p.id, p));
+        (localList || []).forEach(p => p && p.id && map.set(p.id, p));
+        return Array.from(map.values());
+    }
+
+    // Real-Time Cloud Sync with Cache-Busting
     async syncFromCloudDB() {
         try {
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 4500);
 
-            const res = await fetch(CLOUD_DB_ENDPOINT, { cache: 'no-cache', signal: controller.signal });
+            // Append timestamp ?t= to force browser & network to fetch fresh data
+            const cacheBustUrl = `${CLOUD_DB_ENDPOINT}?t=${Date.now()}`;
+            const res = await fetch(cacheBustUrl, { cache: 'no-store', signal: controller.signal });
             clearTimeout(timeoutId);
 
             if (res.ok) {
@@ -131,10 +140,17 @@ class AdminApp {
                 const cloudProfiles = jsonRes && Array.isArray(jsonRes.profiles) ? jsonRes.profiles : [];
 
                 if (cloudProfiles.length > 0) {
-                    this.profiles = cloudProfiles;
+                    // Combine cloud profiles with local profiles to merge all created profiles
+                    const merged = this.mergeProfiles(cloudProfiles, this.profiles);
+                    this.profiles = merged;
                     this.saveProfilesLocal();
+
+                    // If local had profiles not yet in cloud, push the unified list to cloud
+                    if (merged.length !== cloudProfiles.length) {
+                        await this.pushToCloudDB();
+                    }
                 } else if (this.profiles.length > 0) {
-                    // First time initialization if cloud is empty
+                    // Initialize cloud with current local profiles
                     await this.pushToCloudDB();
                 }
 
@@ -376,7 +392,7 @@ class AdminApp {
             this.profiles.unshift(profileData);
         }
 
-        this.showToast("Guardando cambios...");
+        this.showToast("Guardando y sincronizando...");
         await this.pushToCloudDB();
         this.closeModal();
         this.renderProfilesGrid();

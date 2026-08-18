@@ -1,13 +1,16 @@
 /* ==========================================================================
    VERCEL SERVERLESS API ROUTE: /api/sync
-   100% Automatic, Authoritative Same-Origin Cloud Database Sync & Deletion
+   100% Real-Time Cloud Database Sync (Zero Stale Caching, Global Persistence)
    ========================================================================== */
 
-let memoryCache = null;
-const EXTERNAL_KV_URL = "https://kvdb.io/NFCInfantilVercelServer2026/profiles_master_v7";
+const EXTERNAL_KV_URL = "https://kvdb.io/NFCInfantilVercelServer2026/profiles_master_v8";
 
 export default async function handler(req, res) {
-    res.setHeader('Access-Control-Allow-Credentials', true);
+    // Strict No-Cache Headers to prevent browser & Vercel edge caching
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,POST,PUT');
     res.setHeader(
@@ -32,8 +35,7 @@ export default async function handler(req, res) {
             }
 
             if (incomingProfiles !== null) {
-                memoryCache = incomingProfiles;
-                // Overwrite external KV store so deletions are PERMANENT
+                // Save to cloud store server-side
                 try {
                     await fetch(EXTERNAL_KV_URL, {
                         method: 'POST',
@@ -41,32 +43,28 @@ export default async function handler(req, res) {
                         body: JSON.stringify(incomingProfiles)
                     });
                 } catch (e) {
-                    console.log("External KV push error:", e);
+                    console.log("KV push error:", e);
                 }
             }
 
-            return res.status(200).json({ success: true, profiles: memoryCache || [] });
+            return res.status(200).json({ success: true, profiles: incomingProfiles || [] });
         }
 
-        // GET Request: Returns authoritative cloud list
-        let profiles = memoryCache;
-
-        if (!profiles) {
-            try {
-                const kvRes = await fetch(EXTERNAL_KV_URL, { cache: 'no-cache' });
-                if (kvRes.ok) {
-                    const data = await kvRes.json();
-                    if (Array.isArray(data)) {
-                        profiles = data;
-                        memoryCache = profiles;
-                    }
+        // GET Request: Always fetch fresh global data from Cloud KV Store
+        let profiles = [];
+        try {
+            const kvRes = await fetch(EXTERNAL_KV_URL, { cache: 'no-store' });
+            if (kvRes.ok) {
+                const data = await kvRes.json();
+                if (Array.isArray(data)) {
+                    profiles = data;
                 }
-            } catch (e) {
-                console.log("External KV get error:", e);
             }
+        } catch (e) {
+            console.log("KV get error:", e);
         }
 
-        return res.status(200).json({ success: true, profiles: profiles || [] });
+        return res.status(200).json({ success: true, profiles: profiles });
 
     } catch (error) {
         return res.status(500).json({ success: false, error: error.message });

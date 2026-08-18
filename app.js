@@ -1,5 +1,5 @@
 /* ==========================================================================
-   NFC INFANTIL - PUBLIC SINGLE CHILD PROFILE VIEWER (AUTOMATIC CLOUD DB)
+   NFC INFANTIL - PUBLIC SINGLE CHILD PROFILE VIEWER (REAL-TIME GLOBAL DB)
    ========================================================================== */
 
 const CLOUD_DB_ENDPOINT = "/api/sync";
@@ -133,7 +133,8 @@ class IsolatedProfileApp {
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 4500);
 
-            const res = await fetch(CLOUD_DB_ENDPOINT, { cache: 'no-cache', signal: controller.signal });
+            const cacheBustUrl = `${CLOUD_DB_ENDPOINT}?t=${Date.now()}`;
+            const res = await fetch(cacheBustUrl, { cache: 'no-store', signal: controller.signal });
             clearTimeout(timeoutId);
 
             if (res.ok) {
