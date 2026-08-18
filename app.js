@@ -307,7 +307,7 @@ class ProfileApp {
             waBtn.style.display = 'flex';
         }
 
-        // Maps Link Generator ("UBICACIÓN")
+        // Home Location Link Generator ("UBICACIÓN CASA - OPCIONAL")
         const mapsBtn = document.getElementById('btn-location-action');
         if (mapsBtn) {
             if (profile.locationMapsUrl && String(profile.locationMapsUrl).trim() !== '' && String(profile.locationMapsUrl) !== 'undefined') {
@@ -316,6 +316,18 @@ class ProfileApp {
                 mapsBtn.style.display = 'flex';
             } else {
                 mapsBtn.style.display = 'none';
+            }
+        }
+
+        // School Location Link Generator ("UBICACIÓN COLEGIO - OPCIONAL")
+        const schoolBtn = document.getElementById('btn-school-action');
+        if (schoolBtn) {
+            if (profile.schoolMapsUrl && String(profile.schoolMapsUrl).trim() !== '' && String(profile.schoolMapsUrl) !== 'undefined') {
+                const url = String(profile.schoolMapsUrl).trim();
+                schoolBtn.href = url.startsWith('http') ? url : `https://maps.google.com/?q=${encodeURIComponent(url)}`;
+                schoolBtn.style.display = 'flex';
+            } else {
+                schoolBtn.style.display = 'none';
             }
         }
     }

@@ -222,14 +222,23 @@
                     </div>
                 </div>
 
-                <!-- 4. BOTÓN UBICACIÓN -->
+                <!-- 4. BOTONES OPCIONALES DE UBICACIÓN (CASA Y COLEGIO) -->
                 <div class="modal-section-title">
-                    <i class="fa-solid fa-location-dot"></i> Botón Ubicación
+                    <i class="fa-solid fa-location-dot"></i> Botones Opcionales de Ubicación (Casa y Colegio)
                 </div>
 
-                <div class="form-group">
-                    <label class="form-label" for="input-maps-url">Enlace Google Maps o Dirección</label>
-                    <input type="text" id="input-maps-url" class="form-input" placeholder="Ej: https://maps.google.com/?q=... o Dirección">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="input-maps-url">Ubicación Casa (Google Maps - Opcional)</label>
+                        <input type="text" id="input-maps-url" class="form-input" placeholder="Ej: https://maps.google.com/?q=... o Dirección Casa">
+                        <span class="field-hint">Si se deja vacío, no aparecerá el botón Ubicación Casa.</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="input-school-url">Ubicación / Info Colegio (Google Maps - Opcional)</label>
+                        <input type="text" id="input-school-url" class="form-input" placeholder="Ej: https://maps.google.com/?q=... o Nombre del Colegio">
+                        <span class="field-hint">Si se deja vacío, no aparecerá el botón Ubicación Colegio.</span>
+                    </div>
                 </div>
 
                 <div class="modal-footer">

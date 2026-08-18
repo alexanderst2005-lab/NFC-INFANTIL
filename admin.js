@@ -110,6 +110,7 @@ class AdminApp {
             parentPhone: (p.parentPhone && String(p.parentPhone).trim() !== '' && String(p.parentPhone) !== 'undefined') ? String(p.parentPhone).trim() : (baseDefault ? baseDefault.parentPhone : ''),
             whatsappMessage: (p.whatsappMessage && String(p.whatsappMessage).trim() !== '') ? String(p.whatsappMessage).trim() : (baseDefault ? baseDefault.whatsappMessage : 'Hola, encontré la información del perfil de {nombre}.'),
             locationMapsUrl: (p.locationMapsUrl && String(p.locationMapsUrl).trim() !== '') ? String(p.locationMapsUrl).trim() : (baseDefault ? baseDefault.locationMapsUrl : ''),
+            schoolMapsUrl: (p.schoolMapsUrl && String(p.schoolMapsUrl).trim() !== '') ? String(p.schoolMapsUrl).trim() : (baseDefault ? baseDefault.schoolMapsUrl : ''),
             photoUrl: (p.photoUrl && String(p.photoUrl).trim() !== '' && String(p.photoUrl) !== 'undefined') ? String(p.photoUrl).trim() : (baseDefault ? baseDefault.photoUrl : ''),
             active: true,
             createdAt: p.createdAt || new Date().toISOString()
@@ -354,6 +355,7 @@ class AdminApp {
         document.getElementById('input-phone').value = p.parentPhone || '';
         document.getElementById('input-whatsapp-msg').value = p.whatsappMessage || 'Hola, encontré el perfil de {nombre} y quiero comunicarme con sus padres.';
         document.getElementById('input-maps-url').value = p.locationMapsUrl || '';
+        if (document.getElementById('input-school-url')) document.getElementById('input-school-url').value = p.schoolMapsUrl || '';
         document.getElementById('input-photo-url').value = (p.photoUrl && p.photoUrl !== NEUTRAL_AVATAR_SVG) ? p.photoUrl : '';
         document.getElementById('photo-preview').src = currentPhoto;
 
@@ -400,6 +402,7 @@ class AdminApp {
             parentPhone: document.getElementById('input-phone').value.trim(),
             whatsappMessage: document.getElementById('input-whatsapp-msg').value.trim(),
             locationMapsUrl: document.getElementById('input-maps-url').value.trim(),
+            schoolMapsUrl: (document.getElementById('input-school-url')?.value || '').trim(),
             photoUrl: finalPhoto,
             active: true,
             createdAt: new Date().toISOString()
