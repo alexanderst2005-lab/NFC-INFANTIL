@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Perfil Infantil | NFC Seguridad</title>
-    <meta name="description" content="Ficha de identificación y contacto de seguridad infantil mediante código QR y pulseras NFC.">
+    <title>NFC Seguridad Infantil | Plataforma Oficial de Perfiles</title>
+    <meta name="description" content="Plataforma oficial de identificación, seguridad y perfiles infantiles mediante código QR y pulseras NFC.">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,29 +15,79 @@
 </head>
 <body class="theme-default">
 
-    <!-- Dynamic Animated Background Shapes -->
+    <!-- Dynamic Background Decorator Bubbles -->
     <div class="bg-bubbles">
         <div class="bubble bubble-1"></div>
         <div class="bubble bubble-2"></div>
         <div class="bubble bubble-3"></div>
     </div>
 
-    <!-- Clean Navigation Header -->
+    <!-- Official Navigation Header -->
     <header class="app-header">
-        <a href="/" class="brand-logo">
+        <a href="/" class="brand-logo" id="brand-home-link">
             <div class="brand-icon">
                 <i class="fa-solid fa-shield-cat"></i>
             </div>
             <span>NFC<span style="color: var(--accent-main)">Infantil</span></span>
         </a>
+        <nav class="header-nav">
+            <a href="/admin.html" class="btn btn-secondary btn-sm">
+                <i class="fa-solid fa-user-gear"></i> Editar en Panel Admin
+            </a>
+        </nav>
     </header>
 
-    <!-- ===================================================================
-         PUBLIC PROFILE DISPLAY SECTION
-         =================================================================== -->
-    <main>
-        <section id="view-profile" class="view-section active-view">
-            <div class="profile-container">
+    <main class="container">
+
+        <!-- ===================================================================
+             PÁGINA OFICIAL PRINCIPAL (DIRECTORIO DE TODOS LOS NIÑOS)
+             =================================================================== -->
+        <section id="view-home" class="view-section active-view">
+            
+            <!-- Hero Official Banner -->
+            <div class="official-hero-banner" style="text-align: center; margin-bottom: 2.5rem; padding: 2.5rem 1.5rem; background: var(--bg-card); border-radius: var(--radius-xl); border: 1px solid var(--border-color); backdrop-filter: blur(16px);">
+                <div class="brand-icon" style="width: 65px; height: 65px; font-size: 2rem; margin: 0 auto 1rem;">
+                    <i class="fa-solid fa-shield-cat"></i>
+                </div>
+                <h1 style="font-size: 2.2rem; font-weight: 800; margin-bottom: 0.5rem;">Página Oficial NFC Seguridad Infantil</h1>
+                <p style="color: var(--text-secondary); max-width: 620px; margin: 0 auto 1.5rem; font-size: 1.05rem;">
+                    Selecciona cualquier perfil para ingresar a su página única o copia su enlace personalizado de seguridad.
+                </p>
+
+                <!-- Search Bar -->
+                <div class="search-input-wrap" style="max-width: 480px; margin: 0 auto;">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="public-search-input" placeholder="Buscar por nombre, colegio o tipo de sangre...">
+                </div>
+            </div>
+
+            <!-- Public Cards Grid of All Registered Kids -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h2 style="font-size: 1.5rem; font-weight: 800;"><i class="fa-solid fa-users" style="color: var(--accent-main)"></i> Perfiles Registrados</h2>
+                <span class="theme-badge" style="background: rgba(255,255,255,0.08); color: var(--text-primary);"><span id="public-kids-count">0</span> Registrados</span>
+            </div>
+
+            <div class="profiles-admin-grid" id="public-kids-grid">
+                <!-- Dynamically populated from JS -->
+            </div>
+        </section>
+
+
+        <!-- ===================================================================
+             PÁGINA PÚBLICA ÚNICA DE CADA NIÑO (/samuel, /valentina, etc.)
+             =================================================================== -->
+        <section id="view-profile" class="view-section hidden">
+            <div class="profile-container" style="margin-top: 0;">
+                
+                <div style="margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center;">
+                    <a href="/" id="btn-back-home" class="btn btn-secondary btn-sm">
+                        <i class="fa-solid fa-arrow-left"></i> Volver a la Página Oficial
+                    </a>
+                    <button id="btn-copy-current-link" class="btn btn-secondary btn-sm">
+                        <i class="fa-solid fa-copy"></i> Copiar Enlace Único
+                    </button>
+                </div>
+
                 <div class="profile-card">
                     
                     <!-- Badge & NFC Status Bar -->
@@ -120,7 +170,7 @@
                     </div>
 
                     <div class="footer-credits">
-                        Sistema de Seguridad e Identificación NFC Infantil
+                        Plataforma Oficial de Seguridad e Identificación NFC Infantil
                     </div>
                 </div>
             </div>
@@ -136,9 +186,13 @@
                 <p style="color: var(--text-secondary); margin-bottom: 2rem;" id="inactive-desc">
                     Este perfil no se encuentra disponible actualmente.
                 </p>
+                <a href="/" class="btn btn-primary"><i class="fa-solid fa-house"></i> Volver a la Página Oficial</a>
             </div>
         </section>
     </main>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="toast-msg hidden"></div>
 
     <script src="app.js"></script>
 </body>

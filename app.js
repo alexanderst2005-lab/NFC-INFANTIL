@@ -1,5 +1,5 @@
 /* ==========================================================================
-   NFC INFANTIL - PUBLIC PROFILE VIEWER LOGIC (MAIN INDEX PAGE)
+   NFC INFANTIL - PUBLIC OFFICIAL WEBSITE & PROFILE VIEWER
    ========================================================================== */
 
 const DEFAULT_PROFILES = [
@@ -81,15 +81,17 @@ const DEFAULT_PROFILES = [
     }
 ];
 
-class ProfileViewer {
+class OfficialApp {
     constructor() {
         this.profiles = [];
+        this.currentProfile = null;
         this.init();
     }
 
     init() {
         this.loadProfiles();
-        this.renderProfileFromUrl();
+        this.setupEventListeners();
+        this.handleRouting();
     }
 
     loadProfiles() {
@@ -102,7 +104,8 @@ class ProfileViewer {
         }
     }
 
-    renderProfileFromUrl() {
+    // Client Router
+    handleRouting() {
         const path = window.location.pathname.toLowerCase().replace(/\/$/, '') || '/';
         const urlParams = new URLSearchParams(window.location.search);
 
@@ -111,35 +114,115 @@ class ProfileViewer {
             slug = urlParams.get('slug');
         } else if (path !== '/' && path !== '/index.html') {
             slug = path.substring(1);
-        } else {
-            // Default to 'samuel' if visiting root index without params
-            slug = 'samuel';
         }
 
-        this.renderProfile(slug);
+        if (slug) {
+            this.renderSingleProfile(slug);
+        } else {
+            this.renderOfficialDirectory();
+        }
     }
 
-    renderProfile(slug) {
+    // Render Official Directory Grid (Root / Page)
+    renderOfficialDirectory(filterText = '') {
+        document.body.className = 'theme-default';
+        document.title = "Página Oficial | NFC Seguridad Infantil";
+
+        const homeView = document.getElementById('view-home');
+        const profileView = document.getElementById('view-profile');
+        const inactiveView = document.getElementById('view-inactive');
+
+        homeView.classList.remove('hidden');
+        homeView.classList.add('active-view');
+        profileView.classList.add('hidden');
+        inactiveView.classList.add('hidden');
+
+        const activeKids = this.profiles.filter(p => p.active);
+        const filtered = activeKids.filter(k =>
+            k.name.toLowerCase().includes(filterText.toLowerCase()) ||
+            k.school.toLowerCase().includes(filterText.toLowerCase()) ||
+            k.bloodType.toLowerCase().includes(filterText.toLowerCase())
+        );
+
+        document.getElementById('public-kids-count').textContent = activeKids.length;
+        const grid = document.getElementById('public-kids-grid');
+        if (!grid) return;
+
+        if (filtered.length === 0) {
+            grid.innerHTML = `
+                <div style="grid-column: 1/-1; text-align: center; padding: 3rem; color: var(--text-secondary);">
+                    <i class="fa-solid fa-user-slash" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                    <p>No se encontraron perfiles con la búsqueda actual.</p>
+                </div>
+            `;
+            return;
+        }
+
+        const baseUrl = window.location.origin;
+
+        grid.innerHTML = filtered.map(k => {
+            const publicUrl = `${baseUrl}/${k.slug}`;
+            return `
+                <div class="admin-card">
+                    <div class="admin-card-head">
+                        <img src="${k.photoUrl}" alt="${k.name}" class="admin-card-avatar">
+                        <div class="admin-card-meta">
+                            <h4>${k.name}</h4>
+                            <span class="slug-pill">/${k.slug}</span>
+                            <div style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.3rem;">
+                                ${k.gender === 'girl' ? '👧 Niña' : '👦 Niño'} • ${k.age} Años • Sangre ${k.bloodType}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">
+                        <div><i class="fa-solid fa-school"></i> ${k.school || 'Sin escuela registrada'}</div>
+                    </div>
+
+                    <div class="admin-card-actions" style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 0.5rem;">
+                        <a href="/${k.slug}" onclick="officialApp.navigateToProfile('/${k.slug}', event)" class="btn btn-primary btn-sm">
+                            <i class="fa-solid fa-eye"></i> Ver Ficha Única
+                        </a>
+                        <button onclick="officialApp.copyUrl('${publicUrl}')" class="btn btn-secondary btn-sm" title="Copiar Link">
+                            <i class="fa-solid fa-copy"></i> Copiar Link
+                        </button>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    navigateToProfile(path, event) {
+        if (event) event.preventDefault();
+        window.history.pushState({}, '', path);
+        this.handleRouting();
+    }
+
+    // Render Individual Unique Profile Page (/samuel, /valentina, etc.)
+    renderSingleProfile(slug) {
         const profile = this.profiles.find(p => p.slug.toLowerCase() === slug.toLowerCase());
 
+        const homeView = document.getElementById('view-home');
         const profileView = document.getElementById('view-profile');
         const inactiveView = document.getElementById('view-inactive');
 
         if (!profile) {
-            this.showInactive("Perfil No Encontrado", `No existe ningún perfil registrado con la dirección '/${slug}'.`);
+            this.showInactive("Perfil No Encontrado", `No se encontró ningún perfil registrado en la dirección '/${slug}'.`);
             return;
         }
 
         if (!profile.active) {
-            this.showInactive("Perfil No Disponible", `El perfil de ${profile.name} se encuentra temporalmente deshabilitado.`);
+            this.showInactive("Perfil No Disponible", `El perfil de ${profile.name} se encuentra desactivado temporalmente.`);
             return;
         }
 
-        // Set Theme (boy vs girl)
+        this.currentProfile = profile;
+
+        // Set Theme (theme-boy vs theme-girl)
         document.body.className = profile.gender === 'girl' ? 'theme-girl' : 'theme-boy';
 
         // Render Values
-        document.title = `Perfil de ${profile.name} | NFC Infantil`;
+        document.title = `Perfil de ${profile.name} | NFC Seguridad Infantil`;
         document.getElementById('p-name').textContent = profile.name;
         document.getElementById('p-age').textContent = profile.age;
         document.getElementById('p-blood').textContent = profile.bloodType;
@@ -188,7 +271,9 @@ class ProfileViewer {
             mapsBtn.classList.add('hidden');
         }
 
+        homeView.classList.add('hidden');
         profileView.classList.remove('hidden');
+        profileView.classList.add('active-view');
         inactiveView.classList.add('hidden');
     }
 
@@ -196,11 +281,48 @@ class ProfileViewer {
         document.body.className = 'theme-default';
         document.getElementById('inactive-title').textContent = title;
         document.getElementById('inactive-desc').textContent = desc;
+        
+        document.getElementById('view-home').classList.add('hidden');
         document.getElementById('view-profile').classList.add('hidden');
         document.getElementById('view-inactive').classList.remove('hidden');
     }
+
+    copyUrl(url) {
+        navigator.clipboard.writeText(url).then(() => {
+            this.showToast(`¡Enlace copiado! ${url}`);
+        }).catch(() => {
+            prompt("Copia este enlace:", url);
+        });
+    }
+
+    setupEventListeners() {
+        document.getElementById('public-search-input')?.addEventListener('input', (e) => {
+            this.renderOfficialDirectory(e.target.value);
+        });
+
+        document.getElementById('btn-copy-current-link')?.addEventListener('click', () => {
+            this.copyUrl(window.location.href);
+        });
+
+        document.getElementById('btn-back-home')?.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.history.pushState({}, '', '/');
+            this.handleRouting();
+        });
+
+        window.addEventListener('popstate', () => this.handleRouting());
+    }
+
+    showToast(msg) {
+        const toast = document.getElementById('toast');
+        if (!toast) return;
+        toast.textContent = msg;
+        toast.classList.remove('hidden');
+        setTimeout(() => toast.classList.add('hidden'), 3500);
+    }
 }
 
+let officialApp;
 document.addEventListener('DOMContentLoaded', () => {
-    new ProfileViewer();
+    officialApp = new OfficialApp();
 });
