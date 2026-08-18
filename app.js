@@ -299,10 +299,17 @@ class ProfileApp {
         if (heroNameEl) heroNameEl.textContent = profile.name;
 
         const genderTextEl = document.getElementById('p-gender-text');
-        if (genderTextEl) genderTextEl.textContent = profile.gender === 'girl' ? 'Perfil Niña' : 'Perfil Niño';
+        if (genderTextEl) genderTextEl.textContent = 'Perfil verificado';
+
+        const footerTagEl = document.getElementById('p-footer-tag');
+        if (footerTagEl) {
+            footerTagEl.innerHTML = profile.gender === 'girl'
+                ? '<i class="fa-solid fa-shield-heart"></i> Protegida con amor <i class="fa-solid fa-heart" style="color: #ec4899;"></i>'
+                : '<i class="fa-solid fa-shield-heart"></i> Protegido con amor <i class="fa-solid fa-heart" style="color: #38bdf8;"></i>';
+        }
 
         const ageValEl = document.getElementById('p-age-val') || document.getElementById('p-age');
-        if (ageValEl) ageValEl.textContent = `${profile.age} Años`;
+        if (ageValEl) ageValEl.textContent = `${profile.age} años`;
 
         const bloodValEl = document.getElementById('p-blood-val') || document.getElementById('p-blood');
         if (bloodValEl) bloodValEl.textContent = profile.bloodType || 'O+';

@@ -83,123 +83,108 @@
         <section id="view-profile" class="view-section active-view">
             <div class="profile-container">
 
-                <!-- MAIN SINGLE CHILD CARD -->
+                <!-- MAIN CARD WRAPPER -->
                 <div class="profile-card">
-                    <div class="profile-card-desktop-split">
-                        
-                        <!-- LEFT COLUMN: HERO PHOTO, BADGES, MAIN TITLE & LOGO BANNER -->
-                        <div class="profile-left-column">
-                            <!-- Status Bar -->
-                            <div class="profile-badge-bar">
-                                <span class="theme-badge" id="p-badge">
-                                    <i class="fa-solid fa-child"></i> <span id="p-gender-text">Perfil Infantil</span>
-                                </span>
-                                <div class="nfc-live-dot">
-                                    <span class="pulse-dot"></span>
-                                    <span>NFC Activo</span>
-                                </div>
-                            </div>
-
-                            <!-- Photo Avatar -->
-                            <div class="profile-avatar-wrapper">
-                                <img src="" alt="Foto Niño/a" id="p-avatar" class="profile-avatar-img">
-                            </div>
-
-                            <!-- Hero Name Title (EXACTLY ONCE ON THE ENTIRE PAGE) -->
-                            <h1 class="profile-hero-name" id="p-hero-name">Cargando...</h1>
-                            <div class="profile-hero-subtitle">
-                                Identificación y Seguridad Infantil NFC
-                            </div>
-
-                            <!-- Official NFC Seguridad Infantil Logo Banner below Photo -->
-                            <div class="logo-banner-wrapper">
-                                <img src="assets/logo-nfc-seguridad.png" alt="NFC Seguridad Infantil" class="logo-banner-img">
-                            </div>
+                    
+                    <!-- TOP BAR HEADER (SHIELD BRAND LEFT, VERIFIED BADGE RIGHT) -->
+                    <div class="profile-top-bar">
+                        <div class="top-bar-brand">
+                            <div class="brand-shield-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                            <span>Mi perfil de seguridad</span>
                         </div>
-
-                        <!-- RIGHT COLUMN: VISUAL DATA CARDS & ACTION BUTTONS -->
-                        <div class="profile-right-column">
-                            
-                            <!-- Information Visual Cards Grid -->
-                            <div class="info-cards-grid">
-                                
-                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem;">
-                                    <!-- Edad -->
-                                    <div class="info-box">
-                                        <div class="info-icon icon-age">
-                                            <i class="fa-solid fa-cake-candles"></i>
-                                        </div>
-                                        <div class="info-content">
-                                            <span class="label">Edad</span>
-                                            <span class="val"><span id="p-age">0</span> años</span>
-                                        </div>
-                                    </div>
-                                    <!-- Tipo de Sangre -->
-                                    <div class="info-box">
-                                        <div class="info-icon icon-blood">
-                                            <i class="fa-solid fa-droplet"></i>
-                                        </div>
-                                        <div class="info-content">
-                                            <span class="label">Tipo de sangre</span>
-                                            <span class="val" id="p-blood">O+</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Acudientes / Padres -->
-                                <div class="info-box hidden" id="box-parent">
-                                    <div class="info-icon icon-parent">
-                                        <i class="fa-solid fa-users"></i>
-                                    </div>
-                                    <div class="info-content">
-                                        <span class="label">Padres / Acudientes</span>
-                                        <span class="val" id="p-parent">Cargando...</span>
-                                    </div>
-                                </div>
-
-                                <!-- Colegio / Jardín Infantil (Si aplica) -->
-                                <div class="info-box hidden" id="box-school">
-                                    <div class="info-icon icon-school">
-                                        <i class="fa-solid fa-school"></i>
-                                    </div>
-                                    <div class="info-content">
-                                        <span class="label">Institución Educativa</span>
-                                        <span class="val" id="p-school">Cargando...</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Special Medical / Care Highlight Box -->
-                            <div class="special-care-box hidden" id="box-medical">
-                                <div class="special-care-header">
-                                    <i class="fa-solid fa-notes-medical"></i> Información Importante / Cuidados
-                                </div>
-                                <div class="special-care-body" id="p-medical-notes">
-                                    <!-- Medical notes dynamically populated -->
-                                </div>
-                            </div>
-
-                            <!-- Action Buttons Stack (WhatsApp & Location) -->
-                            <div class="profile-actions-stack">
-                                <a href="#" id="btn-whatsapp-action" target="_blank" class="btn btn-whatsapp btn-block">
-                                    <i class="fa-brands fa-whatsapp"></i> CONTACTAR A MIS PAPÁS
-                                </a>
-                                
-                                <a href="#" id="btn-location-action" target="_blank" class="btn btn-maps btn-block">
-                                    <i class="fa-solid fa-location-dot"></i> Ver ubicación
-                                </a>
-                            </div>
-
-                            <!-- Footer Tagline -->
-                            <div class="footer-credits">
-                                <i class="fa-solid fa-heart" style="color: var(--danger)"></i> GRACIAS POR AYUDARME
-                            </div>
-
+                        <div class="verified-badge-pill" id="p-badge">
+                            <i class="fa-solid fa-check"></i> <span id="p-gender-text">Perfil verificado</span>
                         </div>
-
                     </div>
-                </div>
 
+                    <!-- HERO ARCH PHOTO FRAME & DECORATIONS -->
+                    <div class="hero-arch-wrapper">
+                        <div class="arch-photo-container">
+                            <img src="" alt="Foto Perfil" id="p-avatar" class="arch-photo-img">
+                        </div>
+                    </div>
+
+                    <!-- NAME & SUBTITLE RIBBON -->
+                    <div class="profile-identity-section">
+                        <div class="name-spark-wrapper">
+                            <span class="name-spark spark-left">✦</span>
+                            <h1 class="profile-hero-name" id="p-hero-name">Cargando...</h1>
+                            <span class="name-spark spark-right">✦</span>
+                        </div>
+                        <div class="security-ribbon">
+                            <i class="fa-solid fa-shield"></i> Mi perfil de seguridad
+                        </div>
+                    </div>
+
+                    <!-- INFORMATION VISUAL CARDS GRID (EDAD & TIPO DE SANGRE) -->
+                    <div class="info-cards-grid">
+                        <div class="info-cards-row">
+                            <!-- Edad -->
+                            <div class="info-card-box box-age">
+                                <div class="info-card-icon icon-age">
+                                    <i class="fa-solid fa-cake-candles"></i>
+                                </div>
+                                <div class="info-card-text">
+                                    <span class="label">Edad</span>
+                                    <span class="val" id="p-age-val">0 años</span>
+                                </div>
+                            </div>
+                            <!-- Tipo de Sangre -->
+                            <div class="info-card-box box-blood">
+                                <div class="info-card-icon icon-blood">
+                                    <i class="fa-solid fa-droplet"></i>
+                                </div>
+                                <div class="info-card-text">
+                                    <span class="label">Tipo de sangre</span>
+                                    <span class="val" id="p-blood-val">O+</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Optional Extra Cards (Parent, School, Medical Notes) -->
+                        <div class="info-box hidden" id="box-parent">
+                            <div class="info-card-icon icon-parent"><i class="fa-solid fa-users"></i></div>
+                            <div class="info-card-text"><span class="label">Padres / Acudientes</span><span class="val" id="p-parent">Cargando...</span></div>
+                        </div>
+                        <div class="info-box hidden" id="box-school">
+                            <div class="info-card-icon icon-school"><i class="fa-solid fa-school"></i></div>
+                            <div class="info-card-text"><span class="label">Institución Educativa</span><span class="val" id="p-school">Cargando...</span></div>
+                        </div>
+                    </div>
+
+                    <!-- Special Medical Notes -->
+                    <div class="special-care-box hidden" id="box-medical">
+                        <div class="special-care-header"><i class="fa-solid fa-notes-medical"></i> Información Importante / Cuidados</div>
+                        <div class="special-care-body" id="p-medical-notes"></div>
+                    </div>
+
+                    <!-- ACTION BUTTONS STACK (WHATSAPP & LOCATION) -->
+                    <div class="profile-actions-stack">
+                        <a href="#" id="btn-whatsapp-action" target="_blank" class="btn btn-whatsapp btn-block">
+                            <div class="btn-icon-circle"><i class="fa-brands fa-whatsapp"></i></div>
+                            <div class="btn-text-stack">
+                                <span class="btn-main-text">Contactar a mis papás</span>
+                                <span class="btn-sub-text">Escríbenos por WhatsApp</span>
+                            </div>
+                            <i class="fa-solid fa-chevron-right btn-arrow"></i>
+                        </a>
+
+                        <a href="#" id="btn-location-action" target="_blank" class="btn btn-maps btn-block">
+                            <div class="btn-icon-circle"><i class="fa-solid fa-location-dot"></i></div>
+                            <div class="btn-text-stack">
+                                <span class="btn-main-text">Ver ubicación</span>
+                                <span class="btn-sub-text">Ver mi ubicación en el mapa</span>
+                            </div>
+                            <i class="fa-solid fa-chevron-right btn-arrow"></i>
+                        </a>
+                    </div>
+
+                    <!-- FOOTER TAGLINE BADGE -->
+                    <div class="footer-love-pill" id="p-footer-tag">
+                        <i class="fa-solid fa-shield-heart"></i> Protegido con amor <i class="fa-solid fa-heart" style="color: #ec4899;"></i>
+                    </div>
+
+                </div>
             </div>
         </section>
 
