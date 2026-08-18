@@ -445,11 +445,11 @@ class AdminApp {
             this.profiles.unshift(profileData);
         }
 
-        this.showToast("Guardando cambios en la base de datos...");
-        await this.pushToCloudDB();
+        this.saveProfilesLocal();
         this.closeModal();
         this.renderProfilesGrid();
         this.showToast(`¡Perfil de ${name} guardado! URL: /${slug}`);
+        this.pushToCloudDB(); // Background sync without blocking UI
     }
 
     compressImage(base64Data, maxWidth = 800, quality = 0.92) {

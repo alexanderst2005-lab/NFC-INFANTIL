@@ -52,6 +52,12 @@ body.theme-girl {
     -webkit-tap-highlight-color: transparent;
 }
 
+html {
+    background-color: #070d18;
+    overscroll-behavior-y: none;
+    overscroll-behavior-x: none;
+}
+
 body {
     background: var(--bg-page);
     min-height: 100vh;
@@ -59,6 +65,14 @@ body {
     flex-direction: column;
     overflow-x: hidden;
     position: relative;
+}
+
+body.admin-page-active,
+html:has(body.admin-page-active) {
+    background: #070d18 !important;
+    background-color: #070d18 !important;
+    overscroll-behavior-y: none;
+    overscroll-behavior-x: none;
 }
 
 /* Background Dynamic Glow Bubbles */
