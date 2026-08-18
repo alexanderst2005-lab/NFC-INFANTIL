@@ -540,8 +540,8 @@ class AdminApp {
             }
         });
 
-        // Remove Photo Button: Erases custom photo and resets to default avatar
-        document.getElementById('btn-remove-photo')?.addEventListener('click', () => {
+        // Remove Photo Button: Erases custom photo immediately & syncs to Cloud DB
+        document.getElementById('btn-remove-photo')?.addEventListener('click', async () => {
             this.photoRemoved = true;
             const gender = document.getElementById('input-gender').value;
             const defaultPhoto = gender === 'girl' ? DEFAULT_GIRL_PHOTO : DEFAULT_BOY_PHOTO;
@@ -549,7 +549,18 @@ class AdminApp {
             if (previewImg) previewImg.src = defaultPhoto;
             document.getElementById('input-photo-url').value = '';
             if (fileInput) fileInput.value = '';
-            this.showToast("Fotografía personalizada eliminada definitivamente.");
+
+            const currentId = document.getElementById('input-profile-id').value;
+            if (currentId) {
+                const profile = this.profiles.find(p => p.id === currentId);
+                if (profile) {
+                    profile.photoUrl = defaultPhoto;
+                    await this.pushToCloudDB();
+                    this.renderProfilesGrid();
+                }
+            }
+
+            this.showToast("¡Fotografía eliminada e inmediatamente guardada!");
         });
     }
 
