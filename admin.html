@@ -11,9 +11,16 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- FontAwesome icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="styles.css?v=8.0">
+    <link rel="stylesheet" href="styles.css?v=9.0">
     <style>
-        /* Zero-latency View Resolution - Prevents Login Screen Flash on Refresh */
+        /* Atomic Zero-flash Visibility Mask - Prevents ANY flash on refresh */
+        html {
+            visibility: hidden;
+            background-color: #070d18 !important;
+        }
+        html.ready {
+            visibility: visible !important;
+        }
         #admin-login-screen, #admin-dashboard-screen {
             display: none !important;
         }
@@ -259,6 +266,9 @@
     <!-- TOAST NOTIFICATION -->
     <div id="toast" class="toast hidden">Notificación</div>
 
-    <script src="admin.js?v=3.0"></script>
+    <script src="admin.js?v=9.0"></script>
+    <script>
+        document.documentElement.classList.add('ready');
+    </script>
 </body>
 </html>

@@ -242,6 +242,8 @@ class AdminApp {
             logoutBtn?.classList.remove('hidden');
             this.renderProfilesGrid();
         }
+
+        document.documentElement.classList.add('ready');
     }
 
     renderProfilesGrid(filterText = '') {
