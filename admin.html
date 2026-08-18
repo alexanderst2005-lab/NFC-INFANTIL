@@ -11,7 +11,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- FontAwesome icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="styles.css?v=5.0">
+    <link rel="stylesheet" href="styles.css?v=6.0">
+    <script>
+        (function() {
+            if (localStorage.getItem('nfc_admin_auth') === 'true') {
+                document.documentElement.classList.add('is-authenticated-init');
+            }
+        })();
+    </script>
 </head>
 <body class="theme-default">
 
@@ -24,7 +31,7 @@
 
     <!-- Navigation Header for Admin Page -->
     <header class="app-header">
-        <a href="/admin.html" class="brand-logo">
+        <a href="javascript:void(0)" onclick="adminApp.onLogoClick()" class="brand-logo" title="Panel Admin">
             <div class="brand-icon">
                 <i class="fa-solid fa-user-shield"></i>
             </div>

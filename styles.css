@@ -659,6 +659,15 @@ body.theme-girl .scene-item {
     display: block !important;
 }
 
+/* Pre-paint Authenticated View Override (Eliminates 1ms Login Screen Flash) */
+html.is-authenticated-init #admin-login-screen {
+    display: none !important;
+}
+
+html.is-authenticated-init #admin-dashboard-screen {
+    display: block !important;
+}
+
 .admin-login-card {
     max-width: 420px;
     margin: 3.5rem auto;

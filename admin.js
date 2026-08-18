@@ -429,6 +429,18 @@ class AdminApp {
         document.body.classList.remove('modal-open');
     }
 
+    onLogoClick() {
+        if (this.isAuthenticated) {
+            const searchInput = document.getElementById('admin-search-input');
+            if (searchInput) searchInput.value = '';
+            this.renderProfilesGrid();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            this.showToast("Panel actualizado");
+        } else {
+            window.location.reload();
+        }
+    }
+
     async saveProfileFromForm() {
         const id = document.getElementById('input-profile-id').value;
         const name = document.getElementById('input-name').value.trim();
