@@ -193,6 +193,41 @@ class AdminApp {
         localStorage.setItem('nfc_profiles_db', JSON.stringify(this.profiles));
     }
 
+    mergeSingleProfile(base, override) {
+        if (!base) return override;
+        if (!override) return base;
+
+        const photo = (override.photoUrl && override.photoUrl.trim() !== '' && override.photoUrl !== NEUTRAL_AVATAR_SVG)
+            ? override.photoUrl
+            : (base.photoUrl || '');
+
+        const location = (override.locationMapsUrl && override.locationMapsUrl.trim() !== '')
+            ? override.locationMapsUrl
+            : (base.locationMapsUrl || '');
+
+        const school = (override.school && override.school.trim() !== '')
+            ? override.school
+            : (base.school || '');
+
+        const grade = (override.grade && override.grade.trim() !== '')
+            ? override.grade
+            : (base.grade || '');
+
+        const medical = (override.medicalConditions && override.medicalConditions.trim() !== '')
+            ? override.medicalConditions
+            : (base.medicalConditions || '');
+
+        return {
+            ...base,
+            ...override,
+            photoUrl: photo,
+            locationMapsUrl: location,
+            school: school,
+            grade: grade,
+            medicalConditions: medical
+        };
+    }
+
     mergeAndPreserveProfiles(localProfiles = [], cloudProfiles = []) {
         const deletedIds = JSON.parse(localStorage.getItem('nfc_deleted_ids') || '[]');
         const profileMap = new Map();
@@ -213,9 +248,9 @@ class AdminApp {
                     const exTime = existing.updatedAt ? new Date(existing.updatedAt).getTime() : 0;
 
                     if (pTime >= exTime) {
-                        profileMap.set(p.id, { ...existing, ...p });
+                        profileMap.set(p.id, this.mergeSingleProfile(existing, p));
                     } else {
-                        profileMap.set(p.id, { ...p, ...existing });
+                        profileMap.set(p.id, this.mergeSingleProfile(p, existing));
                     }
                 } else {
                     // Local profile not in cloud (user created it & serverless cold-started) -> PRESERVE IT!
@@ -589,6 +624,11 @@ class AdminApp {
         }
 
         const existingProf = id ? this.profiles.find(p => p.id === id) : null;
+
+        if (!finalPhoto && existingProf && existingProf.photoUrl && !this.photoRemoved) {
+            finalPhoto = existingProf.photoUrl;
+        }
+
         const schoolVal = document.getElementById('input-school')?.value.trim() || '';
         const gradeVal = document.getElementById('input-grade')?.value.trim() || '';
         const medicalVal = document.getElementById('input-medical')?.value.trim() || '';
