@@ -5,6 +5,9 @@
 const DEFAULT_PIN = "1234";
 const CLOUD_DB_ENDPOINT = "/api/sync";
 
+const DEFAULT_BOY_PHOTO = "https://images.unsplash.com/photo-1543332164-6e82f355badc?w=400&auto=format&fit=crop&q=80";
+const DEFAULT_GIRL_PHOTO = "https://images.unsplash.com/photo-1595454223600-91fb272189d5?w=400&auto=format&fit=crop&q=80";
+
 const DEFAULT_PROFILES = [
     {
         id: "prof-001",
@@ -21,7 +24,7 @@ const DEFAULT_PROFILES = [
         allergies: "Ninguna",
         medicalNotes: "Usa inhalador en caso de crisis asmática. Entregar únicamente a acudientes registrados.",
         school: "Gimnasio Campestre Los Laureles",
-        photoUrl: "https://images.unsplash.com/photo-1543332164-6e82f355badc?w=400&auto=format&fit=crop&q=80",
+        photoUrl: DEFAULT_BOY_PHOTO,
         active: true,
         createdAt: new Date().toISOString()
     },
@@ -40,7 +43,7 @@ const DEFAULT_PROFILES = [
         allergies: "Alergias leves a la penicilina",
         medicalNotes: "Lleva su carnet de vacunación completo.",
         school: "Colegio San José Infantil",
-        photoUrl: "https://images.unsplash.com/photo-1595454223600-91fb272189d5?w=400&auto=format&fit=crop&q=80",
+        photoUrl: DEFAULT_GIRL_PHOTO,
         active: true,
         createdAt: new Date().toISOString()
     },
@@ -59,7 +62,7 @@ const DEFAULT_PROFILES = [
         allergies: "Intolerancia a la lactosa",
         medicalNotes: "Utiliza gafas formuladas.",
         school: "Jardín Exploradores del Futuro",
-        photoUrl: "https://images.unsplash.com/photo-1519238263530-99bdd11df2ea?w=400&auto=format&fit=crop&q=80",
+        photoUrl: DEFAULT_BOY_PHOTO,
         active: true,
         createdAt: new Date().toISOString()
     },
@@ -78,7 +81,7 @@ const DEFAULT_PROFILES = [
         allergies: "Alergia al maní",
         medicalNotes: "Siempre porta su pulsera de identificación NFC.",
         school: "Jardín Infantil Mis Primeros Pasos",
-        photoUrl: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400&auto=format&fit=crop&q=80",
+        photoUrl: DEFAULT_GIRL_PHOTO,
         active: true,
         createdAt: new Date().toISOString()
     }
@@ -88,6 +91,7 @@ class AdminApp {
     constructor() {
         this.profiles = [];
         this.isAuthenticated = sessionStorage.getItem('nfc_admin_auth') === 'true';
+        this.photoRemoved = false;
         this.init();
     }
 
@@ -116,7 +120,6 @@ class AdminApp {
         localStorage.setItem('nfc_profiles_db', JSON.stringify(this.profiles));
     }
 
-    // Fetches Authoritative Profiles from Central Cloud DB (Cache-Busted)
     async syncFromCloudDB() {
         try {
             const controller = new AbortController();
@@ -180,7 +183,6 @@ class AdminApp {
         const grid = document.getElementById('admin-profiles-grid');
         if (!grid) return;
 
-        // Update Statistics Counters
         const totalCountEl = document.getElementById('stat-total-count');
         const activeCountEl = document.getElementById('stat-active-count');
         if (totalCountEl) totalCountEl.textContent = this.profiles.length;
@@ -208,13 +210,14 @@ class AdminApp {
 
         grid.innerHTML = filtered.map(p => {
             const publicUrl = `${origin}/${p.slug}`;
+            const photo = p.photoUrl || (p.gender === 'girl' ? DEFAULT_GIRL_PHOTO : DEFAULT_BOY_PHOTO);
 
             return `
                 <div class="admin-card ${!p.active ? 'is-inactive' : ''}">
                     <!-- Card Top Header -->
                     <div class="admin-card-header">
                         <div class="avatar-wrapper">
-                            <img src="${p.photoUrl}" alt="${p.name}" class="admin-card-avatar">
+                            <img src="${photo}" alt="${p.name}" class="admin-card-avatar">
                             <span class="gender-tag ${p.gender === 'girl' ? 'tag-girl' : 'tag-boy'}">
                                 ${p.gender === 'girl' ? '👧 Niña' : '👦 Niño'}
                             </span>
@@ -306,7 +309,6 @@ class AdminApp {
         });
     }
 
-    // Permanent Deletion: Overwrites Central DB without deleted profile
     async deleteProfile(id) {
         const profile = this.profiles.find(p => p.id === id);
         if (!profile) return;
@@ -340,11 +342,12 @@ class AdminApp {
     }
 
     openCreateModal() {
+        this.photoRemoved = false;
         document.getElementById('modal-title').innerHTML = `<i class="fa-solid fa-user-plus"></i> Crear Perfil Infantil`;
         document.getElementById('form-save-profile').reset();
         document.getElementById('input-profile-id').value = '';
         document.getElementById('input-active').checked = true;
-        document.getElementById('photo-preview').src = 'https://images.unsplash.com/photo-1543332164-6e82f355badc?w=150&auto=format&fit=crop&q=80';
+        document.getElementById('photo-preview').src = DEFAULT_BOY_PHOTO;
         document.getElementById('input-whatsapp-msg').value = 'Hola, encontré la información del perfil de {nombre} y me gustaría comunicarme con sus padres.';
         document.getElementById('modal-profile').classList.remove('hidden');
     }
@@ -352,6 +355,9 @@ class AdminApp {
     openEditModal(id) {
         const p = this.profiles.find(item => item.id === id);
         if (!p) return;
+
+        this.photoRemoved = false;
+        const defaultPhoto = p.gender === 'girl' ? DEFAULT_GIRL_PHOTO : DEFAULT_BOY_PHOTO;
 
         document.getElementById('modal-title').innerHTML = `<i class="fa-solid fa-pen-to-square"></i> Editar Perfil de ${p.name}`;
         document.getElementById('input-profile-id').value = p.id;
@@ -369,7 +375,7 @@ class AdminApp {
         document.getElementById('input-allergies').value = p.allergies || '';
         document.getElementById('input-notes').value = p.medicalNotes || '';
         document.getElementById('input-photo-url').value = p.photoUrl || '';
-        document.getElementById('photo-preview').src = p.photoUrl || 'https://images.unsplash.com/photo-1543332164-6e82f355badc?w=400&auto=format&fit=crop&q=80';
+        document.getElementById('photo-preview').src = p.photoUrl || defaultPhoto;
         document.getElementById('input-active').checked = p.active;
 
         document.getElementById('modal-profile').classList.remove('hidden');
@@ -383,20 +389,27 @@ class AdminApp {
         const id = document.getElementById('input-profile-id').value;
         const name = document.getElementById('input-name').value.trim();
         let slug = document.getElementById('input-slug').value.trim();
+        const gender = document.getElementById('input-gender').value;
 
         if (!name) return;
 
         slug = this.generateUniqueSlug(slug || name, id);
 
         const photoUrlInput = document.getElementById('input-photo-url').value.trim();
-        const photoPreviewSrc = document.getElementById('photo-preview').src;
-        const finalPhoto = photoUrlInput || photoPreviewSrc;
+        const defaultPhoto = gender === 'girl' ? DEFAULT_GIRL_PHOTO : DEFAULT_BOY_PHOTO;
+
+        let finalPhoto;
+        if (this.photoRemoved) {
+            finalPhoto = defaultPhoto;
+        } else {
+            finalPhoto = photoUrlInput || document.getElementById('photo-preview').src || defaultPhoto;
+        }
 
         const profileData = {
             id: id || `prof-${Date.now()}`,
             slug: slug,
             name: name,
-            gender: document.getElementById('input-gender').value,
+            gender: gender,
             age: parseInt(document.getElementById('input-age').value) || 5,
             bloodType: document.getElementById('input-blood').value,
             school: document.getElementById('input-school').value.trim(),
@@ -489,6 +502,21 @@ class AdminApp {
             }
         });
 
+        document.getElementById('input-photo-url')?.addEventListener('input', () => {
+            this.photoRemoved = false;
+            const url = document.getElementById('input-photo-url').value.trim();
+            if (url) {
+                document.getElementById('photo-preview').src = url;
+            }
+        });
+
+        document.getElementById('input-gender')?.addEventListener('change', (e) => {
+            if (this.photoRemoved || !document.getElementById('input-photo-url').value) {
+                const defaultPhoto = e.target.value === 'girl' ? DEFAULT_GIRL_PHOTO : DEFAULT_BOY_PHOTO;
+                document.getElementById('photo-preview').src = defaultPhoto;
+            }
+        });
+
         // Photo file uploader with instant Canvas compression
         const dropzone = document.getElementById('dropzone-photo');
         const fileInput = document.getElementById('file-photo-input');
@@ -501,6 +529,7 @@ class AdminApp {
         fileInput?.addEventListener('change', (e) => {
             const file = e.target.files[0];
             if (file) {
+                this.photoRemoved = false;
                 const reader = new FileReader();
                 reader.onload = async (evt) => {
                     const compressedBase64 = await this.compressImage(evt.target.result);
@@ -511,17 +540,16 @@ class AdminApp {
             }
         });
 
-        // Remove Photo Button
+        // Remove Photo Button: Erases custom photo and resets to default avatar
         document.getElementById('btn-remove-photo')?.addEventListener('click', () => {
+            this.photoRemoved = true;
             const gender = document.getElementById('input-gender').value;
-            const defaultPhoto = gender === 'girl' 
-                ? 'https://images.unsplash.com/photo-1595454223600-91fb272189d5?w=400&auto=format&fit=crop&q=80'
-                : 'https://images.unsplash.com/photo-1543332164-6e82f355badc?w=400&auto=format&fit=crop&q=80';
+            const defaultPhoto = gender === 'girl' ? DEFAULT_GIRL_PHOTO : DEFAULT_BOY_PHOTO;
             
             if (previewImg) previewImg.src = defaultPhoto;
             document.getElementById('input-photo-url').value = '';
             if (fileInput) fileInput.value = '';
-            this.showToast("Fotografía removida.");
+            this.showToast("Fotografía personalizada eliminada definitivamente.");
         });
     }
 
