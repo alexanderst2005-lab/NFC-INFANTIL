@@ -254,22 +254,21 @@ class AdminApp {
             p.slug.toLowerCase().includes(filterText.toLowerCase())
         );
 
-        grid.innerHTML = ''; // Explicit clear before rendering
-
         if (filtered.length === 0) {
-            grid.innerHTML = `
+            const emptyHtml = `
                 <div style="grid-column: 1/-1; text-align: center; padding: 4rem 1rem; color: var(--text-secondary); background: var(--bg-card); border-radius: var(--radius-lg); border: 1px dashed var(--border-color);">
                     <i class="fa-solid fa-folder-open" style="font-size: 3rem; margin-bottom: 1rem; color: var(--accent-main); opacity: 0.7;"></i>
                     <h3 style="color: var(--text-primary); margin-bottom: 0.5rem;">No se encontraron perfiles</h3>
                     <p style="font-size: 0.9rem;">Prueba con otra búsqueda o crea un nuevo perfil infantil.</p>
                 </div>
             `;
+            if (grid.innerHTML !== emptyHtml) grid.innerHTML = emptyHtml;
             return;
         }
 
         const origin = window.location.origin;
 
-        grid.innerHTML = filtered.map(p => {
+        const cardsHtml = filtered.map(p => {
             const publicUrl = `${origin}/${p.slug}`;
             const photo = (p.photoUrl && p.photoUrl.trim() !== '') ? p.photoUrl : NEUTRAL_AVATAR_SVG;
 
@@ -334,6 +333,10 @@ class AdminApp {
                 </div>
             `;
         }).join('');
+
+        if (grid.innerHTML !== cardsHtml) {
+            grid.innerHTML = cardsHtml;
+        }
     }
 
     copyProfileLink(url) {
