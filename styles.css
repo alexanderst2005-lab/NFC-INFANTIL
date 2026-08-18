@@ -81,6 +81,15 @@ body {
     position: relative;
 }
 
+/* View Sections Toggle Visibility */
+.view-section {
+    display: none !important;
+}
+
+.view-section.active-view {
+    display: block !important;
+}
+
 /* ==========================================================================
    AMBIENT BACKGROUND GLOW & DECORATORS
    ========================================================================== */
