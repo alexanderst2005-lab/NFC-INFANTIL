@@ -11,7 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- FontAwesome icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="styles.css?v=7.0">
+    <link rel="stylesheet" href="styles.css?v=8.0">
     <style>
         /* Zero-latency View Resolution - Prevents Login Screen Flash on Refresh */
         #admin-login-screen, #admin-dashboard-screen {
@@ -26,7 +26,7 @@
     </style>
     <script>
         (function() {
-            var isAuth = localStorage.getItem('nfc_admin_auth') === 'true';
+            var isAuth = (localStorage.getItem('nfc_admin_auth') === 'true' || sessionStorage.getItem('nfc_admin_auth') === 'true');
             document.documentElement.className += isAuth ? ' is-auth' : ' is-no-auth';
         })();
     </script>

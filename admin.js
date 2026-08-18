@@ -75,7 +75,7 @@ const DEFAULT_PROFILES = [
 class AdminApp {
     constructor() {
         this.profiles = [];
-        this.isAuthenticated = sessionStorage.getItem('nfc_admin_auth') === 'true';
+        this.isAuthenticated = (localStorage.getItem('nfc_admin_auth') === 'true' || sessionStorage.getItem('nfc_admin_auth') === 'true');
         this.photoRemoved = false;
         this.init();
     }
@@ -535,6 +535,7 @@ class AdminApp {
 
             if (user === DEFAULT_USER && (pass === DEFAULT_PASS || pass === "admin" || pass === "admin123")) {
                 this.isAuthenticated = true;
+                localStorage.setItem('nfc_admin_auth', 'true');
                 sessionStorage.setItem('nfc_admin_auth', 'true');
                 this.renderState();
                 this.showToast("¡Sesión iniciada!");
@@ -545,6 +546,7 @@ class AdminApp {
 
         document.getElementById('btn-admin-logout')?.addEventListener('click', () => {
             this.isAuthenticated = false;
+            localStorage.removeItem('nfc_admin_auth');
             sessionStorage.removeItem('nfc_admin_auth');
             this.renderState();
             this.showToast("Sesión cerrada.");
