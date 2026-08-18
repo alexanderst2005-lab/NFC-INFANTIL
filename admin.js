@@ -84,23 +84,33 @@ class AdminApp {
 
     sanitizeProfile(p) {
         if (!p) return null;
-        const name = (p.name && String(p.name).trim() !== '' && String(p.name).trim() !== 'undefined') ? String(p.name).trim() : 'Perfil';
+
+        // Default lookup for base profiles if fields were wiped out in old DB
+        let baseDefault = DEFAULT_PROFILES.find(d => d.id === p.id || d.slug === p.slug);
+
+        const name = (p.name && String(p.name).trim() !== '' && String(p.name).trim() !== 'undefined') 
+            ? String(p.name).trim() 
+            : (baseDefault ? baseDefault.name : 'Perfil');
         
+        const gender = (p.gender === 'girl' || p.gender === 'boy') 
+            ? p.gender 
+            : (baseDefault ? baseDefault.gender : 'boy');
+
         let slug = (p.slug && String(p.slug).trim() !== '' && String(p.slug).trim() !== 'undefined') 
             ? String(p.slug).trim() 
-            : this.generateUniqueSlug(name, p.id);
+            : (baseDefault ? baseDefault.slug : this.generateUniqueSlug(name, p.id));
 
         return {
             id: p.id || `prof-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
             slug: slug,
             name: name,
-            gender: p.gender === 'girl' ? 'girl' : 'boy',
-            age: parseInt(p.age) > 0 ? parseInt(p.age) : 5,
-            bloodType: (p.bloodType && String(p.bloodType).trim() !== '' && String(p.bloodType) !== 'undefined') ? String(p.bloodType).trim() : 'O+',
-            parentPhone: (p.parentPhone && String(p.parentPhone).trim() !== '' && String(p.parentPhone) !== 'undefined') ? String(p.parentPhone).trim() : '',
-            whatsappMessage: (p.whatsappMessage && String(p.whatsappMessage).trim() !== '') ? String(p.whatsappMessage).trim() : 'Hola, encontré la información del perfil de {nombre}.',
-            locationMapsUrl: (p.locationMapsUrl && String(p.locationMapsUrl).trim() !== '') ? String(p.locationMapsUrl).trim() : '',
-            photoUrl: (p.photoUrl && String(p.photoUrl).trim() !== '' && String(p.photoUrl) !== 'undefined') ? String(p.photoUrl).trim() : '',
+            gender: gender,
+            age: parseInt(p.age) > 0 ? parseInt(p.age) : (baseDefault ? baseDefault.age : 5),
+            bloodType: (p.bloodType && String(p.bloodType).trim() !== '' && String(p.bloodType) !== 'undefined') ? String(p.bloodType).trim() : (baseDefault ? baseDefault.bloodType : 'O+'),
+            parentPhone: (p.parentPhone && String(p.parentPhone).trim() !== '' && String(p.parentPhone) !== 'undefined') ? String(p.parentPhone).trim() : (baseDefault ? baseDefault.parentPhone : ''),
+            whatsappMessage: (p.whatsappMessage && String(p.whatsappMessage).trim() !== '') ? String(p.whatsappMessage).trim() : (baseDefault ? baseDefault.whatsappMessage : 'Hola, encontré la información del perfil de {nombre}.'),
+            locationMapsUrl: (p.locationMapsUrl && String(p.locationMapsUrl).trim() !== '') ? String(p.locationMapsUrl).trim() : (baseDefault ? baseDefault.locationMapsUrl : ''),
+            photoUrl: (p.photoUrl && String(p.photoUrl).trim() !== '' && String(p.photoUrl) !== 'undefined') ? String(p.photoUrl).trim() : (baseDefault ? baseDefault.photoUrl : ''),
             active: true,
             createdAt: p.createdAt || new Date().toISOString()
         };
@@ -142,7 +152,7 @@ class AdminApp {
                 const cloudProfiles = jsonRes && Array.isArray(jsonRes.profiles) ? jsonRes.profiles : [];
 
                 if (cloudProfiles.length > 0) {
-                    // Sanitize all cloud profiles so no undefined values ever exist
+                    // Sanitize all cloud profiles against default lookup
                     this.profiles = cloudProfiles.map(p => this.sanitizeProfile(p)).filter(Boolean);
                     this.saveProfilesLocal();
                 } else if (this.profiles.length > 0) {
