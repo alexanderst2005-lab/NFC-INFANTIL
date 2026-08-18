@@ -1,8 +1,8 @@
 /* ==========================================================================
-   NFC INFANTIL - PUBLIC SINGLE CHILD PROFILE VIEWER (INSTANT CLOUD DB SYNC)
+   NFC INFANTIL - PUBLIC SINGLE CHILD PROFILE VIEWER (MERGED CLOUD SYNC)
    ========================================================================== */
 
-const CLOUD_DB_ENDPOINT = "https://kvdb.io/NFCInfantil2026SecureKey/profiles_v2";
+const CLOUD_DB_ENDPOINT = "https://kvdb.io/NFCInfantil2026SecureKey/profiles_master_v3";
 
 const DEFAULT_PROFILES = [
     {
@@ -128,6 +128,13 @@ class IsolatedProfileApp {
         localStorage.setItem('nfc_profiles_db', JSON.stringify(this.profiles));
     }
 
+    mergeProfiles(listA, listB) {
+        const map = new Map();
+        (listA || []).forEach(p => p && p.id && map.set(p.id, p));
+        (listB || []).forEach(p => p && p.id && map.set(p.id, p));
+        return Array.from(map.values());
+    }
+
     async syncFromCloudDB() {
         try {
             const controller = new AbortController();
@@ -139,7 +146,7 @@ class IsolatedProfileApp {
             if (res.ok) {
                 const cloudData = await res.json();
                 if (Array.isArray(cloudData) && cloudData.length > 0) {
-                    this.profiles = cloudData;
+                    this.profiles = this.mergeProfiles(cloudData, this.profiles);
                     this.saveProfilesLocal();
                 }
             }

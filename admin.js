@@ -1,9 +1,9 @@
 /* ==========================================================================
-   NFC INFANTIL - ADMIN PANEL LOGIC (BULLETPROOF CLOUD SYNC & IMAGE COMPRESSOR)
+   NFC INFANTIL - ADMIN PANEL LOGIC (BULLETPROOF MERGE & CLOUD SYNC)
    ========================================================================== */
 
 const DEFAULT_PIN = "1234";
-const CLOUD_DB_ENDPOINT = "https://kvdb.io/NFCInfantil2026SecureKey/profiles_v2";
+const CLOUD_DB_ENDPOINT = "https://kvdb.io/NFCInfantil2026SecureKey/profiles_master_v3";
 
 const DEFAULT_PROFILES = [
     {
@@ -117,6 +117,13 @@ class AdminApp {
         localStorage.setItem('nfc_profiles_db', JSON.stringify(this.profiles));
     }
 
+    mergeProfiles(listA, listB) {
+        const map = new Map();
+        (listA || []).forEach(p => p && p.id && map.set(p.id, p));
+        (listB || []).forEach(p => p && p.id && map.set(p.id, p));
+        return Array.from(map.values());
+    }
+
     // Sync profiles across PC, mobile and all browsers over the internet
     async syncFromCloudDB() {
         try {
@@ -129,12 +136,18 @@ class AdminApp {
             if (res.ok) {
                 const cloudData = await res.json();
                 if (Array.isArray(cloudData) && cloudData.length > 0) {
-                    this.profiles = cloudData;
+                    // Merge local profiles with cloud profiles to never lose newly created ones
+                    this.profiles = this.mergeProfiles(cloudData, this.profiles);
                     this.saveProfilesLocal();
+                    // Push merged list back to cloud
+                    await this.pushToCloudDB();
                     if (this.isAuthenticated) {
                         this.renderProfilesGrid();
                     }
                 }
+            } else {
+                // If cloud DB endpoint is fresh/empty, push current profiles to initialize it
+                await this.pushToCloudDB();
             }
         } catch (err) {
             console.log("Cloud sync load offline, using LocalStorage:", err);
