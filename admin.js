@@ -164,9 +164,7 @@ class AdminApp {
         if (!grid) return;
 
         const totalCountEl = document.getElementById('stat-total-count');
-        const activeCountEl = document.getElementById('stat-active-count');
         if (totalCountEl) totalCountEl.textContent = this.profiles.length;
-        if (activeCountEl) activeCountEl.textContent = this.profiles.filter(p => p.active).length;
 
         const filtered = this.profiles.filter(p =>
             p.name.toLowerCase().includes(filterText.toLowerCase()) ||
@@ -191,19 +189,14 @@ class AdminApp {
             const photo = (p.photoUrl && p.photoUrl.trim() !== '') ? p.photoUrl : NEUTRAL_AVATAR_SVG;
 
             return `
-                <div class="admin-card ${!p.active ? 'is-inactive' : ''}">
+                <div class="admin-card">
                     <!-- Card Top Header -->
                     <div class="admin-card-header">
                         <div class="avatar-wrapper">
-                            <img src="${photo}" alt="${p.name}" class="admin-card-avatar">
+                            <img src="${photo}" alt="${p.name}" class="admin-card-avatar" style="${p.gender === 'girl' ? 'border-color: #f472b6;' : ''}">
                             <span class="gender-tag ${p.gender === 'girl' ? 'tag-girl' : 'tag-boy'}">
-                                ${p.gender === 'girl' ? '👧 Niña' : '👦 Niño'}
+                                ${p.gender === 'girl' ? '👧 Tema Niña (Rosa)' : '👦 Tema Niño (Azul)'}
                             </span>
-                        </div>
-                        
-                        <div class="status-badge ${p.active ? 'status-active' : 'status-disabled'}">
-                            <span class="status-dot"></span>
-                            <span>${p.active ? 'Activo' : 'Inactivo'}</span>
                         </div>
                     </div>
 
@@ -244,14 +237,7 @@ class AdminApp {
 
                     <!-- Card Footer Actions -->
                     <div class="admin-card-footer">
-                        <div class="toggle-switch-wrapper" title="Activar/Desactivar perfil NFC">
-                            <label class="switch">
-                                <input type="checkbox" ${p.active ? 'checked' : ''} onchange="adminApp.toggleProfileActive('${p.id}', this.checked)">
-                                <span class="slider"></span>
-                            </label>
-                        </div>
-
-                        <div class="footer-btn-group">
+                        <div class="footer-btn-group" style="width: 100%; justify-content: flex-end;">
                             <button onclick="adminApp.openEditModal('${p.id}')" class="btn btn-secondary btn-sm">
                                 <i class="fa-solid fa-pen-to-square"></i> Editar
                             </button>
@@ -263,16 +249,6 @@ class AdminApp {
                 </div>
             `;
         }).join('');
-    }
-
-    async toggleProfileActive(id, isActive) {
-        const profile = this.profiles.find(p => p.id === id);
-        if (profile) {
-            profile.active = isActive;
-            await this.pushToCloudDB();
-            this.renderProfilesGrid();
-            this.showToast(`Estado de ${profile.name} actualizado: ${isActive ? 'Activo' : 'Inactivo'}`);
-        }
     }
 
     copyProfileLink(url) {
@@ -320,7 +296,6 @@ class AdminApp {
         document.getElementById('modal-title').innerHTML = `<i class="fa-solid fa-user-plus"></i> Crear Perfil Infantil`;
         document.getElementById('form-save-profile').reset();
         document.getElementById('input-profile-id').value = '';
-        document.getElementById('input-active').checked = true;
         document.getElementById('photo-preview').src = NEUTRAL_AVATAR_SVG;
         document.getElementById('input-whatsapp-msg').value = 'Hola, encontré la información del perfil de {nombre} y me gustaría comunicarme con sus padres.';
         document.getElementById('modal-profile').classList.remove('hidden');
@@ -345,7 +320,6 @@ class AdminApp {
         document.getElementById('input-maps-url').value = p.locationMapsUrl || '';
         document.getElementById('input-photo-url').value = (p.photoUrl && p.photoUrl !== NEUTRAL_AVATAR_SVG) ? p.photoUrl : '';
         document.getElementById('photo-preview').src = currentPhoto;
-        document.getElementById('input-active').checked = p.active;
 
         document.getElementById('modal-profile').classList.remove('hidden');
     }
@@ -391,7 +365,7 @@ class AdminApp {
             whatsappMessage: document.getElementById('input-whatsapp-msg').value.trim(),
             locationMapsUrl: document.getElementById('input-maps-url').value.trim(),
             photoUrl: finalPhoto,
-            active: document.getElementById('input-active').checked,
+            active: true,
             createdAt: new Date().toISOString()
         };
 

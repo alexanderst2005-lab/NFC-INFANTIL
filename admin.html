@@ -93,16 +93,8 @@
                 <div class="stat-card">
                     <div class="stat-icon icon-total"><i class="fa-solid fa-users"></i></div>
                     <div class="stat-info">
-                        <span class="stat-label">Total Perfiles</span>
+                        <span class="stat-label">Total Perfiles Registrados</span>
                         <span class="stat-value" id="stat-total-count">0</span>
-                    </div>
-                </div>
-
-                <div class="stat-card">
-                    <div class="stat-icon icon-active"><i class="fa-solid fa-circle-check"></i></div>
-                    <div class="stat-info">
-                        <span class="stat-label">Perfiles Activos</span>
-                        <span class="stat-value" id="stat-active-count">0</span>
                     </div>
                 </div>
 
@@ -131,7 +123,7 @@
     </main>
 
     <!-- ===================================================================
-         MODAL CREAR / EDITAR PERFIL (Streamlined to Match Public Profile)
+         MODAL CREAR / EDITAR PERFIL
          =================================================================== -->
     <div id="modal-profile" class="modal-overlay hidden">
         <div class="modal-container">
@@ -185,10 +177,10 @@
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label class="form-label" for="input-gender">Género *</label>
+                        <label class="form-label" for="input-gender">Género / Tema *</label>
                         <select id="input-gender" class="form-select">
-                            <option value="boy">👦 Niño</option>
-                            <option value="girl">👧 Niña</option>
+                            <option value="boy">👦 Niño (Tema Azul)</option>
+                            <option value="girl">👧 Niña (Tema Rosa)</option>
                         </select>
                     </div>
 
@@ -238,24 +230,6 @@
                 <div class="form-group">
                     <label class="form-label" for="input-maps-url">Enlace Google Maps o Dirección</label>
                     <input type="text" id="input-maps-url" class="form-input" placeholder="Ej: https://maps.google.com/?q=... o Dirección">
-                </div>
-
-                <!-- 5. ESTADO DE LA TARJETA NFC -->
-                <div class="modal-section-title">
-                    <i class="fa-solid fa-power-off"></i> Estado de la Tarjeta NFC
-                </div>
-
-                <div class="status-toggle-box">
-                    <div style="display: flex; align-items: center; gap: 0.8rem;">
-                        <label class="switch">
-                            <input type="checkbox" id="input-active" checked>
-                            <span class="slider"></span>
-                        </label>
-                        <div>
-                            <div style="font-weight: 700; font-size: 0.95rem;">Perfil Activo</div>
-                            <div style="font-size: 0.8rem; color: var(--text-secondary);">Si se desactiva, al escanear la tarjeta mostrará no disponible.</div>
-                        </div>
-                    </div>
                 </div>
 
                 <div class="modal-footer">
