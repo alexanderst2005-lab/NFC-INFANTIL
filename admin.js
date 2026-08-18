@@ -8,18 +8,18 @@ const DEFAULT_PROFILES = [
     {
         id: "prof-001",
         slug: "samuel",
-        name: "Samuel Torres",
+        name: "Samuel Arias Rodríguez",
         gender: "boy",
-        age: 6,
-        bloodType: "O+",
-        parentName: "Carlos y Diana Torres",
+        age: 13,
+        bloodType: "B+",
+        parentName: "Carlos y Diana Arias",
         parentPhone: "573001234567",
-        whatsappMessage: "Hola, encontré el perfil de Samuel y me gustaría comunicarme con sus padres.",
+        whatsappMessage: "Hola, encontré la información del perfil de Samuel y me gustaría comunicarme con sus padres.",
         locationAddress: "Calle 100 #15-20, Bogotá",
         locationMapsUrl: "https://maps.google.com/?q=4.6853,-74.0435",
-        allergies: "Alergico a la Penicilina",
-        medicalNotes: "Usa inhalador en caso de crisis asmática. Autorizado entregar solo a abuela materna.",
-        school: "Jardín Infantil Los Pequeños Exploradores",
+        allergies: "Ninguna",
+        medicalNotes: "",
+        school: "",
         photoUrl: "https://images.unsplash.com/photo-1543332164-6e82f355badc?w=400&auto=format&fit=crop&q=80",
         active: true,
         createdAt: new Date().toISOString()
@@ -37,8 +37,8 @@ const DEFAULT_PROFILES = [
         locationAddress: "Carrera 43A #1-50, Medellín",
         locationMapsUrl: "https://maps.google.com/?q=6.2088,-75.5674",
         allergies: "Ninguna conocida",
-        medicalNotes: "Lleva carnet de vacunación al día.",
-        school: "Colegio San José Infantil",
+        medicalNotes: "",
+        school: "",
         photoUrl: "https://images.unsplash.com/photo-1595454223600-91fb272189d5?w=400&auto=format&fit=crop&q=80",
         active: true,
         createdAt: new Date().toISOString()
@@ -52,12 +52,12 @@ const DEFAULT_PROFILES = [
         bloodType: "B+",
         parentName: "Andrea Benítez",
         parentPhone: "573204445566",
-        whatsappMessage: "Hola, encontré la información de Juan Diego y requiero contactar a sus acudientes.",
+        whatsappMessage: "Hola, encontré la información del perfil de Juan Diego y me comunico con sus padres.",
         locationAddress: "Calle 26 #68-80, Bogotá",
         locationMapsUrl: "https://maps.google.com/?q=4.6581,-74.1084",
-        allergies: "Intolerancia a la Lactosa",
-        medicalNotes: "Gafas recetadas para lectura.",
-        school: "Gimnasio Campestre del Norte",
+        allergies: "",
+        medicalNotes: "",
+        school: "",
         photoUrl: "https://images.unsplash.com/photo-1519238263530-99bdd11df2ea?w=400&auto=format&fit=crop&q=80",
         active: true,
         createdAt: new Date().toISOString()
@@ -71,12 +71,12 @@ const DEFAULT_PROFILES = [
         bloodType: "AB+",
         parentName: "Laura y Roberto Rodríguez",
         parentPhone: "573108889900",
-        whatsappMessage: "Hola, estoy escaneando el perfil NFC de Sofía y me comunico con sus padres.",
+        whatsappMessage: "Hola, estoy escaneando la pulsera NFC de Sofía y me comunico con sus padres.",
         locationAddress: "Avenida 4 Norte #10-15, Cali",
         locationMapsUrl: "https://maps.google.com/?q=3.4516,-76.5320",
-        allergies: "Alergia leve al maní",
-        medicalNotes: "Siempre porta su pulsera médica NFC rosa.",
-        school: "Jardín Infantil Mis Primeros Pasos",
+        allergies: "",
+        medicalNotes: "",
+        school: "",
         photoUrl: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400&auto=format&fit=crop&q=80",
         active: true,
         createdAt: new Date().toISOString()
@@ -99,7 +99,12 @@ class AdminApp {
     loadProfiles() {
         const stored = localStorage.getItem('nfc_profiles_db');
         if (stored) {
-            try { this.profiles = JSON.parse(stored); } catch (e) { this.profiles = DEFAULT_PROFILES; }
+            try { 
+                const parsed = JSON.parse(stored);
+                this.profiles = parsed && parsed.length > 0 ? parsed : DEFAULT_PROFILES;
+            } catch (e) { 
+                this.profiles = DEFAULT_PROFILES; 
+            }
         } else {
             this.profiles = DEFAULT_PROFILES;
             this.saveProfiles();
@@ -133,8 +138,7 @@ class AdminApp {
 
         const filtered = this.profiles.filter(p =>
             p.name.toLowerCase().includes(filterText.toLowerCase()) ||
-            p.slug.toLowerCase().includes(filterText.toLowerCase()) ||
-            p.school.toLowerCase().includes(filterText.toLowerCase())
+            p.slug.toLowerCase().includes(filterText.toLowerCase())
         );
 
         if (filtered.length === 0) {
@@ -147,10 +151,10 @@ class AdminApp {
             return;
         }
 
-        const baseUrl = window.location.origin;
+        const origin = window.location.origin;
 
         grid.innerHTML = filtered.map(p => {
-            const publicUrl = `${baseUrl}/${p.slug}`;
+            const publicUrl = `${origin}/${p.slug}`;
             return `
                 <div class="admin-card ${!p.active ? 'is-inactive' : ''}">
                     <div class="admin-card-head">
@@ -180,7 +184,7 @@ class AdminApp {
                     </div>
 
                     <div class="admin-card-actions">
-                        <button onclick="adminApp.copyProfileLink('${publicUrl}')" class="btn btn-secondary btn-sm" title="Copiar Enlace Público">
+                        <button onclick="adminApp.copyProfileLink('${publicUrl}')" class="btn btn-secondary btn-sm" title="Copiar Enlace Único">
                             <i class="fa-solid fa-link"></i> Copiar URL
                         </button>
                         <button onclick="adminApp.openEditModal('${p.id}')" class="btn btn-primary btn-sm">

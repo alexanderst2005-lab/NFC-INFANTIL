@@ -1,5 +1,5 @@
 /* ==========================================================================
-   NFC INFANTIL - PUBLIC SINGLE CHILD PROFILE VIEWER (100% ISOLATED)
+   NFC INFANTIL - PUBLIC SINGLE CHILD PROFILE VIEWER (100% ULTRA ROBUST)
    ========================================================================== */
 
 const DEFAULT_PROFILES = [
@@ -95,14 +95,20 @@ class IsolatedProfileApp {
     loadProfiles() {
         const stored = localStorage.getItem('nfc_profiles_db');
         if (stored) {
-            try { this.profiles = JSON.parse(stored); } catch (e) { this.profiles = DEFAULT_PROFILES; }
+            try {
+                const parsed = JSON.parse(stored);
+                // Ensure default profiles exist
+                this.profiles = parsed && parsed.length > 0 ? parsed : DEFAULT_PROFILES;
+            } catch (e) {
+                this.profiles = DEFAULT_PROFILES;
+            }
         } else {
             this.profiles = DEFAULT_PROFILES;
             localStorage.setItem('nfc_profiles_db', JSON.stringify(this.profiles));
         }
     }
 
-    // Client Router: Extracts URL Slug (/samuel -> 'samuel')
+    // Client Router: Extracts URL Slug (/samuel, ?slug=samuel, or ?p=samuel)
     handleRouting() {
         const path = window.location.pathname.toLowerCase().replace(/\/$/, '') || '/';
         const urlParams = new URLSearchParams(window.location.search);
@@ -110,10 +116,12 @@ class IsolatedProfileApp {
         let slug = '';
         if (urlParams.has('slug')) {
             slug = urlParams.get('slug');
+        } else if (urlParams.has('p')) {
+            slug = urlParams.get('p');
         } else if (path !== '/' && path !== '/index.html') {
             slug = path.substring(1);
         } else {
-            // If opening root URL without slug, default to 'samuel'
+            // Default to 'samuel' if root index
             slug = 'samuel';
         }
 
@@ -121,14 +129,28 @@ class IsolatedProfileApp {
     }
 
     // Renders strictly the single child profile corresponding to the URL
-    renderSingleProfile(slug) {
-        const profile = this.profiles.find(p => p.slug.toLowerCase() === slug.toLowerCase());
+    renderSingleProfile(rawSlug) {
+        if (!rawSlug) rawSlug = 'samuel';
+
+        const cleanSlug = rawSlug.toLowerCase().trim()
+            .replace(/^\/+|\/+$/g, '')
+            .replace(/\.html$/, '');
+
+        // Flexible search matching exact slug or slug prefix/name match
+        let profile = this.profiles.find(p => p.slug.toLowerCase().trim() === cleanSlug);
+        
+        if (!profile) {
+            profile = this.profiles.find(p => 
+                p.name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(cleanSlug) ||
+                cleanSlug.includes(p.slug.toLowerCase().trim())
+            );
+        }
 
         const profileView = document.getElementById('view-profile');
         const inactiveView = document.getElementById('view-inactive');
 
         if (!profile) {
-            this.showInactive("Perfil No Encontrado", `No existe ningún perfil registrado con el enlace '/${slug}'.`);
+            this.showInactive("Perfil No Encontrado", `No existe ningún perfil registrado con la dirección '/${cleanSlug}'.`);
             return;
         }
 
