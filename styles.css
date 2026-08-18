@@ -354,17 +354,18 @@ body.theme-girl .deco-bottom-right { color: #fb7185; }
 
 .name-spark {
     color: #fbbf24;
-    font-size: 1.3rem;
+    font-size: 1rem;
     font-weight: 800;
 }
 
 .profile-hero-name {
-    font-size: 2.5rem;
+    font-size: 1.65rem;
     font-weight: 800;
     color: var(--text-title);
-    letter-spacing: -0.5px;
+    letter-spacing: -0.3px;
     text-transform: uppercase;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
+    line-height: 1.2;
 }
 
 .security-ribbon {
