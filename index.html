@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NFC Infantil | Identificación y Seguridad Inteligente</title>
+    <meta name="description" content="Plataforma de identificación y seguridad infantil mediante pulseras y dispositivos NFC.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Background Decorators -->
+    <div class="bg-shape shape-1"></div>
+    <div class="bg-shape shape-2"></div>
+    <div class="bg-shape shape-3"></div>
+
+    <!-- Header Navigation -->
+    <header class="navbar">
+        <div class="logo">
+            <div class="logo-icon">
+                <i class="fa-solid fa-wifi"></i>
+            </div>
+            <span>NFC<span class="highlight">Infantil</span></span>
+        </div>
+        <nav class="nav-links">
+            <button class="nav-btn active" data-tab="dashboard"><i class="fa-solid fa-house"></i> Panel</button>
+            <button class="nav-btn" data-tab="scanner"><i class="fa-solid fa-nfc-symbol"></i> Escáner NFC</button>
+            <button class="nav-btn" data-tab="kids"><i class="fa-solid fa-child"></i> Niños (<span id="kids-count">0</span>)</button>
+            <button class="nav-btn btn-primary" id="btn-register-modal"><i class="fa-solid fa-plus"></i> Nueva Pulsera</button>
+        </nav>
+        <div class="header-actions">
+            <button id="theme-toggle" title="Cambiar Tema" class="icon-btn">
+                <i class="fa-solid fa-moon"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="container">
+
+        <!-- DASHBOARD TAB -->
+        <section id="tab-dashboard" class="tab-content active">
+            <div class="hero-banner">
+                <div class="hero-text">
+                    <span class="badge"><i class="fa-solid fa-shield-halved"></i> Protección NFC Activa</span>
+                    <h1>Seguridad e Identificación Infantil al Alcance de un Toque</h1>
+                    <p>Vincula pulseras y llaveros NFC con perfiles médicos y de contacto de emergencia para la tranquilidad de padres y colegios.</p>
+                    <div class="hero-btns">
+                        <button class="btn btn-lg btn-glow" id="hero-scan-btn"><i class="fa-solid fa-wifi">="Simular Toque NFC"</i> Escanear Pulsera</button>
+                        <button class="btn btn-lg btn-secondary" id="hero-add-btn"><i class="fa-solid fa-user-plus"></i> Registrar Niño</button>
+                    </div>
+                </div>
+                <div class="hero-visual">
+                    <div class="nfc-card-preview" id="interactive-card">
+                        <div class="chip-glow"></div>
+                        <div class="card-header">
+                            <i class="fa-solid fa-wifi nfc-wave"></i>
+                            <span class="card-type">PULSERA NFC SEGURA</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="avatar-ring">
+                                <img src="https://images.unsplash.com/photo-1543332164-6e82f355badc?w=150&auto=format&fit=crop&q=80" alt="Avatar Niño" id="preview-avatar">
+                            </div>
+                            <h3 id="preview-name">Mateo Alexander</h3>
+                            <p id="preview-blood"><i class="fa-solid fa-droplet text-danger"></i> Sangre: O+</p>
+                        </div>
+                        <div class="card-footer">
+                            <span><i class="fa-solid fa-phone"></i> Emergencia: +57 300 123 4567</span>
+                            <span class="status-dot"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Bar -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon icon-blue"><i class="fa-solid fa-address-card"></i></div>
+                    <div class="stat-info">
+                        <h3 id="stat-registered">0</h3>
+                        <p>Pulseras Activas</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon icon-green"><i class="fa-solid fa-bolt"></i></div>
+                    <div class="stat-info">
+                        <h3 id="stat-scans">12</h3>
+                        <p>Escaneos Recientes</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon icon-purple"><i class="fa-solid fa-hospital"></i></div>
+                    <div class="stat-info">
+                        <h3 id="stat-alerts">0</h3>
+                        <p>Alertas Médicas</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SCANNER TAB -->
+        <section id="tab-scanner" class="tab-content">
+            <div class="scanner-wrapper">
+                <div class="scanner-box">
+                    <div class="nfc-pulse-ring"></div>
+                    <div class="nfc-icon-center">
+                        <i class="fa-solid fa-nfc-symbol"></i>
+                    </div>
+                    <h2>Lector NFC Inteligente</h2>
+                    <p>Acerca la pulsera o tarjeta NFC al dispositivo móvil o presiona el botón para simular una lectura en vivo.</p>
+                    <button class="btn btn-primary btn-lg" id="btn-start-scan">
+                        <i class="fa-solid fa-wifi"></i> Iniciar Lectura NFC
+                    </button>
+                    <div id="scan-status" class="scan-status text-muted">Listo para leer tag NFC...</div>
+                </div>
+
+                <div class="scan-result-card hidden" id="scan-result">
+                    <div class="result-header">
+                        <span class="badge badge-success"><i class="fa-solid fa-check"></i> TAG NFC DETECTADO</span>
+                        <h2 id="result-name">Nombre Niño</h2>
+                    </div>
+                    <div class="result-details">
+                        <div class="detail-item">
+                            <span class="label">Padre / Tutor:</span>
+                            <span class="value" id="result-parent">María González</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">Teléfono de Contacto:</span>
+                            <a href="#" class="value highlight-link" id="result-phone"><i class="fa-solid fa-phone"></i> +57 300 000 0000</a>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">Tipo de Sangre:</span>
+                            <span class="value text-danger" id="result-blood">A+</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">Alergias / Notas Médicas:</span>
+                            <span class="value text-warning" id="result-allergies">Ninguna conocida</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">Colegio / Jardín:</span>
+                            <span class="value" id="result-school">Jardín Infantil Los Pequeños</span>
+                        </div>
+                    </div>
+                    <div class="result-actions">
+                        <a id="btn-call-emergency" href="#" class="btn btn-danger btn-block"><i class="fa-solid fa-phone-volume"></i> Llamada de Emergencia SOS</a>
+                        <button id="btn-share-profile" class="btn btn-secondary"><i class="fa-solid fa-share-nodes"></i> Compartir Perfil</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- KIDS DIRECTORY TAB -->
+        <section id="tab-kids" class="tab-content">
+            <div class="directory-header">
+                <h2>Directorio de Niños Registrados</h2>
+                <div class="search-box">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="search-kids" placeholder="Buscar por nombre, colegio o sangre...">
+                </div>
+            </div>
+
+            <div class="kids-grid" id="kids-grid-container">
+                <!-- Dynamic cards rendered via JavaScript -->
+            </div>
+        </section>
+
+    </main>
+
+    <!-- REGISTER MODAL -->
+    <div class="modal-overlay hidden" id="register-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-id-card"></i> Registrar Nueva Pulsera NFC</h3>
+                <button class="close-btn" id="close-modal">&times;</button>
+            </div>
+            <form id="kid-form" class="modal-body">
+                <div class="form-group">
+                    <label for="input-name">Nombre del Niño/a *</label>
+                    <input type="text" id="input-name" required placeholder="Ej: Mateo Alexander">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="input-blood">Grupo Sanguíneo *</label>
+                        <select id="input-blood" required>
+                            <option value="O+">O Positivo (O+)</option>
+                            <option value="O-">O Negativo (O-)</option>
+                            <option value="A+">A Positivo (A+)</option>
+                            <option value="A-">A Negativo (A-)</option>
+                            <option value="B+">B Positivo (B+)</option>
+                            <option value="B-">B Negativo (B-)</option>
+                            <option value="AB+">AB Positivo (AB+)</option>
+                            <option value="AB-">AB Negativo (AB-)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="input-age">Edad</label>
+                        <input type="number" id="input-age" min="1" max="17" placeholder="Ej: 5">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="input-parent">Nombre del Padre / Madre / Acudiente *</label>
+                    <input type="text" id="input-parent" required placeholder="Ej: Diana Torres">
+                </div>
+                <div class="form-group">
+                    <label for="input-phone">Teléfono de Emergencia *</label>
+                    <input type="tel" id="input-phone" required placeholder="Ej: +57 312 345 6789">
+                </div>
+                <div class="form-group">
+                    <label for="input-allergies">Alergias o Condición Médica</label>
+                    <textarea id="input-allergies" rows="2" placeholder="Ej: Alérgico a la Penicilina, Asma."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="input-school">Colegio / Jardín Infantil</label>
+                    <input type="text" id="input-school" placeholder="Ej: Colegio San José">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="cancel-modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> Guardar y Grabar en NFC</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="toast hidden"></div>
+
+    <script src="app.js"></script>
+</body>
+</html>
