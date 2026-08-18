@@ -314,6 +314,27 @@ class ProfileApp {
         const bloodValEl = document.getElementById('p-blood-val') || document.getElementById('p-blood');
         if (bloodValEl) bloodValEl.textContent = profile.bloodType || 'O+';
 
+        // Update Mockup Deco Icons per Gender
+        const isGirl = profile.gender === 'girl';
+        
+        const topLeftDeco = document.getElementById('deco-top-left');
+        if (topLeftDeco) topLeftDeco.innerHTML = isGirl ? '<i class="fa-solid fa-feather-pointed"></i>' : '<i class="fa-solid fa-rocket"></i>';
+
+        const topRightDeco = document.getElementById('deco-top-right');
+        if (topRightDeco) topRightDeco.innerHTML = isGirl ? '<i class="fa-solid fa-rainbow"></i>' : '<i class="fa-solid fa-atom"></i>';
+
+        const bottomRightDeco = document.getElementById('deco-bottom-right');
+        if (bottomRightDeco) bottomRightDeco.innerHTML = isGirl ? '<i class="fa-solid fa-wand-magic-sparkles"></i>' : '<i class="fa-solid fa-user-astronaut"></i>';
+
+        const bloodIconEl = document.getElementById('p-blood-icon');
+        if (bloodIconEl) bloodIconEl.innerHTML = isGirl ? '<i class="fa-solid fa-heart"></i>' : '<i class="fa-solid fa-droplet"></i>';
+
+        const sceneLeft = document.getElementById('scene-left');
+        if (sceneLeft) sceneLeft.innerHTML = isGirl ? '<i class="fa-solid fa-seedling"></i>' : '<i class="fa-solid fa-tree"></i>';
+
+        const sceneRight = document.getElementById('scene-right');
+        if (sceneRight) sceneRight.innerHTML = isGirl ? '<i class="fa-solid fa-chess-rook"></i>' : '<i class="fa-solid fa-paw"></i>';
+
         // Avatar Photo
         const avatarEl = document.getElementById('p-avatar');
         if (avatarEl) {
