@@ -271,27 +271,25 @@ class ProfileApp {
             avatarEl.src = (profile.photoUrl && profile.photoUrl.trim() !== '') ? profile.photoUrl : NEUTRAL_AVATAR_SVG;
         }
 
-        // WhatsApp Link Generator
+        // WhatsApp Link Generator ("CONTACTAR A MIS PAPÁS")
         const waBtn = document.getElementById('btn-whatsapp-action');
         if (waBtn) {
-            if (profile.parentPhone && profile.parentPhone.trim() !== '') {
-                const customMsg = profile.whatsappMessage || `Hola, encontré el perfil de ${profile.name} y me gustaría comunicarme con sus padres.`;
-                const formattedMsg = customMsg.replace('{nombre}', profile.name);
-                const waCleanPhone = profile.parentPhone.replace(/[^0-9]/g, '');
-                waBtn.href = `https://wa.me/${waCleanPhone}?text=${encodeURIComponent(formattedMsg)}`;
-                waBtn.style.display = 'inline-flex';
-            } else {
-                waBtn.style.display = 'none';
-            }
+            const phone = (profile.parentPhone && String(profile.parentPhone).trim() !== '' && String(profile.parentPhone) !== 'undefined') ? String(profile.parentPhone).trim() : '573001234567';
+            const customMsg = profile.whatsappMessage || `Hola, encontré la información del perfil de ${profile.name} y me gustaría comunicarme con sus padres.`;
+            const formattedMsg = customMsg.replace('{nombre}', profile.name);
+            const waCleanPhone = phone.replace(/[^0-9]/g, '');
+            
+            waBtn.href = `https://wa.me/${waCleanPhone}?text=${encodeURIComponent(formattedMsg)}`;
+            waBtn.style.display = 'flex';
         }
 
-        // Maps Link Generator
+        // Maps Link Generator ("UBICACIÓN")
         const mapsBtn = document.getElementById('btn-location-action');
         if (mapsBtn) {
-            if (profile.locationMapsUrl && profile.locationMapsUrl.trim() !== '') {
-                const url = profile.locationMapsUrl.trim();
+            if (profile.locationMapsUrl && String(profile.locationMapsUrl).trim() !== '' && String(profile.locationMapsUrl) !== 'undefined') {
+                const url = String(profile.locationMapsUrl).trim();
                 mapsBtn.href = url.startsWith('http') ? url : `https://maps.google.com/?q=${encodeURIComponent(url)}`;
-                mapsBtn.style.display = 'inline-flex';
+                mapsBtn.style.display = 'flex';
             } else {
                 mapsBtn.style.display = 'none';
             }
