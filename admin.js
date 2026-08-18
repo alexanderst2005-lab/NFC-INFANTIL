@@ -352,8 +352,17 @@ class AdminApp {
         document.getElementById('modal-title').innerHTML = `<i class="fa-solid fa-user-plus"></i> Crear Perfil Infantil`;
         document.getElementById('form-save-profile').reset();
         document.getElementById('input-profile-id').value = '';
+        document.getElementById('input-name').value = '';
+        document.getElementById('input-slug').value = '';
+        document.getElementById('input-gender').value = '';
+        document.getElementById('input-age').value = '';
+        document.getElementById('input-blood').value = '';
+        document.getElementById('input-phone').value = '';
+        document.getElementById('input-whatsapp-msg').value = '';
+        document.getElementById('input-maps-url').value = '';
+        if (document.getElementById('input-school-url')) document.getElementById('input-school-url').value = '';
+        document.getElementById('input-photo-url').value = '';
         document.getElementById('photo-preview').src = NEUTRAL_AVATAR_SVG;
-        document.getElementById('input-whatsapp-msg').value = 'Hola, encontré la información del perfil de {nombre} y me gustaría comunicarme con sus padres.';
         document.getElementById('modal-profile').classList.remove('hidden');
     }
 
@@ -443,7 +452,7 @@ class AdminApp {
         this.showToast(`¡Perfil de ${name} guardado! URL: /${slug}`);
     }
 
-    compressImage(base64Data, maxWidth = 200, quality = 0.65) {
+    compressImage(base64Data, maxWidth = 800, quality = 0.92) {
         return new Promise((resolve) => {
             const img = new Image();
             img.onload = () => {
@@ -457,6 +466,8 @@ class AdminApp {
                 canvas.width = width;
                 canvas.height = height;
                 const ctx = canvas.getContext('2d');
+                ctx.imageSmoothingEnabled = true;
+                ctx.imageSmoothingQuality = 'high';
                 ctx.drawImage(img, 0, 0, width, height);
                 resolve(canvas.toDataURL('image/jpeg', quality));
             };

@@ -174,7 +174,8 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label class="form-label" for="input-gender">Género *</label>
-                        <select id="input-gender" class="form-select">
+                        <select id="input-gender" class="form-select" required>
+                            <option value="" disabled selected>Seleccionar...</option>
                             <option value="boy">👦 Niño</option>
                             <option value="girl">👧 Niña</option>
                         </select>
@@ -182,12 +183,13 @@
 
                     <div class="form-group">
                         <label class="form-label" for="input-age">Edad (Años) *</label>
-                        <input type="number" id="input-age" class="form-input" min="0" max="18" value="6" required>
+                        <input type="number" id="input-age" class="form-input" min="0" max="18" placeholder="Ej: 5" required>
                     </div>
 
                     <div class="form-group">
                         <label class="form-label" for="input-blood">Tipo de Sangre *</label>
-                        <select id="input-blood" class="form-select">
+                        <select id="input-blood" class="form-select" required>
+                            <option value="" disabled selected>Seleccionar...</option>
                             <option value="O+">O+</option>
                             <option value="O-">O-</option>
                             <option value="A+">A+</option>
