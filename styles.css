@@ -54,8 +54,8 @@ body.theme-girl {
 
 html {
     background-color: #070d18;
-    overscroll-behavior-y: none;
-    overscroll-behavior-x: none;
+    overscroll-behavior-y: auto;
+    overscroll-behavior-x: hidden;
 }
 
 body {
@@ -71,8 +71,8 @@ body.admin-page-active,
 html:has(body.admin-page-active) {
     background: #070d18 !important;
     background-color: #070d18 !important;
-    overscroll-behavior-y: none;
-    overscroll-behavior-x: none;
+    overscroll-behavior-y: auto;
+    overscroll-behavior-x: hidden;
 }
 
 /* Background Dynamic Glow Bubbles */
