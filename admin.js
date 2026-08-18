@@ -292,20 +292,18 @@ class AdminApp {
             if (res.ok) {
                 const jsonRes = await res.json();
                 if (jsonRes && Array.isArray(jsonRes.profiles)) {
-                    const cloudProfiles = jsonRes.profiles;
-                    const merged = this.mergeAndPreserveProfiles(this.profiles, cloudProfiles);
-                    const sanitizedMerged = this.deduplicateProfiles(merged);
-
-                    if (JSON.stringify(sanitizedMerged) !== JSON.stringify(this.profiles)) {
-                        this.profiles = sanitizedMerged;
-                        this.saveProfilesLocal();
-                        if (this.isAuthenticated) {
-                            this.renderProfilesGrid();
+                    const sanitizedCloud = this.deduplicateProfiles(jsonRes.profiles);
+                    
+                    if (sanitizedCloud.length > 0) {
+                        if (JSON.stringify(sanitizedCloud) !== JSON.stringify(this.profiles)) {
+                            this.profiles = sanitizedCloud;
+                            this.saveProfilesLocal();
+                            if (this.isAuthenticated) {
+                                this.renderProfilesGrid();
+                            }
                         }
-                    }
-
-                    // If local had custom profiles missing from cloud (due to serverless cold start), re-push merged array to cloud
-                    if (JSON.stringify(sanitizedMerged) !== JSON.stringify(cloudProfiles)) {
+                    } else if (this.profiles.length > 0) {
+                        // Cold-start fallback: if cloud responded with empty initial list, re-push local custom profiles
                         await this.pushToCloudDB();
                     }
                 }
@@ -513,13 +511,7 @@ class AdminApp {
         if (!profile) return;
 
         if (confirm(`¿Deseas eliminar permanentemente el perfil de ${profile.name}?`)) {
-            const deletedIds = JSON.parse(localStorage.getItem('nfc_deleted_ids') || '[]');
-            if (!deletedIds.includes(id)) {
-                deletedIds.push(id);
-                localStorage.setItem('nfc_deleted_ids', JSON.stringify(deletedIds));
-            }
-
-            this.profiles = this.profiles.filter(p => p.id !== id);
+            this.profiles = this.deduplicateProfiles(this.profiles.filter(p => p.id !== id));
             this.saveProfilesLocal();
             await this.pushToCloudDB();
             this.renderProfilesGrid();
