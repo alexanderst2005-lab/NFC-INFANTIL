@@ -1,11 +1,11 @@
 /* ==========================================================================
-   NFC INFANTIL - ADMIN PANEL LOGIC (100% COMPLETE PHOTO DELETION)
+   NFC INFANTIL - ADMIN PANEL LOGIC (100% MATCHED TO PUBLIC CHILD PROFILE)
    ========================================================================== */
 
 const DEFAULT_PIN = "1234";
 const CLOUD_DB_ENDPOINT = "/api/sync";
 
-// Neutral SVG Silhouette for profiles without a photo
+// Neutral SVG Silhouette for profiles without a custom photo
 const NEUTRAL_AVATAR_SVG = "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='%2364748b'%3E%3Ccircle cx='50' cy='35' r='22'/%3E%3Cpath d='M18 85c0-18 14-30 32-30s32 12 32 30Z'/%3E%3C/svg%3E";
 
 const DEFAULT_PROFILES = [
@@ -16,14 +16,9 @@ const DEFAULT_PROFILES = [
         gender: "boy",
         age: 13,
         bloodType: "B+",
-        parentName: "Carlos y Diana Arias",
         parentPhone: "573001234567",
         whatsappMessage: "Hola, encontré la información del perfil de Samuel y me gustaría comunicarme con sus padres.",
-        locationAddress: "Calle 100 #15-20, Bogotá",
         locationMapsUrl: "https://maps.google.com/?q=4.6853,-74.0435",
-        allergies: "Ninguna",
-        medicalNotes: "Usa inhalador en caso de crisis asmática. Entregar únicamente a acudientes registrados.",
-        school: "Gimnasio Campestre Los Laureles",
         photoUrl: "https://images.unsplash.com/photo-1543332164-6e82f355badc?w=400&auto=format&fit=crop&q=80",
         active: true,
         createdAt: new Date().toISOString()
@@ -35,14 +30,9 @@ const DEFAULT_PROFILES = [
         gender: "girl",
         age: 5,
         bloodType: "A+",
-        parentName: "María y Andrés Gómez",
         parentPhone: "573159876543",
         whatsappMessage: "Hola, encontré la información del perfil de Valentina y quiero comunicarme con sus padres.",
-        locationAddress: "Carrera 43A #1-50, Medellín",
         locationMapsUrl: "https://maps.google.com/?q=6.2088,-75.5674",
-        allergies: "Alergias leves a la penicilina",
-        medicalNotes: "Lleva su carnet de vacunación completo.",
-        school: "Colegio San José Infantil",
         photoUrl: "https://images.unsplash.com/photo-1595454223600-91fb272189d5?w=400&auto=format&fit=crop&q=80",
         active: true,
         createdAt: new Date().toISOString()
@@ -54,14 +44,9 @@ const DEFAULT_PROFILES = [
         gender: "boy",
         age: 7,
         bloodType: "B+",
-        parentName: "Andrea Benítez",
         parentPhone: "573204445566",
         whatsappMessage: "Hola, encontré la información del perfil de Juan Diego y me comunico con sus padres.",
-        locationAddress: "Calle 26 #68-80, Bogotá",
         locationMapsUrl: "https://maps.google.com/?q=4.6581,-74.1084",
-        allergies: "Intolerancia a la lactosa",
-        medicalNotes: "Utiliza gafas formuladas.",
-        school: "Jardín Exploradores del Futuro",
         photoUrl: "https://images.unsplash.com/photo-1519238263530-99bdd11df2ea?w=400&auto=format&fit=crop&q=80",
         active: true,
         createdAt: new Date().toISOString()
@@ -73,14 +58,9 @@ const DEFAULT_PROFILES = [
         gender: "girl",
         age: 4,
         bloodType: "AB+",
-        parentName: "Laura y Roberto Rodríguez",
         parentPhone: "573108889900",
         whatsappMessage: "Hola, estoy escaneando la pulsera NFC de Sofía y me comunico con sus padres.",
-        locationAddress: "Avenida 4 Norte #10-15, Cali",
         locationMapsUrl: "https://maps.google.com/?q=3.4516,-76.5320",
-        allergies: "Alergia al maní",
-        medicalNotes: "Siempre porta su pulsera de identificación NFC.",
-        school: "Jardín Infantil Mis Primeros Pasos",
         photoUrl: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400&auto=format&fit=crop&q=80",
         active: true,
         createdAt: new Date().toISOString()
@@ -190,9 +170,7 @@ class AdminApp {
 
         const filtered = this.profiles.filter(p =>
             p.name.toLowerCase().includes(filterText.toLowerCase()) ||
-            p.slug.toLowerCase().includes(filterText.toLowerCase()) ||
-            (p.school && p.school.toLowerCase().includes(filterText.toLowerCase())) ||
-            (p.parentName && p.parentName.toLowerCase().includes(filterText.toLowerCase()))
+            p.slug.toLowerCase().includes(filterText.toLowerCase())
         );
 
         if (filtered.length === 0) {
@@ -252,17 +230,13 @@ class AdminApp {
                                 <span>${p.bloodType}</span>
                             </div>
                             <div class="meta-item meta-item-full">
-                                <i class="fa-solid fa-users"></i>
-                                <span>${p.parentName || 'Sin padres reg.'}</span>
-                            </div>
-                            <div class="meta-item meta-item-full">
                                 <i class="fa-solid fa-phone"></i>
-                                <span>+${p.parentPhone}</span>
+                                <span>+${p.parentPhone || 'Sin WhatsApp'}</span>
                             </div>
-                            ${p.school ? `
+                            ${p.locationMapsUrl ? `
                             <div class="meta-item meta-item-full">
-                                <i class="fa-solid fa-school"></i>
-                                <span>${p.school}</span>
+                                <i class="fa-solid fa-location-dot"></i>
+                                <span>${p.locationMapsUrl}</span>
                             </div>
                             ` : ''}
                         </div>
@@ -366,14 +340,9 @@ class AdminApp {
         document.getElementById('input-gender').value = p.gender;
         document.getElementById('input-age').value = p.age;
         document.getElementById('input-blood').value = p.bloodType;
-        document.getElementById('input-school').value = p.school || '';
-        document.getElementById('input-parent').value = p.parentName;
-        document.getElementById('input-phone').value = p.parentPhone;
-        document.getElementById('input-address').value = p.locationAddress || '';
+        document.getElementById('input-phone').value = p.parentPhone || '';
         document.getElementById('input-whatsapp-msg').value = p.whatsappMessage || 'Hola, encontré el perfil de {nombre} y quiero comunicarme con sus padres.';
         document.getElementById('input-maps-url').value = p.locationMapsUrl || '';
-        document.getElementById('input-allergies').value = p.allergies || '';
-        document.getElementById('input-notes').value = p.medicalNotes || '';
         document.getElementById('input-photo-url').value = (p.photoUrl && p.photoUrl !== NEUTRAL_AVATAR_SVG) ? p.photoUrl : '';
         document.getElementById('photo-preview').src = currentPhoto;
         document.getElementById('input-active').checked = p.active;
@@ -418,14 +387,9 @@ class AdminApp {
             gender: gender,
             age: parseInt(document.getElementById('input-age').value) || 5,
             bloodType: document.getElementById('input-blood').value,
-            school: document.getElementById('input-school').value.trim(),
-            parentName: document.getElementById('input-parent').value.trim(),
             parentPhone: document.getElementById('input-phone').value.trim(),
-            locationAddress: document.getElementById('input-address').value.trim(),
             whatsappMessage: document.getElementById('input-whatsapp-msg').value.trim(),
             locationMapsUrl: document.getElementById('input-maps-url').value.trim(),
-            allergies: document.getElementById('input-allergies').value.trim(),
-            medicalNotes: document.getElementById('input-notes').value.trim(),
             photoUrl: finalPhoto,
             active: document.getElementById('input-active').checked,
             createdAt: new Date().toISOString()
