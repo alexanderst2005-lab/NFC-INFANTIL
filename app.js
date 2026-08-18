@@ -67,6 +67,24 @@ const DEFAULT_PROFILES = [
         photoUrl: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400&auto=format&fit=crop&q=80",
         active: true,
         createdAt: new Date().toISOString()
+    },
+    {
+        id: "prof-005",
+        slug: "max",
+        name: "Max",
+        gender: "pet",
+        age: 3,
+        bloodType: "",
+        parentPhone: "573001234567",
+        whatsappMessage: "Hola, encontré a la mascota Max y quiero comunicarme con su dueño.",
+        locationMapsUrl: "",
+        schoolMapsUrl: "",
+        school: "",
+        grade: "",
+        medicalConditions: "",
+        photoUrl: "https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=400&auto=format&fit=crop&q=80",
+        active: true,
+        createdAt: new Date().toISOString()
     }
 ];
 
@@ -352,9 +370,15 @@ class ProfileApp {
             });
         }
 
-        // 5. Ultimate Fallback: Default to first profile if still not found
+        // 5. Ultimate Fallback: Smart category fallback to prevent theme flickering
         if (!profile) {
-            profile = this.profiles[0];
+            if (document.documentElement.className.includes('theme-pet') || (cleanSlug && (cleanSlug.includes('max') || cleanSlug.includes('pet') || cleanSlug.includes('mascota')))) {
+                profile = this.profiles.find(p => p && p.gender === 'pet') || this.profiles[0];
+            } else if (document.documentElement.className.includes('theme-girl') || (cleanSlug && (cleanSlug.includes('valentina') || cleanSlug.includes('sofia')))) {
+                profile = this.profiles.find(p => p && p.gender === 'girl') || this.profiles[0];
+            } else {
+                profile = this.profiles[0];
+            }
         }
 
         return profile;
