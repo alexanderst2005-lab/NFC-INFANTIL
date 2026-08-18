@@ -49,16 +49,20 @@
                 </div>
                 <h2>Acceso Administrativo</h2>
                 <p style="color: var(--text-secondary); margin-bottom: 1.8rem; font-size: 0.95rem;">
-                    Ingresa tu PIN de seguridad para gestionar los perfiles infantiles y sus tarjetas NFC.
+                    Ingresa tus credenciales de seguridad para acceder al panel de administración.
                 </p>
 
                 <form id="form-admin-login">
                     <div class="form-group" style="text-align: left;">
-                        <label class="form-label" for="input-admin-pin">Clave PIN de Acceso</label>
-                        <input type="password" id="input-admin-pin" class="form-input" placeholder="Introduce clave PIN (Ej: 1234)" required autocomplete="current-password">
+                        <label class="form-label" for="input-admin-user">Usuario</label>
+                        <input type="text" id="input-admin-user" class="form-input" placeholder="Ingresa tu usuario" required autocomplete="username">
                     </div>
-                    <button type="submit" class="btn btn-primary btn-block btn-lg" style="margin-top: 1rem;">
-                        <i class="fa-solid fa-key"></i> Entrar al Panel
+                    <div class="form-group" style="text-align: left; margin-top: 1rem;">
+                        <label class="form-label" for="input-admin-pass">Contraseña</label>
+                        <input type="password" id="input-admin-pass" class="form-input" placeholder="Ingresa tu contraseña" required autocomplete="current-password">
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block btn-lg" style="margin-top: 1.5rem;">
+                        <i class="fa-solid fa-right-to-bracket"></i> Entrar al Panel
                     </button>
                 </form>
             </div>

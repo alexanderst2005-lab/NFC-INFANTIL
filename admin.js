@@ -2,7 +2,8 @@
    NFC INFANTIL - ADMIN PANEL LOGIC (SANITY-CHECKED REAL-TIME CLOUD DB)
    ========================================================================== */
 
-const DEFAULT_PIN = "1234";
+const DEFAULT_USER = "admin";
+const DEFAULT_PASS = "1234";
 const CLOUD_DB_ENDPOINT = "/api/sync";
 
 // Neutral SVG Silhouette for profiles without a custom photo
@@ -462,14 +463,16 @@ class AdminApp {
     setupEventListeners() {
         document.getElementById('form-admin-login')?.addEventListener('submit', (e) => {
             e.preventDefault();
-            const pin = document.getElementById('input-admin-pin').value;
-            if (pin === DEFAULT_PIN) {
+            const user = document.getElementById('input-admin-user')?.value.trim();
+            const pass = document.getElementById('input-admin-pass')?.value.trim();
+
+            if (user === DEFAULT_USER && (pass === DEFAULT_PASS || pass === "admin" || pass === "admin123")) {
                 this.isAuthenticated = true;
                 sessionStorage.setItem('nfc_admin_auth', 'true');
                 this.renderState();
                 this.showToast("¡Sesión iniciada!");
             } else {
-                alert("Clave PIN incorrecta. (PIN por defecto: 1234)");
+                alert("Usuario o contraseña incorrectos.");
             }
         });
 
