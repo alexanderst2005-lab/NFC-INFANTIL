@@ -333,9 +333,11 @@ class ProfileApp {
             if (hasLocation) {
                 const url = String(profile.locationMapsUrl).trim();
                 mapsBtn.href = url.startsWith('http') ? url : `https://maps.google.com/?q=${encodeURIComponent(url)}`;
-                mapsBtn.style.display = 'flex';
+                mapsBtn.classList.remove('hidden-btn');
+                mapsBtn.style.setProperty('display', 'flex', 'important');
             } else {
-                mapsBtn.style.display = 'none';
+                mapsBtn.classList.add('hidden-btn');
+                mapsBtn.style.setProperty('display', 'none', 'important');
             }
         }
     }

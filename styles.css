@@ -1367,6 +1367,10 @@ body.theme-girl .decorator {
     border: 1px solid rgba(56, 189, 248, 0.35) !important;
 }
 
+.hidden-btn {
+    display: none !important;
+}
+
 /* Action Buttons: WhatsApp & Location */
 .btn-whatsapp {
     background: linear-gradient(135deg, #25d366 0%, #128c7e 100%) !important;
@@ -1377,7 +1381,7 @@ body.theme-girl .decorator {
     font-size: 1.05rem !important;
     padding: 1.1rem 1.6rem !important;
     border-radius: var(--radius-lg) !important;
-    display: flex !important;
+    display: flex;
     align-items: center !important;
     justify-content: center !important;
     gap: 0.6rem !important;
@@ -1401,7 +1405,7 @@ body.theme-girl .decorator {
     font-size: 1.05rem !important;
     padding: 1.1rem 1.6rem !important;
     border-radius: var(--radius-lg) !important;
-    display: flex !important;
+    display: flex;
     align-items: center !important;
     justify-content: center !important;
     gap: 0.6rem !important;
@@ -1425,7 +1429,7 @@ body.theme-girl .decorator {
     font-size: 1.05rem !important;
     padding: 1.1rem 1.6rem !important;
     border-radius: var(--radius-lg) !important;
-    display: flex !important;
+    display: flex;
     align-items: center !important;
     justify-content: center !important;
     gap: 0.6rem !important;
