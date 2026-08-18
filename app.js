@@ -1,5 +1,5 @@
 /* ==========================================================================
-   NFC INFANTIL - PUBLIC SINGLE CHILD PROFILE VIEWER (UNIVERSAL NFC SYNC)
+   NFC INFANTIL - PUBLIC SINGLE CHILD PROFILE VIEWER (CLEAN SHORT URLS)
    ========================================================================== */
 
 const DEFAULT_PROFILES = [
@@ -89,7 +89,6 @@ class IsolatedProfileApp {
 
     init() {
         this.loadProfiles();
-        this.checkUniversalPayloadInUrl();
         this.handleRouting();
     }
 
@@ -105,34 +104,6 @@ class IsolatedProfileApp {
         } else {
             this.profiles = DEFAULT_PROFILES;
             localStorage.setItem('nfc_profiles_db', JSON.stringify(this.profiles));
-        }
-    }
-
-    saveProfiles() {
-        localStorage.setItem('nfc_profiles_db', JSON.stringify(this.profiles));
-    }
-
-    // Decodes universal pdata parameter if present in NFC URL
-    checkUniversalPayloadInUrl() {
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.has('pdata')) {
-            try {
-                const rawB64 = decodeURIComponent(urlParams.get('pdata'));
-                const jsonStr = atob(rawB64);
-                const p = JSON.parse(jsonStr);
-
-                if (p && p.slug && p.name) {
-                    const existingIdx = this.profiles.findIndex(item => item.slug === p.slug || item.id === p.id);
-                    if (existingIdx !== -1) {
-                        this.profiles[existingIdx] = { ...this.profiles[existingIdx], ...p };
-                    } else {
-                        this.profiles.unshift(p);
-                    }
-                    this.saveProfiles();
-                }
-            } catch (e) {
-                console.log("Error decoding universal NFC profile payload:", e);
-            }
         }
     }
 

@@ -1,5 +1,5 @@
 /* ==========================================================================
-   NFC INFANTIL - ADMIN PANEL LOGIC (UNIVERSAL NFC URL GENERATOR)
+   NFC INFANTIL - ADMIN PANEL LOGIC (CLEAN SHORT URLS)
    ========================================================================== */
 
 const DEFAULT_PIN = "1234";
@@ -154,29 +154,8 @@ class AdminApp {
         const origin = window.location.origin;
 
         grid.innerHTML = filtered.map(p => {
-            // Generate Portable B64 Data Payload for universal cross-device NFC opening
-            let portablePayloadUrl = `${origin}/${p.slug}`;
-            try {
-                const compactObj = {
-                    id: p.id,
-                    slug: p.slug,
-                    name: p.name,
-                    gender: p.gender,
-                    age: p.age,
-                    bloodType: p.bloodType,
-                    parentName: p.parentName,
-                    parentPhone: p.parentPhone,
-                    whatsappMessage: p.whatsappMessage,
-                    locationAddress: p.locationAddress,
-                    locationMapsUrl: p.locationMapsUrl,
-                    photoUrl: p.photoUrl,
-                    active: p.active
-                };
-                const b64 = btoa(JSON.stringify(compactObj));
-                portablePayloadUrl = `${origin}/${p.slug}?pdata=${encodeURIComponent(b64)}`;
-            } catch (err) {
-                console.log("Fallback to clean URL:", err);
-            }
+            // Short clean URL for NFC tags and sharing
+            const publicUrl = `${origin}/${p.slug}`;
 
             return `
                 <div class="admin-card ${!p.active ? 'is-inactive' : ''}">
@@ -207,7 +186,7 @@ class AdminApp {
                     </div>
 
                     <div class="admin-card-actions">
-                        <button onclick="adminApp.copyProfileLink('${portablePayloadUrl}')" class="btn btn-secondary btn-sm" title="Copiar Enlace Portátil NFC">
+                        <button onclick="adminApp.copyProfileLink('${publicUrl}')" class="btn btn-secondary btn-sm" title="Copiar URL Corta Única">
                             <i class="fa-solid fa-link"></i> Copiar URL
                         </button>
                         <button onclick="adminApp.openEditModal('${p.id}')" class="btn btn-primary btn-sm">
@@ -234,7 +213,7 @@ class AdminApp {
 
     copyProfileLink(url) {
         navigator.clipboard.writeText(url).then(() => {
-            this.showToast(`¡Enlace universal NFC copiado al portapapeles!`);
+            this.showToast(`¡URL corta copiada! ${url}`);
         }).catch(() => {
             prompt("Copia este enlace:", url);
         });
