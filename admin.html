@@ -204,23 +204,22 @@
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label class="form-label" for="input-name" id="lbl-input-name">Nombre Completo del Niño/a o Mascota *</label>
-                        <input type="text" id="input-name" class="form-input" placeholder="Ej: Samuel Arias Rodríguez o Firulais" required>
+                        <label class="form-label" for="input-name" id="lbl-input-name">Nombre Completo (Opcional)</label>
+                        <input type="text" id="input-name" class="form-input" placeholder="Ej: Samuel Arias Rodríguez o Firulais">
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label" for="input-slug">Enlace URL Corto *</label>
-                        <input type="text" id="input-slug" class="form-input" placeholder="Ej: samuel" required>
+                        <label class="form-label" for="input-slug">Enlace URL Corto (Opcional)</label>
+                        <input type="text" id="input-slug" class="form-input" placeholder="Ej: samuel">
                         <span class="field-hint">Ej: /samuel, /valentina, /firulais</span>
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label class="form-label" for="input-gender">Categoría / Género *</label>
-                        <select id="input-gender" class="form-select" required>
-                            <option value="" disabled selected>Seleccionar...</option>
-                            <option value="boy">👦 Niño</option>
+                        <label class="form-label" for="input-gender">Categoría / Género (Opcional)</label>
+                        <select id="input-gender" class="form-select">
+                            <option value="boy" selected>👦 Niño</option>
                             <option value="girl">👧 Niña</option>
                             <option value="pet">🐾 Mascota</option>
                             <option value="senior">👴 Adulto Mayor (Naranja Cálido)</option>
@@ -234,14 +233,14 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label" for="input-age">Edad Calculada (Años) *</label>
-                        <input type="number" id="input-age" class="form-input" min="0" max="30" placeholder="Ej: 5" required>
+                        <label class="form-label" for="input-age">Edad Calculada (Años) (Opcional)</label>
+                        <input type="number" id="input-age" class="form-input" min="0" max="120" placeholder="Ej: 5">
                     </div>
 
                     <div class="form-group" id="group-blood">
-                        <label class="form-label" for="input-blood">Tipo de Sangre *</label>
-                        <select id="input-blood" class="form-select" required>
-                            <option value="" disabled selected>Seleccionar...</option>
+                        <label class="form-label" for="input-blood">Tipo de Sangre (Opcional)</label>
+                        <select id="input-blood" class="form-select">
+                            <option value="" selected>Seleccionar (Opcional)...</option>
                             <option value="O+">O+</option>
                             <option value="O-">O-</option>
                             <option value="A+">A+</option>
@@ -286,8 +285,8 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label" for="input-phone" id="lbl-input-phone">Teléfono WhatsApp (Con código país) *</label>
-                    <input type="tel" id="input-phone" class="form-input" placeholder="Ej: 573001234567" required>
+                    <label class="form-label" for="input-phone" id="lbl-input-phone">Teléfono WhatsApp (Opcional)</label>
+                    <input type="tel" id="input-phone" class="form-input" placeholder="Ej: 573001234567">
                     <span class="field-hint">Sin código +, ni espacios (Ej: 573001234567)</span>
                 </div>
 

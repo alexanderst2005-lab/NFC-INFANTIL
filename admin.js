@@ -809,13 +809,19 @@ class AdminApp {
         this.isSaving = true;
         try {
             const id = document.getElementById('input-profile-id').value;
-            const name = document.getElementById('input-name').value.trim();
+            let name = document.getElementById('input-name').value.trim();
+            if (!name) {
+                name = 'Nuevo Perfil';
+            }
             let slug = document.getElementById('input-slug').value.trim();
-            const gender = document.getElementById('input-gender').value;
+            if (!slug) {
+                slug = this.generateUniqueSlug(name, id);
+            } else {
+                slug = this.generateUniqueSlug(slug, id);
+            }
 
-            if (!name) return;
-
-            slug = this.generateUniqueSlug(slug || name, id);
+            const genderInput = document.getElementById('input-gender')?.value;
+            const gender = (genderInput === 'girl' || genderInput === 'pet' || genderInput === 'senior') ? genderInput : 'boy';
 
             const photoUrlInput = document.getElementById('input-photo-url').value.trim();
             const previewSrc = document.getElementById('photo-preview').src;
