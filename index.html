@@ -25,6 +25,10 @@
     <script>
         (function() {
             try {
+                function setTheme(t) {
+                    document.documentElement.classList.remove('theme-boy', 'theme-girl', 'theme-pet', 'theme-senior');
+                    document.documentElement.classList.add(t);
+                }
                 var rawPath = window.location.pathname;
                 var rawSearch = window.location.search;
                 var slug = '';
@@ -43,9 +47,9 @@
                 var isExplicitGirl = rawSearch.indexOf('gender=girl') !== -1;
 
                 if (isExplicitPet) {
-                    document.documentElement.className = 'theme-pet';
+                    setTheme('theme-pet');
                 } else if (isExplicitGirl) {
-                    document.documentElement.className = 'theme-girl';
+                    setTheme('theme-girl');
                 } else {
                     var stored = localStorage.getItem('nfc_profiles_db');
                     if (stored) {
@@ -61,21 +65,21 @@
                             if (!p && (slug === 'jose-ramirez' || slug === 'jose')) p = { gender: 'senior' };
 
                             if (p && p.gender === 'girl') {
-                                document.documentElement.className = 'theme-girl';
+                                setTheme('theme-girl');
                             } else if (p && p.gender === 'pet') {
-                                document.documentElement.className = 'theme-pet';
+                                setTheme('theme-pet');
                             } else if (p && p.gender === 'senior') {
-                                document.documentElement.className = 'theme-senior';
+                                setTheme('theme-senior');
                             } else if (p && p.gender === 'boy') {
-                                document.documentElement.className = 'theme-boy';
+                                setTheme('theme-boy');
                             }
                         }
                     } else if (slug === 'valentina' || slug === 'sofia') {
-                        document.documentElement.className = 'theme-girl';
+                        setTheme('theme-girl');
                     } else if (slug === 'max' || slug === 'firulais' || slug === 'mascota') {
-                        document.documentElement.className = 'theme-pet';
+                        setTheme('theme-pet');
                     } else if (slug === 'jose-ramirez' || slug === 'jose') {
-                        document.documentElement.className = 'theme-senior';
+                        setTheme('theme-senior');
                     }
                 }
             } catch(e) {}

@@ -517,7 +517,8 @@ class ProfileApp {
         }
 
         document.body.className = themeClass;
-        document.documentElement.className = themeClass;
+        document.documentElement.classList.remove('theme-boy', 'theme-girl', 'theme-pet', 'theme-senior');
+        document.documentElement.classList.add(themeClass, 'ready');
         this.renderFloatingDecorators(profile.gender);
 
         const isSenior = profile.gender === 'senior';
