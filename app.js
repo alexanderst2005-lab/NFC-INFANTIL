@@ -556,22 +556,6 @@ class ProfileApp {
             medicalBoxEl.style.display = 'none';
         }
 
-        // Update Mockup Deco Icons per Gender
-        const topLeftDeco = document.getElementById('deco-top-left');
-        if (topLeftDeco) {
-            topLeftDeco.innerHTML = isPet ? '<i class="fa-solid fa-house-chimney-window"></i>' : (isSenior ? '<i class="fa-solid fa-shield-heart"></i>' : (isGirl ? '<i class="fa-solid fa-feather-pointed"></i>' : '<i class="fa-solid fa-rocket"></i>'));
-        }
-
-        const topRightDeco = document.getElementById('deco-top-right');
-        if (topRightDeco) {
-            topRightDeco.innerHTML = isPet ? '<i class="fa-solid fa-bone"></i>' : (isSenior ? '<i class="fa-solid fa-heart-pulse"></i>' : (isGirl ? '<i class="fa-solid fa-rainbow"></i>' : '<i class="fa-solid fa-atom"></i>'));
-        }
-
-        const bottomRightDeco = document.getElementById('deco-bottom-right');
-        if (bottomRightDeco) {
-            bottomRightDeco.innerHTML = isPet ? '<i class="fa-solid fa-heart"></i>' : (isSenior ? '<i class="fa-solid fa-hand-holding-heart"></i>' : (isGirl ? '<i class="fa-solid fa-wand-magic-sparkles"></i>' : '<i class="fa-solid fa-user-astronaut"></i>'));
-        }
-
         const bloodIconEl = document.getElementById('p-blood-icon');
         if (bloodIconEl) {
             bloodIconEl.innerHTML = isPet ? '<i class="fa-solid fa-paw"></i>' : (isGirl ? '<i class="fa-solid fa-heart"></i>' : '<i class="fa-solid fa-droplet"></i>');

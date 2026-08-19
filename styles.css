@@ -22,40 +22,82 @@
    THEME IDENTITIES: BOY (👦) VS GIRL (👧)
    ========================================================================== */
 
-/* BOY THEME (👦 Sky Blue, Oceanic Space Navy & Gold) */
+/* BOY THEME (👦 Soft Sky Blue Gradient Background) */
 html.theme-boy,
 html.theme-boy body,
 body.theme-boy {
-    --bg-page: linear-gradient(180deg, #0252a1 0%, #0284c7 35%, #38bdf8 65%, #bae6fd 100%);
-    --card-bg: rgba(255, 255, 255, 0.96);
-    --text-title: #1e3a8a;
-    --text-sub: #475569;
-    background: #0284c7 !important;
+    --bg-page: linear-gradient(180deg, #f0f9ff 0%, #e0f2fe 45%, #bae6fd 100%);
+    --card-bg: #ffffff;
+    --text-title: #0369a1;
+    --text-sub: #0284c7;
+    background: linear-gradient(180deg, #f0f9ff 0%, #e0f2fe 45%, #bae6fd 100%) !important;
+    background-color: #f0f9ff !important;
 }
 
-/* GIRL THEME (👧 Fairytale Pink, Lavender & Coral) */
+html.theme-boy .app-header {
+    background: transparent !important;
+    color: #0369a1 !important;
+}
+
+html.theme-boy .app-header .brand-logo {
+    color: #0369a1 !important;
+}
+
+html.theme-boy .app-header .brand-icon {
+    background: rgba(2, 132, 199, 0.15) !important;
+    color: #0284c7 !important;
+}
+
+/* GIRL THEME (👧 Soft Fairytale Pink Gradient Background) */
 html.theme-girl,
 html.theme-girl body,
 body.theme-girl {
-    --bg-page: linear-gradient(180deg, #fce7f3 0%, #f472b6 35%, #ec4899 65%, #fbcfe8 100%);
-    --card-bg: rgba(255, 255, 255, 0.96);
-    --text-title: #7e22ce;
-    --text-sub: #6b21a8;
-    background: #f472b6 !important;
+    --bg-page: linear-gradient(180deg, #fdf2f8 0%, #fbcfe8 45%, #f472b6 100%);
+    --card-bg: #ffffff;
+    --text-title: #be185d;
+    --text-sub: #db2777;
+    background: linear-gradient(180deg, #fdf2f8 0%, #fbcfe8 45%, #f472b6 100%) !important;
+    background-color: #fdf2f8 !important;
 }
 
-/* PET THEME (🐾 Warm Organic Beige, Forest Green & Paw Decorators) */
+html.theme-girl .app-header {
+    background: transparent !important;
+    color: #be185d !important;
+}
+
+html.theme-girl .app-header .brand-logo {
+    color: #be185d !important;
+}
+
+html.theme-girl .app-header .brand-icon {
+    background: rgba(236, 72, 153, 0.15) !important;
+    color: #ec4899 !important;
+}
+
+/* PET THEME (🐾 Warm Organic Beige & Forest Green Background) */
 html.theme-pet,
 html.theme-pet body,
-body.theme-pet,
-html[class*="theme-pet"],
-body[class*="theme-pet"] {
-    --bg-page: linear-gradient(180deg, #f4efe4 0%, #e6decb 35%, #d8cdb4 100%) !important;
+body.theme-pet {
+    --bg-page: linear-gradient(180deg, #f4efe4 0%, #e6decb 45%, #d8cdb4 100%) !important;
     --card-bg: #fffdf7 !important;
     --text-title: #1c3818 !important;
     --text-sub: #4a5d3e !important;
-    background: linear-gradient(180deg, #f4efe4 0%, #e6decb 35%, #d8cdb4 100%) !important;
-    background-color: #e6decb !important;
+    background: linear-gradient(180deg, #f4efe4 0%, #e6decb 45%, #d8cdb4 100%) !important;
+    background-color: #f4efe4 !important;
+}
+
+html.theme-pet .app-header {
+    background: transparent !important;
+    color: #1c3818 !important;
+}
+
+html.theme-pet .app-header .brand-logo {
+    color: #1c3818 !important;
+}
+
+html.theme-pet .app-header .brand-icon {
+    background: rgba(45, 90, 39, 0.15) !important;
+    color: #2d5a27 !important;
 }
 
 * {
@@ -461,21 +503,32 @@ body.theme-pet .bg-bubbles .bubble-2 {
    THEME: SENIOR (ADULTO MAYOR - WARM ELEGANT AMBER & ORANGE)
    ========================================================================== */
 html.theme-senior,
+html.theme-senior body,
 body.theme-senior {
-    --bg-main: #fffbf5;
-    --bg-card: #ffffff;
+    --bg-page: linear-gradient(180deg, #fff7ed 0%, #ffedd5 45%, #fed7aa 100%);
+    --card-bg: #ffffff;
     --text-title: #2b1e16;
-    --text-secondary: #786355;
+    --text-sub: #786355;
     --border-color: #fce8d5;
     --accent-main: #f77f00;
     --accent-gradient: linear-gradient(135deg, #f77f00 0%, #d65a00 100%);
     --accent-glow: rgba(247, 127, 0, 0.25);
-    background-color: #fffbf5 !important;
+    background: linear-gradient(180deg, #fff7ed 0%, #ffedd5 45%, #fed7aa 100%) !important;
+    background-color: #fff7ed !important;
 }
 
-html.theme-senior .app-background,
-body.theme-senior .app-background {
-    background: radial-gradient(circle at 50% 0%, #fff2e0 0%, #fffbf5 75%) !important;
+html.theme-senior .app-header {
+    background: transparent !important;
+    color: #7c2d12 !important;
+}
+
+html.theme-senior .app-header .brand-logo {
+    color: #7c2d12 !important;
+}
+
+html.theme-senior .app-header .brand-icon {
+    background: rgba(247, 127, 0, 0.15) !important;
+    color: #f77f00 !important;
 }
 
 html.theme-senior .avatar-ring,
