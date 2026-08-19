@@ -521,30 +521,60 @@ class ProfileApp {
             }
         }
 
+        // 1. Age Box Handling (Dynamic Hide if Empty)
         const computedAge = this.calculateAgeFromBirthDate(profile.birthDate, profile.age);
-        const ageValEl = document.getElementById('p-age-val') || document.getElementById('p-age');
-        if (ageValEl) ageValEl.textContent = `${computedAge} ${computedAge === 1 ? 'año' : 'años'}`;
-
-        const ageIconEl = document.getElementById('p-age-icon');
-        if (ageIconEl) {
-            ageIconEl.className = isPet ? 'fa-solid fa-paw' : (isSenior ? 'fa-solid fa-cake-candles' : 'fa-solid fa-cake-candles');
+        const hasAge = (profile.birthDate && String(profile.birthDate).trim() !== '') || (computedAge > 0);
+        const boxAgeEl = document.getElementById('box-age');
+        
+        if (hasAge && computedAge > 0) {
+            const ageValEl = document.getElementById('p-age-val') || document.getElementById('p-age');
+            if (ageValEl) ageValEl.textContent = `${computedAge} ${computedAge === 1 ? 'año' : 'años'}`;
+            const ageIconEl = document.getElementById('p-age-icon');
+            if (ageIconEl) ageIconEl.className = isPet ? 'fa-solid fa-paw' : (isSenior ? 'fa-solid fa-cake-candles' : 'fa-solid fa-cake-candles');
+            if (boxAgeEl) {
+                boxAgeEl.classList.remove('hidden');
+                boxAgeEl.style.display = 'flex';
+            }
+        } else if (boxAgeEl) {
+            boxAgeEl.classList.add('hidden');
+            boxAgeEl.style.display = 'none';
         }
 
-        const bloodValEl = document.getElementById('p-blood-val') || document.getElementById('p-blood');
-        if (bloodValEl) bloodValEl.textContent = profile.bloodType || (isPet ? 'N/A' : 'O+');
-
+        // 2. Blood Type Box Handling (Dynamic Hide if Empty or N/A)
+        const rawBlood = profile.bloodType ? String(profile.bloodType).trim() : '';
+        const hasBlood = rawBlood !== '' && rawBlood.toUpperCase() !== 'N/A' && rawBlood !== 'undefined';
         const boxBloodEl = document.getElementById('box-blood');
-        if (boxBloodEl) {
-            if (isPet) {
-                boxBloodEl.classList.add('hidden');
-                boxBloodEl.style.display = 'none';
-            } else {
+        
+        if (!isPet && hasBlood) {
+            const bloodValEl = document.getElementById('p-blood-val') || document.getElementById('p-blood');
+            if (bloodValEl) bloodValEl.textContent = rawBlood;
+            if (boxBloodEl) {
                 boxBloodEl.classList.remove('hidden');
-                boxBloodEl.style.display = '';
+                boxBloodEl.style.display = 'flex';
+            }
+        } else if (boxBloodEl) {
+            boxBloodEl.classList.add('hidden');
+            boxBloodEl.style.display = 'none';
+        }
+
+        // Adjust Grid layout dynamically if only 1 card is visible
+        const cardsRowEl = document.querySelector('.info-cards-row');
+        if (cardsRowEl) {
+            const visibleAge = hasAge && computedAge > 0;
+            const visibleBlood = !isPet && hasBlood;
+            
+            if (visibleAge && visibleBlood) {
+                cardsRowEl.style.gridTemplateColumns = '1fr 1fr';
+                cardsRowEl.style.display = 'grid';
+            } else if (visibleAge || visibleBlood) {
+                cardsRowEl.style.gridTemplateColumns = '1fr';
+                cardsRowEl.style.display = 'grid';
+            } else {
+                cardsRowEl.style.display = 'none';
             }
         }
 
-        // 1. School Box (HIDDEN for Senior)
+        // 3. School Box (HIDDEN for Senior or if Empty)
         const schoolBoxEl = document.getElementById('box-school');
         const schoolValEl = document.getElementById('p-school');
         if (!isSenior && profile.school && String(profile.school).trim() !== '') {
@@ -558,7 +588,7 @@ class ProfileApp {
             schoolBoxEl.style.display = 'none';
         }
 
-        // 2. Grade Box (HIDDEN for Senior)
+        // 4. Grade Box (HIDDEN for Senior or if Empty)
         const gradeBoxEl = document.getElementById('box-grade');
         const gradeValEl = document.getElementById('p-grade');
         if (!isSenior && profile.grade && String(profile.grade).trim() !== '') {
@@ -572,7 +602,7 @@ class ProfileApp {
             gradeBoxEl.style.display = 'none';
         }
 
-        // 3. Medical Box (HIDDEN for Senior)
+        // 5. Medical Box (HIDDEN for Senior or if Empty)
         const medicalBoxEl = document.getElementById('box-medical');
         const medicalValEl = document.getElementById('p-medical-notes');
         if (!isSenior && profile.medicalConditions && String(profile.medicalConditions).trim() !== '') {
@@ -607,30 +637,36 @@ class ProfileApp {
             avatarEl.src = (profile.photoUrl && profile.photoUrl.trim() !== '') ? profile.photoUrl : NEUTRAL_AVATAR_SVG;
         }
 
-        // WhatsApp Link Generator ("CONTACTAR A MIS FAMILIARES")
+        // WhatsApp Link Generator ("CONTACTAR A MIS FAMILIARES" - OPCIONAL: Oculto si teléfono está vacío)
         const waBtn = document.getElementById('btn-whatsapp-action');
         if (waBtn) {
-            const mainTextEl = waBtn.querySelector('.btn-main-text');
-            const subTextEl = waBtn.querySelector('.btn-sub-text');
-            if (mainTextEl) {
-                mainTextEl.textContent = isPet ? 'Contactar a mi dueño' : (isSenior ? 'Contactar a mis familiares' : 'Contactar a mis papás');
-            }
-            if (subTextEl && isSenior) {
-                subTextEl.textContent = 'Escríbenos por WhatsApp';
-            }
+            const rawPhone = (profile.parentPhone && String(profile.parentPhone).trim() !== '' && String(profile.parentPhone) !== 'undefined' && String(profile.parentPhone) !== 'null') ? String(profile.parentPhone).trim() : '';
 
-            const phone = (profile.parentPhone && String(profile.parentPhone).trim() !== '' && String(profile.parentPhone) !== 'undefined') ? String(profile.parentPhone).trim() : '573001234567';
-            
-            const defaultMsg = isPet
-                ? `Hola, encontré a la mascota ${profile.name} y quiero comunicarme con su dueño.`
-                : (isSenior ? `Hola, encontré el perfil de seguridad del adulto mayor ${profile.name} y quiero comunicarme con sus familiares.` : `Hola, encontré la información del perfil de ${profile.name} y me gustaría comunicarme con sus padres.`);
+            if (rawPhone !== '') {
+                const mainTextEl = waBtn.querySelector('.btn-main-text');
+                const subTextEl = waBtn.querySelector('.btn-sub-text');
+                if (mainTextEl) {
+                    mainTextEl.textContent = isPet ? 'Contactar a mi dueño' : (isSenior ? 'Contactar a mis familiares' : 'Contactar a mis papás');
+                }
+                if (subTextEl && isSenior) {
+                    subTextEl.textContent = 'Escríbenos por WhatsApp';
+                }
 
-            const customMsg = profile.whatsappMessage || defaultMsg;
-            const formattedMsg = customMsg.replace('{nombre}', profile.name);
-            const waCleanPhone = phone.replace(/[^0-9]/g, '');
-            
-            waBtn.href = `https://wa.me/${waCleanPhone}?text=${encodeURIComponent(formattedMsg)}`;
-            waBtn.style.display = 'flex';
+                const defaultMsg = isPet
+                    ? `Hola, encontré a la mascota ${profile.name} y quiero comunicarme con su dueño.`
+                    : (isSenior ? `Hola, encontré el perfil de seguridad del adulto mayor ${profile.name} y quiero comunicarme con sus familiares.` : `Hola, encontré la información del perfil de ${profile.name} y me gustaría comunicarme con sus padres.`);
+
+                const customMsg = profile.whatsappMessage || defaultMsg;
+                const formattedMsg = customMsg.replace('{nombre}', profile.name);
+                const waCleanPhone = rawPhone.replace(/[^0-9]/g, '');
+                
+                waBtn.href = `https://wa.me/${waCleanPhone}?text=${encodeURIComponent(formattedMsg)}`;
+                waBtn.classList.remove('hidden-btn');
+                waBtn.style.setProperty('display', 'flex', 'important');
+            } else {
+                waBtn.classList.add('hidden-btn');
+                waBtn.style.setProperty('display', 'none', 'important');
+            }
         }
 
         // Location Link Generator ("Ver ubicación" - OPCIONAL: Oculto si no hay link, visible con link)
@@ -643,7 +679,8 @@ class ProfileApp {
 
             const hasLocation = profile.locationMapsUrl && 
                 String(profile.locationMapsUrl).trim() !== '' && 
-                String(profile.locationMapsUrl) !== 'undefined';
+                String(profile.locationMapsUrl) !== 'undefined' &&
+                String(profile.locationMapsUrl) !== 'null';
 
             if (hasLocation) {
                 const url = String(profile.locationMapsUrl).trim();
