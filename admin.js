@@ -67,6 +67,9 @@ class AdminApp {
             }
         }, (error) => {
             console.error("Firestore Realtime Listener Error:", error);
+            if (this.isAuthenticated) {
+                this.renderProfilesGrid();
+            }
         });
     }
 
@@ -204,21 +207,59 @@ class AdminApp {
         }
     }
 
+    updateTabCounters() {
+        const total = this.profiles.length;
+        const boys = this.profiles.filter(p => p.gender === 'boy').length;
+        const girls = this.profiles.filter(p => p.gender === 'girl').length;
+        const pets = this.profiles.filter(p => p.gender === 'pet').length;
+        const seniors = this.profiles.filter(p => p.gender === 'senior').length;
+
+        const statTotal = document.getElementById('stat-total-count');
+        if (statTotal) statTotal.textContent = total;
+
+        const countAll = document.getElementById('tab-count-all');
+        if (countAll) countAll.textContent = total;
+
+        const countBoy = document.getElementById('tab-count-boy');
+        if (countBoy) countBoy.textContent = boys;
+
+        const countGirl = document.getElementById('tab-count-girl');
+        if (countGirl) countGirl.textContent = girls;
+
+        const countPet = document.getElementById('tab-count-pet');
+        if (countPet) countPet.textContent = pets;
+
+        const countSenior = document.getElementById('tab-count-senior');
+        if (countSenior) countSenior.textContent = seniors;
+    }
+
+    onLogoClick() {
+        this.currentCategoryTab = 'all';
+        document.querySelectorAll('.category-tab').forEach(b => {
+            b.classList.toggle('active', b.getAttribute('data-tab') === 'all');
+        });
+        const searchInput = document.getElementById('admin-search-input');
+        if (searchInput) searchInput.value = '';
+        this.renderProfilesGrid();
+    }
+
     renderProfilesGrid(filterQuery = '') {
         const grid = document.getElementById('admin-profiles-grid');
         const emptyState = document.getElementById('admin-empty-state');
         if (!grid) return;
 
+        this.updateTabCounters();
+
         let filtered = this.profiles;
 
         // 1. Filter by Category Tab
-        if (this.currentCategoryTab === 'boys') {
+        if (this.currentCategoryTab === 'boy') {
             filtered = filtered.filter(p => p.gender === 'boy');
-        } else if (this.currentCategoryTab === 'girls') {
+        } else if (this.currentCategoryTab === 'girl') {
             filtered = filtered.filter(p => p.gender === 'girl');
-        } else if (this.currentCategoryTab === 'pets') {
+        } else if (this.currentCategoryTab === 'pet') {
             filtered = filtered.filter(p => p.gender === 'pet');
-        } else if (this.currentCategoryTab === 'seniors') {
+        } else if (this.currentCategoryTab === 'senior') {
             filtered = filtered.filter(p => p.gender === 'senior');
         }
 
@@ -230,12 +271,10 @@ class AdminApp {
                 (p.slug && p.slug.toLowerCase().includes(query)) ||
                 (p.school && p.school.toLowerCase().includes(query)) ||
                 (p.parentPhone && p.parentPhone.includes(query)) ||
-                (p.parentPhone2 && p.parentPhone2.includes(query))
+                (p.parentPhone2 && p.parentPhone2.includes(query)) ||
+                (p.bloodType && p.bloodType.toLowerCase().includes(query))
             );
         }
-
-        const totalBadge = document.getElementById('total-profiles-badge');
-        if (totalBadge) totalBadge.textContent = `${this.profiles.length} Perfiles`;
 
         if (filtered.length === 0) {
             grid.innerHTML = '';
@@ -259,34 +298,37 @@ class AdminApp {
             const phone2Text = p.parentPhone2 ? ` | +${p.parentPhone2}` : '';
 
             return `
-            <div class="profile-card-admin" data-id="${p.id}">
-                <div class="card-admin-header">
-                    <div class="admin-avatar-wrapper">
-                        <img src="${photoSrc}" alt="${p.name}" class="admin-avatar-img" onerror="this.onerror=null;this.src='${NEUTRAL_AVATAR_SVG}';">
-                    </div>
-                    <div class="card-admin-title">
-                        <h3>${p.name}</h3>
-                        <span class="category-pill ${categoryClass}">${categoryLabel}</span>
+            <div class="admin-card" data-id="${p.id}">
+                <div class="admin-card-header">
+                    <img src="${photoSrc}" alt="${p.name}" class="admin-card-avatar" onerror="this.onerror=null;this.src='${NEUTRAL_AVATAR_SVG}';">
+                    <div class="admin-card-header-info">
+                        <h3 class="admin-card-name">${p.name}</h3>
+                        <span class="gender-pill ${categoryClass}">${categoryLabel}</span>
                     </div>
                 </div>
-                <div class="card-admin-body">
-                    <div class="info-row"><i class="fa-solid fa-link"></i> <span>URL: <strong>/${p.slug}</strong></span></div>
-                    <div class="info-row"><i class="fa-solid fa-cake-candles"></i> <span>Edad: ${ageText}</span></div>
-                    <div class="info-row"><i class="fa-solid fa-droplet"></i> <span>Tipo de Sangre: ${bloodText}</span></div>
-                    <div class="info-row"><i class="fa-solid fa-school"></i> <span>Colegio/Grado: ${schoolText}</span></div>
-                    <div class="info-row"><i class="fa-solid fa-phone"></i> <span>Teléfono(s): ${phoneText}${phone2Text}</span></div>
+                
+                <div class="url-pill-bar">
+                    <span class="url-slug-text">/${p.slug}</span>
+                    <button type="button" class="btn-copy-mini" onclick="adminApp.copyProfileUrl('${p.slug}')">
+                        <i class="fa-solid fa-copy"></i> Copiar URL
+                    </button>
                 </div>
-                <div class="card-admin-actions">
-                    <button type="button" class="btn-action edit" onclick="adminApp.openEditModal('${p.id}')">
+
+                <div class="card-meta-grid">
+                    <div class="meta-item"><i class="fa-solid fa-cake-candles"></i> ${ageText}</div>
+                    <div class="meta-item"><i class="fa-solid fa-droplet"></i> ${bloodText}</div>
+                    <div class="meta-item meta-item-full"><i class="fa-solid fa-school"></i> ${schoolText}</div>
+                    <div class="meta-item meta-item-full"><i class="fa-solid fa-phone"></i> ${phoneText}${phone2Text}</div>
+                </div>
+
+                <div class="admin-card-footer">
+                    <button type="button" class="btn btn-secondary" onclick="adminApp.openEditModal('${p.id}')">
                         <i class="fa-solid fa-pen-to-square"></i> Editar
                     </button>
-                    <button type="button" class="btn-action view" onclick="adminApp.previewProfile('${p.slug}')">
+                    <button type="button" class="btn btn-secondary" onclick="adminApp.previewProfile('${p.slug}')">
                         <i class="fa-solid fa-eye"></i> Ver
                     </button>
-                    <button type="button" class="btn-action share" onclick="adminApp.copyProfileUrl('${p.slug}')">
-                        <i class="fa-solid fa-share-nodes"></i> Copiar URL
-                    </button>
-                    <button type="button" class="btn-action delete" onclick="adminApp.deleteProfile('${p.id}')">
+                    <button type="button" class="btn btn-danger" onclick="adminApp.deleteProfile('${p.id}')">
                         <i class="fa-solid fa-trash"></i>
                     </button>
                 </div>
@@ -304,7 +346,7 @@ class AdminApp {
         document.getElementById('input-slug').value = '';
         
         const genderSelect = document.getElementById('input-gender');
-        if (genderSelect) genderSelect.value = (this.currentCategoryTab === 'girls' ? 'girl' : (this.currentCategoryTab === 'pets' ? 'pet' : (this.currentCategoryTab === 'seniors' ? 'senior' : 'boy')));
+        if (genderSelect) genderSelect.value = (this.currentCategoryTab !== 'all' ? this.currentCategoryTab : 'boy');
         
         document.getElementById('input-birthdate').value = '';
         document.getElementById('input-age').value = '';
