@@ -586,14 +586,16 @@ class AdminApp {
 
                         <!-- Metadata Grid -->
                         <div class="card-meta-grid">
+                            ${(p.birthDate || (p.age !== undefined && p.age !== null && String(p.age).trim() !== '')) ? `
                             <div class="meta-item">
                                 <i class="fa-solid fa-calendar-day" style="color: var(--accent-main);"></i>
                                 <span>${this.calculateAgeFromBirthDate(p.birthDate, p.age)} Años</span>
                             </div>
-                            ${p.gender !== 'pet' ? `
+                            ` : ''}
+                            ${(p.gender !== 'pet' && p.bloodType && p.bloodType.trim() !== '' && p.bloodType.toUpperCase() !== 'N/A') ? `
                             <div class="meta-item">
                                 <i class="fa-solid fa-droplet" style="color: #f87171;"></i>
-                                <span>${p.bloodType || 'O+'}</span>
+                                <span>${p.bloodType.trim()}</span>
                             </div>
                             ` : ''}
                             <div class="meta-item meta-item-full">
@@ -909,7 +911,7 @@ class AdminApp {
                 gender: gender,
                 birthDate: birthDateVal,
                 age: computedAge,
-                bloodType: document.getElementById('input-blood').value || (gender === 'pet' ? 'N/A' : 'O+'),
+                bloodType: gender === 'pet' ? '' : (document.getElementById('input-blood').value ? document.getElementById('input-blood').value.trim() : ''),
                 parentPhone: parentPhone1Val,
                 parentPhone2: parentPhone2Val,
                 whatsappMessage: document.getElementById('input-whatsapp-msg').value.trim(),
