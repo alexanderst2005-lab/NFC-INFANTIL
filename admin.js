@@ -191,6 +191,7 @@ class AdminApp {
         let school = (p.school !== undefined && p.school !== null) ? String(p.school).trim() : '';
         let grade = (p.grade !== undefined && p.grade !== null) ? String(p.grade).trim() : '';
         let medicalConditions = (p.medicalConditions !== undefined && p.medicalConditions !== null) ? String(p.medicalConditions).trim() : '';
+        let importantMedications = (p.importantMedications !== undefined && p.importantMedications !== null) ? String(p.importantMedications).trim() : '';
 
         const defaultWaMsg = gender === 'pet'
             ? 'Hola, encontré a la mascota {nombre} y quiero comunicarme con su dueño.'
@@ -218,6 +219,7 @@ class AdminApp {
             school: school,
             grade: grade,
             medicalConditions: medicalConditions,
+            importantMedications: importantMedications,
             photoUrl: photoUrl,
             active: true,
             createdAt: p.createdAt || new Date().toISOString(),
@@ -297,6 +299,7 @@ class AdminApp {
             school: override.school !== undefined && override.school !== '' ? override.school : (base.school || ''),
             grade: override.grade !== undefined && override.grade !== '' ? override.grade : (base.grade || ''),
             medicalConditions: override.medicalConditions !== undefined && override.medicalConditions !== '' ? override.medicalConditions : (base.medicalConditions || ''),
+            importantMedications: override.importantMedications !== undefined && override.importantMedications !== '' ? override.importantMedications : (base.importantMedications || ''),
             photoUrl: (override.photoUrl && override.photoUrl.trim() !== '' && override.photoUrl !== NEUTRAL_AVATAR_SVG)
                 ? override.photoUrl.trim()
                 : (base.photoUrl || ''),
@@ -748,6 +751,7 @@ class AdminApp {
         if (document.getElementById('input-school')) document.getElementById('input-school').value = '';
         if (document.getElementById('input-grade')) document.getElementById('input-grade').value = '';
         if (document.getElementById('input-medical')) document.getElementById('input-medical').value = '';
+        if (document.getElementById('input-medications')) document.getElementById('input-medications').value = '';
         document.getElementById('input-photo-url').value = '';
         document.getElementById('photo-preview').src = NEUTRAL_AVATAR_SVG;
 
@@ -794,6 +798,7 @@ class AdminApp {
         if (document.getElementById('input-school')) document.getElementById('input-school').value = p.school || '';
         if (document.getElementById('input-grade')) document.getElementById('input-grade').value = p.grade || '';
         if (document.getElementById('input-medical')) document.getElementById('input-medical').value = p.medicalConditions || '';
+        if (document.getElementById('input-medications')) document.getElementById('input-medications').value = p.importantMedications || '';
         
         const isBase64 = p.photoUrl && p.photoUrl.startsWith('data:');
         document.getElementById('input-photo-url').value = (p.photoUrl && p.photoUrl !== NEUTRAL_AVATAR_SVG && !isBase64) ? p.photoUrl : '';
@@ -865,6 +870,7 @@ class AdminApp {
             const schoolVal = document.getElementById('input-school')?.value.trim() || '';
             const gradeVal = document.getElementById('input-grade')?.value.trim() || '';
             const medicalVal = document.getElementById('input-medical')?.value.trim() || '';
+            const medicationsVal = document.getElementById('input-medications')?.value.trim() || '';
 
             const birthDateVal = document.getElementById('input-birthdate')?.value || '';
             const ageInputVal = document.getElementById('input-age')?.value;
@@ -885,6 +891,7 @@ class AdminApp {
                 school: schoolVal,
                 grade: gradeVal,
                 medicalConditions: medicalVal,
+                importantMedications: medicationsVal,
                 photoUrl: finalPhoto,
                 active: true,
                 createdAt: existingProf ? (existingProf.createdAt || new Date().toISOString()) : new Date().toISOString(),

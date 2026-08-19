@@ -818,6 +818,49 @@ body.theme-girl .icon-grade {
     word-break: break-word;
 }
 
+/* Important Medications Box */
+.medications-box {
+    background: #f0fdf4;
+    border: 1.5px solid #bbf7d0;
+    border-left: 4px solid #16a34a;
+    box-shadow: 0 10px 24px rgba(22, 163, 74, 0.08);
+}
+
+.medications-box .special-care-header {
+    color: #166534;
+}
+
+.medications-box .special-care-header i {
+    color: #16a34a;
+}
+
+.medications-box .special-care-body {
+    color: #14532d;
+}
+
+html.theme-senior .medications-box,
+body.theme-senior .medications-box {
+    background: #fffbe6;
+    border: 1.5px solid #fef08a;
+    border-left: 4px solid #f59e0b;
+    box-shadow: 0 10px 24px rgba(245, 158, 11, 0.08);
+}
+
+html.theme-senior .medications-box .special-care-header,
+body.theme-senior .medications-box .special-care-header {
+    color: #b45309;
+}
+
+html.theme-senior .medications-box .special-care-header i,
+body.theme-senior .medications-box .special-care-header i {
+    color: #f59e0b;
+}
+
+html.theme-senior .medications-box .special-care-body,
+body.theme-senior .medications-box .special-care-body {
+    color: #78350f;
+}
+
 .info-card-text {
     display: flex;
     flex-direction: column;

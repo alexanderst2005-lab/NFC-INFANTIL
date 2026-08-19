@@ -221,6 +221,7 @@ export default async function handler(req, res) {
                         school: p.school !== undefined ? String(p.school).trim() : '',
                         grade: p.grade !== undefined ? String(p.grade).trim() : '',
                         medicalConditions: p.medicalConditions !== undefined ? String(p.medicalConditions).trim() : '',
+                        importantMedications: p.importantMedications !== undefined ? String(p.importantMedications).trim() : '',
                         photoUrl: p.photoUrl !== undefined ? String(p.photoUrl).trim() : '',
                         active: true,
                         createdAt: p.createdAt || new Date().toISOString(),

@@ -176,6 +176,7 @@ class ProfileApp {
         let school = (p.school !== undefined && p.school !== null) ? String(p.school).trim() : '';
         let grade = (p.grade !== undefined && p.grade !== null) ? String(p.grade).trim() : '';
         let medicalConditions = (p.medicalConditions !== undefined && p.medicalConditions !== null) ? String(p.medicalConditions).trim() : '';
+        let importantMedications = (p.importantMedications !== undefined && p.importantMedications !== null) ? String(p.importantMedications).trim() : '';
 
         const birthDate = (p.birthDate !== undefined && p.birthDate !== null) ? String(p.birthDate).trim() : '';
         const computedAge = this.calculateAgeFromBirthDate(birthDate, p.age !== undefined ? p.age : 5);
@@ -199,6 +200,7 @@ class ProfileApp {
             school: school,
             grade: grade,
             medicalConditions: medicalConditions,
+            importantMedications: importantMedications,
             photoUrl: photoUrl,
             active: true,
             createdAt: p.createdAt || new Date().toISOString(),
@@ -278,6 +280,7 @@ class ProfileApp {
             school: override.school !== undefined && override.school !== '' ? override.school : (base.school || ''),
             grade: override.grade !== undefined && override.grade !== '' ? override.grade : (base.grade || ''),
             medicalConditions: override.medicalConditions !== undefined && override.medicalConditions !== '' ? override.medicalConditions : (base.medicalConditions || ''),
+            importantMedications: override.importantMedications !== undefined && override.importantMedications !== '' ? override.importantMedications : (base.importantMedications || ''),
             photoUrl: (override.photoUrl && override.photoUrl.trim() !== '' && override.photoUrl !== NEUTRAL_AVATAR_SVG)
                 ? override.photoUrl.trim()
                 : (base.photoUrl || ''),
@@ -630,10 +633,10 @@ class ProfileApp {
             gradeBoxEl.style.display = 'none';
         }
 
-        // 5. Medical Box (HIDDEN for Senior or if Empty)
+        // 5. Medical Box (HIDDEN if Empty)
         const medicalBoxEl = document.getElementById('box-medical');
         const medicalValEl = document.getElementById('p-medical-notes');
-        if (!isSenior && profile.medicalConditions && String(profile.medicalConditions).trim() !== '') {
+        if (profile.medicalConditions && String(profile.medicalConditions).trim() !== '') {
             if (medicalValEl) medicalValEl.textContent = profile.medicalConditions.trim();
             if (medicalBoxEl) {
                 medicalBoxEl.classList.remove('hidden');
@@ -642,6 +645,20 @@ class ProfileApp {
         } else if (medicalBoxEl) {
             medicalBoxEl.classList.add('hidden');
             medicalBoxEl.style.display = 'none';
+        }
+
+        // 6. Important Medications Box (HIDDEN if Empty)
+        const medicationsBoxEl = document.getElementById('box-medications');
+        const medicationsValEl = document.getElementById('p-medications-notes');
+        if (profile.importantMedications && String(profile.importantMedications).trim() !== '') {
+            if (medicationsValEl) medicationsValEl.textContent = profile.importantMedications.trim();
+            if (medicationsBoxEl) {
+                medicationsBoxEl.classList.remove('hidden');
+                medicationsBoxEl.style.display = 'block';
+            }
+        } else if (medicationsBoxEl) {
+            medicationsBoxEl.classList.add('hidden');
+            medicationsBoxEl.style.display = 'none';
         }
 
         const bloodIconEl = document.getElementById('p-blood-icon');
