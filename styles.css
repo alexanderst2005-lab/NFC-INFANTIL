@@ -1208,9 +1208,10 @@ html.is-authenticated-init #admin-dashboard-screen {
     border: 1px solid rgba(56, 189, 248, 0.25);
     background: rgba(15, 23, 42, 0.95);
     color: #f8fafc;
-    font-size: 0.95rem;
+    font-size: 16px;
     outline: none;
     transition: var(--transition);
+    -webkit-text-size-adjust: 100%;
 }
 .search-input:focus {
     border-color: #38bdf8;
@@ -1607,11 +1608,12 @@ body.modal-open .container {
     border: 1px solid rgba(255, 255, 255, 0.16);
     background: rgba(15, 23, 42, 0.7);
     color: #f8fafc;
-    font-size: 0.95rem;
+    font-size: 16px;
     font-family: inherit;
     font-weight: 500;
     outline: none;
     transition: all 0.25s ease;
+    -webkit-text-size-adjust: 100%;
 }
 .form-input:focus, .form-select:focus, .form-textarea:focus {
     border-color: #38bdf8;
