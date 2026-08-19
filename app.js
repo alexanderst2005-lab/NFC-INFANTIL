@@ -122,6 +122,13 @@ class ProfileApp {
 
         // 2. Fetch latest Cloud DB automatically (syncFromCloudDB re-renders only if data changed)
         await this.syncFromCloudDB();
+
+        // 3. Continuous background auto-sync polling every 4 seconds
+        setInterval(() => this.syncFromCloudDB(), 4000);
+        window.addEventListener('focus', () => this.syncFromCloudDB());
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden) this.syncFromCloudDB();
+        });
     }
 
     calculateAgeFromBirthDate(birthDateStr, fallbackAge = 5) {
@@ -279,55 +286,61 @@ class ProfileApp {
     }
 
     mergeAndPreserveProfiles(localProfiles = [], cloudProfiles = [], cloudDeletedIds = []) {
-        const deletedIds = JSON.parse(localStorage.getItem('nfc_deleted_ids') || '[]');
-
-        if (Array.isArray(cloudDeletedIds) && cloudDeletedIds.length > 0) {
-            cloudDeletedIds.forEach(id => {
-                if (id && !deletedIds.includes(id)) deletedIds.push(id);
-            });
-            localStorage.setItem('nfc_deleted_ids', JSON.stringify(deletedIds));
-        }
+        // 1. Build Master Tombstone Set from both Local and Cloud immediately
+        const localDeleted = JSON.parse(localStorage.getItem('nfc_deleted_ids') || '[]');
+        const cloudDeleted = Array.isArray(cloudDeletedIds) ? cloudDeletedIds : [];
+        const masterDeletedIds = Array.from(new Set([...localDeleted, ...cloudDeleted].filter(id => id && typeof id === 'string')));
+        localStorage.setItem('nfc_deleted_ids', JSON.stringify(masterDeletedIds));
 
         const profileMap = new Map();
 
-        // 0. Seed DEFAULT_PROFILES into profileMap first (unless in deletedIds)
+        // 2. Seed DEFAULT_PROFILES into profileMap first (unless in masterDeletedIds)
         DEFAULT_PROFILES.forEach(p => {
-            if (p && p.id && !deletedIds.includes(p.id)) {
-                profileMap.set(p.id, { ...p });
+            if (p && p.id && !masterDeletedIds.includes(p.id)) {
+                profileMap.set(p.id, this.sanitizeProfile({ ...p }));
             }
         });
 
-        // 1. Load Local Profiles first into map
+        // 3. Load Local Profiles first into map
         localProfiles.forEach(p => {
-            if (p && p.id && !deletedIds.includes(p.id)) {
+            if (p && p.id && !masterDeletedIds.includes(p.id)) {
+                const sanitized = this.sanitizeProfile(p);
+                if (!sanitized) return;
+
                 if (profileMap.has(p.id)) {
-                    profileMap.set(p.id, this.mergeSingleProfile(profileMap.get(p.id), p));
+                    profileMap.set(p.id, this.mergeSingleProfile(profileMap.get(p.id), sanitized));
                 } else {
-                    profileMap.set(p.id, { ...p });
+                    profileMap.set(p.id, sanitized);
                 }
             }
         });
 
-        // 2. Merge Cloud Profiles (Cloud DB is Authoritative Master across devices)
+        // 4. Merge Cloud Profiles (Cloud DB is Authoritative Master across devices)
         cloudProfiles.forEach(p => {
-            if (p && p.id && !deletedIds.includes(p.id)) {
+            if (p && p.id && !masterDeletedIds.includes(p.id)) {
+                const sanitizedCloud = this.sanitizeProfile(p);
+                if (!sanitizedCloud) return;
+
                 if (profileMap.has(p.id)) {
                     const localProf = profileMap.get(p.id);
-                    const cloudTime = new Date(p.updatedAt || p.createdAt || 0).getTime();
+                    const cloudTime = new Date(sanitizedCloud.updatedAt || sanitizedCloud.createdAt || 0).getTime();
                     const localTime = new Date(localProf.updatedAt || localProf.createdAt || 0).getTime();
 
                     if (cloudTime >= localTime) {
-                        profileMap.set(p.id, this.mergeSingleProfile(localProf, p));
+                        // Cloud edit is newer or equal: Cloud overwrites local stale cache
+                        profileMap.set(p.id, this.mergeSingleProfile(localProf, sanitizedCloud));
                     } else {
-                        profileMap.set(p.id, this.mergeSingleProfile(p, localProf));
+                        // Local edit is newer: Local overwrites cloud
+                        profileMap.set(p.id, this.mergeSingleProfile(sanitizedCloud, localProf));
                     }
                 } else {
-                    profileMap.set(p.id, { ...p });
+                    profileMap.set(p.id, sanitizedCloud);
                 }
             }
         });
 
-        return Array.from(profileMap.values());
+        // 5. Final Filter: guarantee zero deleted profiles ever resurrect
+        return Array.from(profileMap.values()).filter(p => p && p.id && !masterDeletedIds.includes(p.id));
     }
 
     async syncFromCloudDB() {

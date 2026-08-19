@@ -166,15 +166,19 @@ export default async function handler(req, res) {
     try {
         // Fetch persistent Cloud DB state first
         const cloudState = await requestCloudDB('GET');
-        if (cloudState && Array.isArray(cloudState.profiles) && cloudState.profiles.length > 0) {
-            const mergedMap = new Map();
-            sharedProfilesStore.forEach(p => mergedMap.set(p.id, p));
-            cloudState.profiles.forEach(p => {
-                if (p && p.id) mergedMap.set(p.id, p);
-            });
-            sharedProfilesStore = Array.from(mergedMap.values());
+        if (cloudState) {
             if (Array.isArray(cloudState.deletedIds)) {
-                sharedDeletedIdsStore = cloudState.deletedIds;
+                sharedDeletedIdsStore = Array.from(new Set([...sharedDeletedIdsStore, ...cloudState.deletedIds].filter(id => id && typeof id === 'string')));
+            }
+            if (Array.isArray(cloudState.profiles) && cloudState.profiles.length > 0) {
+                const mergedMap = new Map();
+                sharedProfilesStore.forEach(p => {
+                    if (p && p.id && !sharedDeletedIdsStore.includes(p.id)) mergedMap.set(p.id, p);
+                });
+                cloudState.profiles.forEach(p => {
+                    if (p && p.id && !sharedDeletedIdsStore.includes(p.id)) mergedMap.set(p.id, p);
+                });
+                sharedProfilesStore = Array.from(mergedMap.values());
             }
         }
 
