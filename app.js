@@ -16,7 +16,7 @@ const NEUTRAL_AVATAR_SVG = "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http:
 
 class App {
     constructor() {
-        this.profiles = this.deduplicateProfiles(INITIAL_PROFILES_SEED);
+        this.profiles = [];
         this.currentProfile = null;
         this.nfcSession = null;
         this.init();

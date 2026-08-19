@@ -20,7 +20,7 @@ const NEUTRAL_AVATAR_SVG = "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http:
 
 class AdminApp {
     constructor() {
-        this.profiles = this.deduplicateProfiles(INITIAL_PROFILES_SEED);
+        this.profiles = [];
         this.isAuthenticated = (localStorage.getItem('nfc_admin_auth') === 'true' || sessionStorage.getItem('nfc_admin_auth') === 'true');
         this.photoRemoved = false;
         this.pendingUploadedPhoto = null;
