@@ -125,8 +125,8 @@ class ProfileApp {
         // 2. Fetch latest Cloud DB automatically (syncFromCloudDB re-renders only if data changed)
         await this.syncFromCloudDB();
 
-        // 3. Continuous background auto-sync polling every 4 seconds
-        setInterval(() => this.syncFromCloudDB(), 4000);
+        // 3. Continuous background auto-sync polling every 2 seconds
+        setInterval(() => this.syncFromCloudDB(), 2000);
         window.addEventListener('focus', () => this.syncFromCloudDB());
         document.addEventListener('visibilitychange', () => {
             if (!document.hidden) this.syncFromCloudDB();
@@ -273,40 +273,27 @@ class ProfileApp {
         if (!base) return override;
         if (!override) return base;
 
-        let mergedGender = base.gender || 'boy';
-        const validGenders = ['senior', 'girl', 'pet', 'boy'];
-        if (override.gender && validGenders.includes(override.gender)) {
-            const overrideTime = new Date(override.updatedAt || 0).getTime();
-            const baseTime = new Date(base.updatedAt || 0).getTime();
-            if (overrideTime >= baseTime || override.gender !== 'boy') {
-                mergedGender = override.gender;
-            }
-        }
-        if (override.id === 'prof-006-jose' || base.id === 'prof-006-jose' || (override.slug && String(override.slug).includes('jose-ramirez')) || (base.slug && String(base.slug).includes('jose-ramirez'))) {
+        const overrideTime = new Date(override.updatedAt || 0).getTime();
+        const baseTime = new Date(base.updatedAt || 0).getTime();
+        const isOverrideNewer = overrideTime >= baseTime;
+
+        const sourceNew = isOverrideNewer ? override : base;
+        const sourceOld = isOverrideNewer ? base : override;
+
+        let mergedGender = sourceNew.gender || sourceOld.gender || 'boy';
+        if (sourceNew.id === 'prof-006-jose' || sourceOld.id === 'prof-006-jose' || (sourceNew.slug && String(sourceNew.slug).includes('jose-ramirez')) || (sourceOld.slug && String(sourceOld.slug).includes('jose-ramirez'))) {
             mergedGender = 'senior';
         }
 
         return {
-            ...base,
-            ...override,
-            name: (override.name && override.name.trim() !== '') ? override.name.trim() : (base.name || 'Perfil'),
+            ...sourceOld,
+            ...sourceNew,
+            name: (sourceNew.name && sourceNew.name.trim() !== '') ? sourceNew.name.trim() : (sourceOld.name || 'Perfil'),
             gender: mergedGender,
-            birthDate: override.birthDate !== undefined && override.birthDate !== '' ? override.birthDate : (base.birthDate || ''),
-            age: override.age !== undefined ? override.age : (base.age || 5),
-            bloodType: override.bloodType !== undefined && override.bloodType !== '' ? override.bloodType : (base.bloodType || ''),
-            parentPhone: override.parentPhone !== undefined && override.parentPhone !== '' ? override.parentPhone : (base.parentPhone || ''),
-            parentPhone2: override.parentPhone2 !== undefined && override.parentPhone2 !== '' ? override.parentPhone2 : (base.parentPhone2 || ''),
-            whatsappMessage: override.whatsappMessage !== undefined && override.whatsappMessage !== '' ? override.whatsappMessage : (base.whatsappMessage || ''),
-            locationMapsUrl: override.locationMapsUrl !== undefined && override.locationMapsUrl !== '' ? override.locationMapsUrl : (base.locationMapsUrl || ''),
-            schoolMapsUrl: override.schoolMapsUrl !== undefined && override.schoolMapsUrl !== '' ? override.schoolMapsUrl : (base.schoolMapsUrl || ''),
-            school: override.school !== undefined && override.school !== '' ? override.school : (base.school || ''),
-            grade: override.grade !== undefined && override.grade !== '' ? override.grade : (base.grade || ''),
-            medicalConditions: override.medicalConditions !== undefined && override.medicalConditions !== '' ? override.medicalConditions : (base.medicalConditions || ''),
-            importantMedications: override.importantMedications !== undefined && override.importantMedications !== '' ? override.importantMedications : (base.importantMedications || ''),
-            photoUrl: (override.photoUrl && override.photoUrl.trim() !== '' && override.photoUrl !== NEUTRAL_AVATAR_SVG)
-                ? override.photoUrl.trim()
-                : (base.photoUrl || ''),
-            updatedAt: override.updatedAt || base.updatedAt || new Date().toISOString()
+            photoUrl: (sourceNew.photoUrl && sourceNew.photoUrl.trim() !== '' && sourceNew.photoUrl !== NEUTRAL_AVATAR_SVG)
+                ? sourceNew.photoUrl.trim()
+                : (sourceOld.photoUrl || ''),
+            updatedAt: sourceNew.updatedAt || sourceOld.updatedAt || new Date().toISOString()
         };
     }
 
