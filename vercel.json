@@ -10,13 +10,16 @@
     }
   ],
   "routes": [
-    { "src": "/api/(.*)", "dest": "/api/$1" },
     { "src": "/admin", "dest": "/admin.html" },
     { "src": "/admin.html", "dest": "/admin.html" },
     { "src": "/assets/(.*)", "dest": "/assets/$1" },
     { "src": "/styles.css", "dest": "/styles.css" },
     { "src": "/app.js", "dest": "/app.js" },
     { "src": "/admin.js", "dest": "/admin.js" },
+    { "src": "/firebase-config.js", "dest": "/firebase-config.js" },
+    { "src": "/(.*\\.js)", "dest": "/$1" },
+    { "src": "/(.*\\.json)", "dest": "/$1" },
+    { "src": "/(.*\\.css)", "dest": "/$1" },
     { "src": "/(.*)", "dest": "/index.html" }
   ]
 }

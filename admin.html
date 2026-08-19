@@ -13,14 +13,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="styles.css?v=12.0">
     <style>
-        /* Atomic Zero-flash Visibility Mask - Prevents ANY flash on refresh */
-        html {
-            visibility: hidden;
-            background-color: #070d18 !important;
-        }
-        html.ready {
-            visibility: visible !important;
-        }
         #admin-login-screen, #admin-dashboard-screen {
             display: none !important;
         }
@@ -39,6 +31,9 @@
         (function() {
             var isAuth = (localStorage.getItem('nfc_admin_auth') === 'true' || sessionStorage.getItem('nfc_admin_auth') === 'true');
             document.documentElement.className += isAuth ? ' is-auth' : ' is-no-auth';
+            setTimeout(function() {
+                document.documentElement.classList.add('ready');
+            }, 200);
         })();
     </script>
 </head>
@@ -351,6 +346,6 @@
     <!-- TOAST NOTIFICATION -->
     <div id="toast" class="toast hidden">Notificación</div>
 
-    <script src="admin.js?v=12.0"></script>
+    <script type="module" src="admin.js?v=13.0"></script>
 </body>
 </html>

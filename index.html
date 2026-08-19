@@ -11,16 +11,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- FontAwesome icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        /* Atomic Zero-Flash Visibility Mask for PC & Mobile */
-        html {
-            visibility: hidden;
-            background-color: #070d18 !important;
-        }
-        html.ready {
-            visibility: visible !important;
-        }
-    </style>
     <!-- Instant Head Theme Pre-Detector to Prevent Theme Flicker -->
     <script>
         (function() {
@@ -83,6 +73,9 @@
                     }
                 }
             } catch(e) {}
+            setTimeout(function() {
+                document.documentElement.classList.add('ready');
+            }, 200);
         })();
     </script>
     <link rel="stylesheet" href="styles.css?v=2.5">
@@ -288,6 +281,6 @@
         </section>
     </main>
 
-    <script src="app.js?v=2.5"></script>
+    <script type="module" src="app.js?v=3.0"></script>
 </body>
 </html>
