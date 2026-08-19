@@ -122,8 +122,11 @@ class ProfileApp {
         this.renderSingleProfile(targetSlug);
         document.documentElement.classList.add('ready');
 
-        // 2. Fetch latest Cloud DB automatically (syncFromCloudDB re-renders only if data changed)
+        // 2. Fetch latest Cloud DB automatically and re-render target profile immediately
         await this.syncFromCloudDB();
+        if (targetSlug) {
+            this.renderSingleProfile(targetSlug);
+        }
 
         // 3. Continuous background auto-sync polling every 2 seconds
         setInterval(() => this.syncFromCloudDB(), 2000);
@@ -219,7 +222,7 @@ class ProfileApp {
             const pA = listA[i];
             const pB = listB[i];
             if (!pA || !pB) return false;
-            if (pA.id !== pB.id || pA.slug !== pB.slug || pA.name !== pB.name || pA.updatedAt !== pB.updatedAt || pA.parentPhone !== pB.parentPhone || pA.parentPhone2 !== pB.parentPhone2) {
+            if (JSON.stringify(pA) !== JSON.stringify(pB)) {
                 return false;
             }
         }

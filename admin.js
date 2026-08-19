@@ -244,7 +244,7 @@ class AdminApp {
             const pA = listA[i];
             const pB = listB[i];
             if (!pA || !pB) return false;
-            if (pA.id !== pB.id || pA.slug !== pB.slug || pA.name !== pB.name || pA.updatedAt !== pB.updatedAt || pA.parentPhone !== pB.parentPhone || pA.parentPhone2 !== pB.parentPhone2) {
+            if (JSON.stringify(pA) !== JSON.stringify(pB)) {
                 return false;
             }
         }
