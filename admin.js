@@ -97,6 +97,7 @@ const DEFAULT_PROFILES = [
         age: 74,
         bloodType: "O+",
         parentPhone: "573109876543",
+        parentPhone2: "573209998877",
         whatsappMessage: "Hola, encontré el perfil de seguridad del adulto mayor José Ramírez y quiero comunicarme con sus familiares.",
         locationMapsUrl: "https://maps.google.com/?q=4.6097,74.0817",
         schoolMapsUrl: "",
