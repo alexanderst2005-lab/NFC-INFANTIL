@@ -327,11 +327,15 @@ class AdminApp {
     }
 
     mergeAndPreserveProfiles(localProfiles = [], cloudProfiles = [], cloudDeletedIds = []) {
+        const masterDeletedIds = Array.isArray(cloudDeletedIds) ? cloudDeletedIds : [];
+        const localDeleted = JSON.parse(localStorage.getItem('nfc_deleted_ids') || '[]');
+        const allDeleted = new Set([...masterDeletedIds, ...localDeleted]);
+
         const profileMap = new Map();
 
-        // 1. Load ALL Local Profiles into map (100% Preservation Safety)
+        // 1. Load Local Profiles into map if not deleted
         localProfiles.forEach(p => {
-            if (p && p.id) {
+            if (p && p.id && !allDeleted.has(p.id)) {
                 const sanitized = this.sanitizeProfile(p);
                 if (!sanitized) return;
 
@@ -345,7 +349,7 @@ class AdminApp {
 
         // 2. Merge Cloud Profiles (Cloud DB is Authoritative Master across devices)
         cloudProfiles.forEach(p => {
-            if (p && p.id) {
+            if (p && p.id && !allDeleted.has(p.id)) {
                 const sanitizedCloud = this.sanitizeProfile(p);
                 if (!sanitizedCloud) return;
 
@@ -365,7 +369,7 @@ class AdminApp {
             }
         });
 
-        return Array.from(profileMap.values()).filter(p => p && p.id);
+        return Array.from(profileMap.values()).filter(p => p && p.id && !allDeleted.has(p.id));
     }
 
     async syncFromCloudDB() {

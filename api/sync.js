@@ -209,7 +209,7 @@ export default async function handler(req, res) {
 
             if (incomingProfiles !== null && Array.isArray(incomingProfiles)) {
                 sharedProfilesStore = incomingProfiles
-                    .filter(p => p && p.id)
+                    .filter(p => p && p.id && !sharedDeletedIdsStore.includes(p.id))
                     .map(p => ({
                         id: p.id || `prof-${Date.now()}`,
                         slug: (p.slug && String(p.slug).trim() !== '' && String(p.slug).trim() !== 'undefined') ? String(p.slug).trim() : 'perfil',
@@ -245,7 +245,7 @@ export default async function handler(req, res) {
 
             return res.status(200).json({
                 success: true,
-                profiles: sharedProfilesStore,
+                profiles: sharedProfilesStore.filter(p => !sharedDeletedIdsStore.includes(p.id)),
                 deletedIds: sharedDeletedIdsStore
             });
         }
