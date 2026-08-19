@@ -124,21 +124,17 @@ class ProfileApp {
 
     sanitizeProfile(p) {
         if (!p) return null;
-        let baseDefault = DEFAULT_PROFILES.find(d => d.id === p.id || d.slug === p.slug);
 
         const name = (p.name && String(p.name).trim() !== '' && String(p.name).trim() !== 'undefined') 
             ? String(p.name).trim() 
-            : (baseDefault ? baseDefault.name : 'Perfil');
+            : 'Perfil';
         
-        const gender = (p.gender === 'girl' || p.gender === 'boy' || p.gender === 'pet') 
-            ? p.gender 
-            : (baseDefault ? baseDefault.gender : 'boy');
+        const gender = (p.gender === 'girl' || p.gender === 'boy' || p.gender === 'pet') ? p.gender : 'boy';
 
         let slug = (p.slug && String(p.slug).trim() !== '' && String(p.slug).trim() !== 'undefined') 
             ? String(p.slug).trim() 
-            : (baseDefault ? baseDefault.slug : name.toLowerCase().replace(/[^a-z0-9]/g, '-'));
+            : name.toLowerCase().replace(/[^a-z0-9]/g, '-');
 
-        // Purge old demo Google Maps URLs out of localStorage
         let locationMapsUrl = (p.locationMapsUrl !== undefined && p.locationMapsUrl !== null) ? String(p.locationMapsUrl).trim() : '';
         if (locationMapsUrl.includes('maps.google.com/?q=4.6853') || 
             locationMapsUrl.includes('maps.google.com/?q=6.2088') || 
@@ -152,8 +148,12 @@ class ProfileApp {
         let grade = (p.grade !== undefined && p.grade !== null) ? String(p.grade).trim() : '';
         let medicalConditions = (p.medicalConditions !== undefined && p.medicalConditions !== null) ? String(p.medicalConditions).trim() : '';
 
-        const birthDate = p.birthDate ? String(p.birthDate).trim() : (baseDefault && baseDefault.birthDate ? baseDefault.birthDate : '');
-        const computedAge = this.calculateAgeFromBirthDate(birthDate, p.age !== undefined ? p.age : (baseDefault ? baseDefault.age : 5));
+        const birthDate = (p.birthDate !== undefined && p.birthDate !== null) ? String(p.birthDate).trim() : '';
+        const computedAge = this.calculateAgeFromBirthDate(birthDate, p.age !== undefined ? p.age : 5);
+        const bloodType = gender === 'pet' ? '' : ((p.bloodType !== undefined && p.bloodType !== null && String(p.bloodType).trim() !== 'undefined') ? String(p.bloodType).trim() : '');
+        const parentPhone = (p.parentPhone !== undefined && p.parentPhone !== null && String(p.parentPhone).trim() !== 'undefined') ? String(p.parentPhone).trim() : '';
+        const whatsappMessage = (p.whatsappMessage && String(p.whatsappMessage).trim() !== '') ? String(p.whatsappMessage).trim() : 'Hola, encontré el perfil de {nombre}.';
+        const photoUrl = (p.photoUrl !== undefined && p.photoUrl !== null && String(p.photoUrl).trim() !== 'undefined') ? String(p.photoUrl).trim() : '';
 
         return {
             id: p.id || `prof-${Date.now()}`,
@@ -162,17 +162,18 @@ class ProfileApp {
             gender: gender,
             birthDate: birthDate,
             age: computedAge,
-            bloodType: (p.bloodType && String(p.bloodType).trim() !== '' && String(p.bloodType) !== 'undefined') ? String(p.bloodType).trim() : (baseDefault ? baseDefault.bloodType : 'O+'),
-            parentPhone: (p.parentPhone && String(p.parentPhone).trim() !== '' && String(p.parentPhone) !== 'undefined') ? String(p.parentPhone).trim() : (baseDefault ? baseDefault.parentPhone : ''),
-            whatsappMessage: (p.whatsappMessage && String(p.whatsappMessage).trim() !== '') ? String(p.whatsappMessage).trim() : (baseDefault ? baseDefault.whatsappMessage : 'Hola, encontré la información del perfil de {nombre}.'),
+            bloodType: bloodType,
+            parentPhone: parentPhone,
+            whatsappMessage: whatsappMessage,
             locationMapsUrl: locationMapsUrl,
             schoolMapsUrl: schoolMapsUrl,
             school: school,
             grade: grade,
             medicalConditions: medicalConditions,
-            photoUrl: (p.photoUrl && String(p.photoUrl).trim() !== '' && String(p.photoUrl) !== 'undefined') ? String(p.photoUrl).trim() : '',
+            photoUrl: photoUrl,
             active: true,
-            createdAt: p.createdAt || new Date().toISOString()
+            createdAt: p.createdAt || new Date().toISOString(),
+            updatedAt: p.updatedAt || new Date().toISOString()
         };
     }
 
@@ -223,54 +224,25 @@ class ProfileApp {
         if (!base) return override;
         if (!override) return base;
 
-        const photo = (override.photoUrl && override.photoUrl.trim() !== '' && override.photoUrl !== NEUTRAL_AVATAR_SVG)
-            ? override.photoUrl
-            : (base.photoUrl || '');
-
-        const name = (override.name && override.name.trim() !== '' && override.name !== 'Perfil')
-            ? override.name
-            : (base.name || 'Perfil');
-
-        const phone = (override.parentPhone && override.parentPhone.trim() !== '')
-            ? override.parentPhone
-            : (base.parentPhone || '');
-
-        const location = (override.locationMapsUrl && override.locationMapsUrl.trim() !== '')
-            ? override.locationMapsUrl
-            : (base.locationMapsUrl || '');
-
-        const school = (override.school && override.school.trim() !== '')
-            ? override.school
-            : (base.school || '');
-
-        const grade = (override.grade && override.grade.trim() !== '')
-            ? override.grade
-            : (base.grade || '');
-
-        const medical = (override.medicalConditions && override.medicalConditions.trim() !== '')
-            ? override.medicalConditions
-            : (base.medicalConditions || '');
-
-        const birthDate = (override.birthDate && override.birthDate.trim() !== '')
-            ? override.birthDate
-            : (base.birthDate || '');
-
-        const whatsappMessage = (override.whatsappMessage && override.whatsappMessage.trim() !== '')
-            ? override.whatsappMessage
-            : (base.whatsappMessage || '');
-
         return {
             ...base,
             ...override,
-            name: name,
-            photoUrl: photo,
-            parentPhone: phone,
-            locationMapsUrl: location,
-            school: school,
-            grade: grade,
-            medicalConditions: medical,
-            birthDate: birthDate,
-            whatsappMessage: whatsappMessage
+            name: (override.name && override.name.trim() !== '') ? override.name.trim() : (base.name || 'Perfil'),
+            gender: override.gender || base.gender || 'boy',
+            birthDate: override.birthDate !== undefined ? override.birthDate : (base.birthDate || ''),
+            age: override.age !== undefined ? override.age : (base.age || 5),
+            bloodType: override.bloodType !== undefined ? override.bloodType : (base.bloodType || ''),
+            parentPhone: override.parentPhone !== undefined ? override.parentPhone : (base.parentPhone || ''),
+            whatsappMessage: override.whatsappMessage !== undefined ? override.whatsappMessage : (base.whatsappMessage || ''),
+            locationMapsUrl: override.locationMapsUrl !== undefined ? override.locationMapsUrl : (base.locationMapsUrl || ''),
+            schoolMapsUrl: override.schoolMapsUrl !== undefined ? override.schoolMapsUrl : (base.schoolMapsUrl || ''),
+            school: override.school !== undefined ? override.school : (base.school || ''),
+            grade: override.grade !== undefined ? override.grade : (base.grade || ''),
+            medicalConditions: override.medicalConditions !== undefined ? override.medicalConditions : (base.medicalConditions || ''),
+            photoUrl: (override.photoUrl && override.photoUrl.trim() !== '' && override.photoUrl !== NEUTRAL_AVATAR_SVG)
+                ? override.photoUrl.trim()
+                : (base.photoUrl || ''),
+            updatedAt: override.updatedAt || base.updatedAt || new Date().toISOString()
         };
     }
 
