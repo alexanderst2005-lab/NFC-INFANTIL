@@ -168,7 +168,10 @@
     <div id="modal-profile" class="modal-overlay hidden">
         <div class="modal-container">
             <div class="modal-header">
-                <h3 id="modal-title"><i class="fa-solid fa-child-reaching"></i> Perfil Infantil</h3>
+                <div>
+                    <h3 id="modal-title"><i class="fa-solid fa-child-reaching"></i> Perfil Infantil</h3>
+                    <div class="modal-info-banner"><i class="fa-solid fa-circle-info"></i> Todos los campos son opcionales y se muestran automáticamente en el perfil al llenarse.</div>
+                </div>
                 <button id="modal-close-btn" class="modal-close" type="button"><i class="fa-solid fa-xmark"></i></button>
             </div>
             
@@ -176,156 +179,161 @@
                 <input type="hidden" id="input-profile-id">
 
                 <!-- 1. FOTOGRAFÍA -->
-                <div class="modal-section-title">
-                    <i class="fa-solid fa-camera"></i> Fotografía del Niño / Niña o Mascota
-                </div>
-
-                <div class="form-group" style="text-align: center;">
-                    <div class="photo-upload-container">
-                        <div class="photo-avatar-wrapper">
-                            <img src="" id="photo-preview" class="photo-preview-img" alt="Vista previa foto">
-                            <button type="button" id="btn-remove-photo" class="btn-remove-photo-badge" title="Eliminar Fotografía">
-                                <i class="fa-solid fa-xmark"></i>
-                            </button>
-                        </div>
-                        <div class="photo-dropzone" id="dropzone-photo">
-                            <i class="fa-solid fa-cloud-arrow-up"></i>
-                            <div style="font-size: 0.85rem; font-weight: 600; margin-top: 0.3rem;">Subir foto desde PC o Celular</div>
-                            <input type="file" id="file-photo-input" accept="image/*" style="display: none;">
-                        </div>
-                    </div>
-                    <input type="url" id="input-photo-url" class="form-input" style="margin-top: 0.8rem;" placeholder="O pega una URL de imagen (https://...)">
-                </div>
-
-                <!-- 2. DATOS DEL NIÑO / MASCOTA -->
-                <div class="modal-section-title">
-                    <i class="fa-solid fa-id-card"></i> Datos del Perfil
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label class="form-label" for="input-name" id="lbl-input-name">Nombre Completo (Opcional)</label>
-                        <input type="text" id="input-name" class="form-input" placeholder="Ej: Samuel Arias Rodríguez o Firulais">
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label" for="input-slug">Enlace URL Corto (Opcional)</label>
-                        <input type="text" id="input-slug" class="form-input" placeholder="Ej: samuel">
-                        <span class="field-hint">Ej: /samuel, /valentina, /firulais</span>
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label class="form-label" for="input-gender">Categoría / Género (Opcional)</label>
-                        <select id="input-gender" class="form-select">
-                            <option value="boy" selected>👦 Niño</option>
-                            <option value="girl">👧 Niña</option>
-                            <option value="pet">🐾 Mascota</option>
-                            <option value="senior">👴 Adulto Mayor (Naranja Cálido)</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label" for="input-birthdate">Fecha de Nacimiento (Opcional)</label>
-                        <input type="date" id="input-birthdate" class="form-input">
-                        <span class="field-hint">Calcula la edad automáticamente.</span>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label" for="input-age">Edad Calculada (Años) (Opcional)</label>
-                        <input type="number" id="input-age" class="form-input" min="0" max="120" placeholder="Ej: 5">
-                    </div>
-
-                    <div class="form-group" id="group-blood">
-                        <label class="form-label" for="input-blood">Tipo de Sangre (Opcional)</label>
-                        <select id="input-blood" class="form-select">
-                            <option value="" selected>Seleccionar (Opcional)...</option>
-                            <option value="O+">O+</option>
-                            <option value="O-">O-</option>
-                            <option value="A+">A+</option>
-                            <option value="A-">A-</option>
-                            <option value="B+">B+</option>
-                            <option value="B-">B-</option>
-                            <option value="AB+">AB+</option>
-                            <option value="AB-">AB-</option>
-                            <option value="N/A">N/A (Mascotas)</option>
-                        </select>
-                    </div>
-                </div>
-
-                <!-- 3. EDUCACIÓN (SOLO PARA NIÑOS) -->
-                <div id="section-school">
+                <div class="modal-form-section">
                     <div class="modal-section-title">
-                        <i class="fa-solid fa-graduation-cap"></i> Información Escolar (Opcional)
+                        <i class="fa-solid fa-camera"></i> Fotografía del Perfil
+                    </div>
+
+                    <div class="form-group" style="text-align: center;">
+                        <div class="photo-upload-container">
+                            <div class="photo-avatar-wrapper">
+                                <img src="" id="photo-preview" class="photo-preview-img" alt="Vista previa foto">
+                                <button type="button" id="btn-remove-photo" class="btn-remove-photo-badge" title="Eliminar Fotografía">
+                                    <i class="fa-solid fa-xmark"></i>
+                                </button>
+                            </div>
+                            <div class="photo-dropzone" id="dropzone-photo">
+                                <i class="fa-solid fa-cloud-arrow-up"></i>
+                                <div style="font-size: 0.85rem; font-weight: 600; margin-top: 0.3rem;">Subir foto desde PC o Celular</div>
+                                <input type="file" id="file-photo-input" accept="image/*" style="display: none;">
+                            </div>
+                        </div>
+                        <input type="url" id="input-photo-url" class="form-input" style="margin-top: 0.8rem;" placeholder="O pega una URL de imagen (https://...)">
+                    </div>
+                </div>
+
+                <!-- 2. DATOS DEL PERFIL -->
+                <div class="modal-form-section">
+                    <div class="modal-section-title">
+                        <i class="fa-solid fa-id-card"></i> Datos Básicos
                     </div>
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label class="form-label" for="input-school">Colegio / Institución (Opcional)</label>
+                            <label class="form-label" for="input-name" id="lbl-input-name">Nombre Completo</label>
+                            <input type="text" id="input-name" class="form-input" placeholder="Ej: Samuel Arias Rodríguez o Firulais">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="input-slug">Enlace URL Corto</label>
+                            <input type="text" id="input-slug" class="form-input" placeholder="Ej: samuel">
+                            <span class="field-hint">Ej: /samuel, /valentina, /firulais</span>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="input-gender">Categoría / Temática</label>
+                            <select id="input-gender" class="form-select">
+                                <option value="boy" selected>👦 Niño</option>
+                                <option value="girl">👧 Niña</option>
+                                <option value="pet">🐾 Mascota</option>
+                                <option value="senior">👴 Adulto Mayor</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="input-birthdate">Fecha de Nacimiento</label>
+                            <input type="date" id="input-birthdate" class="form-input">
+                            <span class="field-hint">Calcula la edad automáticamente</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="input-age">Edad (Años)</label>
+                            <input type="number" id="input-age" class="form-input" min="0" max="120" placeholder="Ej: 5">
+                        </div>
+
+                        <div class="form-group" id="group-blood">
+                            <label class="form-label" for="input-blood">Tipo de Sangre</label>
+                            <select id="input-blood" class="form-select">
+                                <option value="" selected>Seleccionar tipo de sangre...</option>
+                                <option value="O+">O+</option>
+                                <option value="O-">O-</option>
+                                <option value="A+">A+</option>
+                                <option value="A-">A-</option>
+                                <option value="B+">B+</option>
+                                <option value="B-">B-</option>
+                                <option value="AB+">AB+</option>
+                                <option value="AB-">AB-</option>
+                                <option value="N/A">N/A (Mascotas)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. EDUCACIÓN -->
+                <div id="section-school" class="modal-form-section">
+                    <div class="modal-section-title">
+                        <i class="fa-solid fa-graduation-cap"></i> Información Escolar
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="input-school">Colegio / Institución</label>
                             <input type="text" id="input-school" class="form-input" placeholder="Ej: Colegio San José">
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label" for="input-grade">Grado / Curso (Opcional)</label>
+                            <label class="form-label" for="input-grade">Grado / Curso</label>
                             <input type="text" id="input-grade" class="form-input" placeholder="Ej: 3° de Primaria">
                         </div>
                     </div>
                 </div>
 
-                <!-- 4. SALUD Y MEDICAMENTOS (NIÑOS Y ADULTOS MAYORES) -->
-                <div id="section-health">
+                <!-- 4. SALUD Y MEDICAMENTOS -->
+                <div id="section-health" class="modal-form-section">
                     <div class="modal-section-title">
-                        <i class="fa-solid fa-notes-medical"></i> Salud, Cuidados y Medicamentos (Opcional)
+                        <i class="fa-solid fa-notes-medical"></i> Salud, Cuidados y Medicamentos
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label" for="input-medical">Enfermedades / Condiciones / Cuidados Importantes (Opcional)</label>
+                        <label class="form-label" for="input-medical">Enfermedades / Condiciones / Cuidados</label>
                         <textarea id="input-medical" class="form-textarea" rows="2" placeholder="Ej: Alérgico a la Penicilina, Asma leve, Hipertensión..." style="resize: vertical; min-height: 70px; width: 100%;"></textarea>
-                        <span class="field-hint">Solo se muestra en el perfil público si contiene información.</span>
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label" for="input-medications">Medicamentos Importantes (Opcional)</label>
+                        <label class="form-label" for="input-medications">Medicamentos Importantes</label>
                         <textarea id="input-medications" class="form-textarea" rows="2" placeholder="Ej: Insulina 10 UI mañana y noche, Losartán 50mg, Inhalador Salbutamol..." style="resize: vertical; min-height: 70px; width: 100%;"></textarea>
-                        <span class="field-hint">Solo se muestra en el perfil público si contiene información.</span>
                     </div>
                 </div>
 
-                <!-- 4. BOTÓN CONTACTAR A PADRES / DUEÑO (WHATSAPP) -->
-                <div class="modal-section-title">
-                    <i class="fa-solid fa-square-phone"></i> Contacto de Emergencia (WhatsApp)
-                </div>
+                <!-- 5. CONTACTOS DE WHATSAPP -->
+                <div class="modal-form-section">
+                    <div class="modal-section-title">
+                        <i class="fa-solid fa-square-phone"></i> Contactos de Emergencia (WhatsApp)
+                    </div>
 
-                <div class="form-row">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="input-phone" id="lbl-input-phone">Teléfono WhatsApp 1</label>
+                            <input type="tel" id="input-phone" class="form-input" placeholder="Ej: 573001234567">
+                            <span class="field-hint">Sin + ni espacios (Ej: 573001234567)</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="input-phone2" id="lbl-input-phone2">Teléfono WhatsApp 2</label>
+                            <input type="tel" id="input-phone2" class="form-input" placeholder="Ej: 573109876543">
+                            <span class="field-hint">Segundo contacto de emergencia</span>
+                        </div>
+                    </div>
+
                     <div class="form-group">
-                        <label class="form-label" for="input-phone" id="lbl-input-phone">Teléfono WhatsApp 1 (Opcional)</label>
-                        <input type="tel" id="input-phone" class="form-input" placeholder="Ej: 573001234567">
-                        <span class="field-hint">Sin +, ni espacios (Ej: 573001234567)</span>
+                        <label class="form-label" for="input-whatsapp-msg">Mensaje Predeterminado de WhatsApp</label>
+                        <textarea id="input-whatsapp-msg" class="form-textarea" rows="2" placeholder="Ej: Hola, encontré la información del perfil de {nombre}..." style="resize: vertical; min-height: 70px; width: 100%;"></textarea>
+                        <span class="field-hint">Usa {nombre} para insertar el nombre automáticamente</span>
+                    </div>
+                </div>
+
+                <!-- 6. UBICACIÓN -->
+                <div class="modal-form-section">
+                    <div class="modal-section-title">
+                        <i class="fa-solid fa-location-dot"></i> Ubicación Google Maps
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label" for="input-phone2" id="lbl-input-phone2">Teléfono WhatsApp 2 (Opcional)</label>
-                        <input type="tel" id="input-phone2" class="form-input" placeholder="Ej: 573109876543">
-                        <span class="field-hint">Segundo contacto de emergencia</span>
+                        <label class="form-label" for="input-maps-url">Enlace de Ubicación en Google Maps</label>
+                        <input type="text" id="input-maps-url" class="form-input" placeholder="Ej: https://maps.google.com/?q=... o Dirección">
                     </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label" for="input-whatsapp-msg">Mensaje Predeterminado de WhatsApp</label>
-                    <textarea id="input-whatsapp-msg" class="form-textarea" rows="3" placeholder="Ej: Hola, encontré la información del perfil de {nombre}..." style="resize: vertical; min-height: 90px; width: 100%;"></textarea>
-                    <span class="field-hint">Se despliega completamente para ver y editar todo el texto enviado por WhatsApp.</span>
-                </div>
-
-                <!-- 5. UBICACIÓN (OPCIONAL) -->
-                <div class="modal-section-title">
-                    <i class="fa-solid fa-location-dot"></i> Ubicación (Opcional)
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label" for="input-maps-url">Enlace de Ubicación (Google Maps - Opcional)</label>
-                    <input type="text" id="input-maps-url" class="form-input" placeholder="Ej: https://maps.google.com/?q=... o Dirección">
-                    <span class="field-hint">Sin link de ubicación ➔ el botón "Ver ubicación" queda completamente oculto.</span>
                 </div>
 
                 <div class="modal-footer">
