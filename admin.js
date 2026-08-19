@@ -201,6 +201,7 @@ class AdminApp {
         const computedAge = this.calculateAgeFromBirthDate(birthDate, p.age !== undefined ? p.age : 5);
         const bloodType = gender === 'pet' ? '' : ((p.bloodType !== undefined && p.bloodType !== null && String(p.bloodType).trim() !== 'undefined') ? String(p.bloodType).trim() : '');
         const parentPhone = (p.parentPhone !== undefined && p.parentPhone !== null && String(p.parentPhone).trim() !== 'undefined') ? String(p.parentPhone).trim() : '';
+        const parentPhone2 = (p.parentPhone2 !== undefined && p.parentPhone2 !== null && String(p.parentPhone2).trim() !== 'undefined') ? String(p.parentPhone2).trim() : '';
         const whatsappMessage = (p.whatsappMessage && String(p.whatsappMessage).trim() !== '') ? String(p.whatsappMessage).trim() : defaultWaMsg;
         const photoUrl = (p.photoUrl !== undefined && p.photoUrl !== null && String(p.photoUrl).trim() !== 'undefined') ? String(p.photoUrl).trim() : '';
 
@@ -213,6 +214,7 @@ class AdminApp {
             age: computedAge,
             bloodType: bloodType,
             parentPhone: parentPhone,
+            parentPhone2: parentPhone2,
             whatsappMessage: whatsappMessage,
             locationMapsUrl: locationMapsUrl,
             schoolMapsUrl: schoolMapsUrl,
@@ -293,6 +295,7 @@ class AdminApp {
             age: override.age !== undefined ? override.age : (base.age || 5),
             bloodType: override.bloodType !== undefined && override.bloodType !== '' ? override.bloodType : (base.bloodType || ''),
             parentPhone: override.parentPhone !== undefined && override.parentPhone !== '' ? override.parentPhone : (base.parentPhone || ''),
+            parentPhone2: override.parentPhone2 !== undefined && override.parentPhone2 !== '' ? override.parentPhone2 : (base.parentPhone2 || ''),
             whatsappMessage: override.whatsappMessage !== undefined && override.whatsappMessage !== '' ? override.whatsappMessage : (base.whatsappMessage || ''),
             locationMapsUrl: override.locationMapsUrl !== undefined && override.locationMapsUrl !== '' ? override.locationMapsUrl : (base.locationMapsUrl || ''),
             schoolMapsUrl: override.schoolMapsUrl !== undefined && override.schoolMapsUrl !== '' ? override.schoolMapsUrl : (base.schoolMapsUrl || ''),
@@ -744,6 +747,7 @@ class AdminApp {
         document.getElementById('input-age').value = '';
         document.getElementById('input-blood').value = initialGender === 'pet' ? 'N/A' : '';
         document.getElementById('input-phone').value = '';
+        if (document.getElementById('input-phone2')) document.getElementById('input-phone2').value = '';
 
         const defaultWa = initialGender === 'pet'
             ? 'Hola, encontré a la mascota {nombre} y quiero comunicarme con su dueño.'
@@ -790,6 +794,7 @@ class AdminApp {
         document.getElementById('input-age').value = this.calculateAgeFromBirthDate(p.birthDate, p.age);
         document.getElementById('input-blood').value = p.bloodType || (p.gender === 'pet' ? 'N/A' : '');
         document.getElementById('input-phone').value = p.parentPhone || '';
+        if (document.getElementById('input-phone2')) document.getElementById('input-phone2').value = p.parentPhone2 || '';
         
         const defaultWa = p.gender === 'pet'
             ? 'Hola, encontré a la mascota {nombre} y quiero comunicarme con su dueño.'
@@ -878,6 +883,9 @@ class AdminApp {
             const ageInputVal = document.getElementById('input-age')?.value;
             const computedAge = this.calculateAgeFromBirthDate(birthDateVal, ageInputVal);
 
+            const parentPhone1Val = document.getElementById('input-phone').value.trim();
+            const parentPhone2Val = document.getElementById('input-phone2')?.value.trim() || '';
+
             const rawProfile = {
                 id: id || `prof-${Date.now()}`,
                 slug: slug,
@@ -886,7 +894,8 @@ class AdminApp {
                 birthDate: birthDateVal,
                 age: computedAge,
                 bloodType: document.getElementById('input-blood').value || (gender === 'pet' ? 'N/A' : 'O+'),
-                parentPhone: document.getElementById('input-phone').value.trim(),
+                parentPhone: parentPhone1Val,
+                parentPhone2: parentPhone2Val,
                 whatsappMessage: document.getElementById('input-whatsapp-msg').value.trim(),
                 locationMapsUrl: document.getElementById('input-maps-url').value.trim(),
                 schoolMapsUrl: (document.getElementById('input-school-url')?.value || '').trim(),

@@ -682,35 +682,54 @@ class ProfileApp {
             avatarEl.src = (profile.photoUrl && profile.photoUrl.trim() !== '') ? profile.photoUrl : NEUTRAL_AVATAR_SVG;
         }
 
-        // WhatsApp Link Generator ("CONTACTAR A MIS FAMILIARES" - OPCIONAL: Oculto si teléfono está vacío)
-        const waBtn = document.getElementById('btn-whatsapp-action');
-        if (waBtn) {
-            const rawPhone = (profile.parentPhone && String(profile.parentPhone).trim() !== '' && String(profile.parentPhone) !== 'undefined' && String(profile.parentPhone) !== 'null') ? String(profile.parentPhone).trim() : '';
+        // WhatsApp Link Generator 1 & 2 (OPCIONAL: Ocultos dinámicamente si los teléfonos están vacíos)
+        const waBtn1 = document.getElementById('btn-whatsapp-action');
+        const waBtn2 = document.getElementById('btn-whatsapp-action2');
 
-            if (rawPhone !== '') {
-                const mainTextEl = waBtn.querySelector('.btn-main-text');
-                const subTextEl = waBtn.querySelector('.btn-sub-text');
-                if (mainTextEl) {
-                    mainTextEl.textContent = isPet ? 'Contactar a mi dueño' : (isSenior ? 'Contactar a mis familiares' : 'Contactar a mis papás');
+        const rawPhone1 = (profile.parentPhone && String(profile.parentPhone).trim() !== '' && String(profile.parentPhone) !== 'undefined' && String(profile.parentPhone) !== 'null') ? String(profile.parentPhone).trim() : '';
+        const rawPhone2 = (profile.parentPhone2 && String(profile.parentPhone2).trim() !== '' && String(profile.parentPhone2) !== 'undefined' && String(profile.parentPhone2) !== 'null') ? String(profile.parentPhone2).trim() : '';
+
+        const defaultMsg = isPet
+            ? `Hola, encontré a la mascota ${profile.name} y quiero comunicarme con su dueño.`
+            : (isSenior ? `Hola, encontré el perfil de seguridad del adulto mayor ${profile.name} y quiero comunicarme con sus familiares.` : `Hola, encontré la información del perfil de ${profile.name} y me gustaría comunicarme con sus padres.`);
+        const customMsg = profile.whatsappMessage || defaultMsg;
+        const formattedMsg = customMsg.replace('{nombre}', profile.name);
+
+        // WhatsApp Button 1
+        if (waBtn1) {
+            if (rawPhone1 !== '') {
+                const title1El = document.getElementById('p-wa1-title') || waBtn1.querySelector('.btn-main-text');
+                if (title1El) {
+                    if (rawPhone2 !== '') {
+                        title1El.textContent = isPet ? 'Contactar al Dueño 1' : (isSenior ? 'Contactar Familiar 1' : 'Contactar a Papá / Contacto 1');
+                    } else {
+                        title1El.textContent = isPet ? 'Contactar a mi dueño' : (isSenior ? 'Contactar a mis familiares' : 'Contactar a mis papás');
+                    }
                 }
-                if (subTextEl && isSenior) {
-                    subTextEl.textContent = 'Escríbenos por WhatsApp';
-                }
-
-                const defaultMsg = isPet
-                    ? `Hola, encontré a la mascota ${profile.name} y quiero comunicarme con su dueño.`
-                    : (isSenior ? `Hola, encontré el perfil de seguridad del adulto mayor ${profile.name} y quiero comunicarme con sus familiares.` : `Hola, encontré la información del perfil de ${profile.name} y me gustaría comunicarme con sus padres.`);
-
-                const customMsg = profile.whatsappMessage || defaultMsg;
-                const formattedMsg = customMsg.replace('{nombre}', profile.name);
-                const waCleanPhone = rawPhone.replace(/[^0-9]/g, '');
-                
-                waBtn.href = `https://wa.me/${waCleanPhone}?text=${encodeURIComponent(formattedMsg)}`;
-                waBtn.classList.remove('hidden-btn');
-                waBtn.style.setProperty('display', 'flex', 'important');
+                const waCleanPhone1 = rawPhone1.replace(/[^0-9]/g, '');
+                waBtn1.href = `https://wa.me/${waCleanPhone1}?text=${encodeURIComponent(formattedMsg)}`;
+                waBtn1.classList.remove('hidden', 'hidden-btn');
+                waBtn1.style.setProperty('display', 'flex', 'important');
             } else {
-                waBtn.classList.add('hidden-btn');
-                waBtn.style.setProperty('display', 'none', 'important');
+                waBtn1.classList.add('hidden-btn');
+                waBtn1.style.setProperty('display', 'none', 'important');
+            }
+        }
+
+        // WhatsApp Button 2
+        if (waBtn2) {
+            if (rawPhone2 !== '') {
+                const title2El = document.getElementById('p-wa2-title') || waBtn2.querySelector('.btn-main-text');
+                if (title2El) {
+                    title2El.textContent = isPet ? 'Contactar al Dueño 2' : (isSenior ? 'Contactar Familiar 2' : 'Contactar a Mamá / Contacto 2');
+                }
+                const waCleanPhone2 = rawPhone2.replace(/[^0-9]/g, '');
+                waBtn2.href = `https://wa.me/${waCleanPhone2}?text=${encodeURIComponent(formattedMsg)}`;
+                waBtn2.classList.remove('hidden', 'hidden-btn');
+                waBtn2.style.setProperty('display', 'flex', 'important');
+            } else {
+                waBtn2.classList.add('hidden', 'hidden-btn');
+                waBtn2.style.setProperty('display', 'none', 'important');
             }
         }
 

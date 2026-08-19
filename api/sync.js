@@ -215,6 +215,7 @@ export default async function handler(req, res) {
                         age: parseInt(p.age) >= 0 ? parseInt(p.age) : 5,
                         bloodType: p.gender === 'pet' ? '' : (p.bloodType !== undefined ? String(p.bloodType).trim() : ''),
                         parentPhone: p.parentPhone !== undefined ? String(p.parentPhone).trim() : '',
+                        parentPhone2: p.parentPhone2 !== undefined ? String(p.parentPhone2).trim() : '',
                         whatsappMessage: p.whatsappMessage ? String(p.whatsappMessage).trim() : 'Hola, encontré el perfil de {nombre}.',
                         locationMapsUrl: p.locationMapsUrl !== undefined ? String(p.locationMapsUrl).trim() : '',
                         schoolMapsUrl: p.schoolMapsUrl !== undefined ? String(p.schoolMapsUrl).trim() : '',
