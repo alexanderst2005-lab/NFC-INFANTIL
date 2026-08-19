@@ -355,7 +355,8 @@ class AdminApp {
         document.getElementById('input-phone2').value = '';
         document.getElementById('input-whatsapp-msg').value = '';
         document.getElementById('input-maps-url').value = '';
-        document.getElementById('input-school-url').value = '';
+        const elSchoolUrl = document.getElementById('input-school-url');
+        if (elSchoolUrl) elSchoolUrl.value = '';
         document.getElementById('input-school').value = '';
         document.getElementById('input-grade').value = '';
         document.getElementById('input-medical').value = '';
@@ -392,7 +393,8 @@ class AdminApp {
         document.getElementById('input-phone2').value = profile.parentPhone2 || '';
         document.getElementById('input-whatsapp-msg').value = profile.whatsappMessage || '';
         document.getElementById('input-maps-url').value = profile.locationMapsUrl || '';
-        document.getElementById('input-school-url').value = profile.schoolMapsUrl || '';
+        const elSchoolUrlEdit = document.getElementById('input-school-url');
+        if (elSchoolUrlEdit) elSchoolUrlEdit.value = profile.schoolMapsUrl || '';
         document.getElementById('input-school').value = profile.school || '';
         document.getElementById('input-grade').value = profile.grade || '';
         document.getElementById('input-medical').value = profile.medicalConditions || '';
