@@ -272,11 +272,14 @@ class ProfileApp {
         if (!base) return override;
         if (!override) return base;
 
-        let mergedGender = override.gender || base.gender || 'boy';
-        if (override.gender && override.gender !== 'boy') {
-            mergedGender = override.gender;
-        } else if (base.gender && base.gender !== 'boy') {
-            mergedGender = base.gender;
+        let mergedGender = base.gender || 'boy';
+        const validGenders = ['senior', 'girl', 'pet', 'boy'];
+        if (override.gender && validGenders.includes(override.gender)) {
+            const overrideTime = new Date(override.updatedAt || 0).getTime();
+            const baseTime = new Date(base.updatedAt || 0).getTime();
+            if (overrideTime >= baseTime || override.gender !== 'boy') {
+                mergedGender = override.gender;
+            }
         }
         if (override.id === 'prof-006-jose' || base.id === 'prof-006-jose' || (override.slug && String(override.slug).includes('jose-ramirez')) || (base.slug && String(base.slug).includes('jose-ramirez'))) {
             mergedGender = 'senior';
