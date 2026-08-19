@@ -110,7 +110,7 @@ html.theme-pet .app-header .brand-icon {
 
 html {
     background-color: #070d18;
-    overscroll-behavior-y: auto;
+    overscroll-behavior-y: none;
     overscroll-behavior-x: hidden;
 }
 
@@ -121,6 +121,7 @@ body {
     flex-direction: column;
     overflow-x: hidden;
     position: relative;
+    padding-bottom: 0 !important;
 }
 
 body.admin-page-active,
@@ -254,7 +255,7 @@ body.theme-girl .bg-bubbles .bubble-2 {
     width: 100%;
     max-width: 440px;
     margin: 0 auto;
-    padding: 0 0.6rem 2rem 0.6rem;
+    padding: 0 0.6rem 0.5rem 0.6rem;
     position: relative;
     z-index: 10;
 }
