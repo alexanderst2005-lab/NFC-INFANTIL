@@ -406,6 +406,8 @@ class AdminApp {
         const countGirl = this.profiles.filter(p => p.gender === 'girl').length;
         const countPet = this.profiles.filter(p => p.gender === 'pet').length;
 
+        const countSenior = this.profiles.filter(p => p.gender === 'senior').length;
+
         const totalCountEl = document.getElementById('stat-total-count');
         if (totalCountEl) totalCountEl.textContent = countAll;
 
@@ -413,6 +415,7 @@ class AdminApp {
         if (document.getElementById('tab-count-boy')) document.getElementById('tab-count-boy').textContent = countBoy;
         if (document.getElementById('tab-count-girl')) document.getElementById('tab-count-girl').textContent = countGirl;
         if (document.getElementById('tab-count-pet')) document.getElementById('tab-count-pet').textContent = countPet;
+        if (document.getElementById('tab-count-senior')) document.getElementById('tab-count-senior').textContent = countSenior;
 
         const filtered = this.profiles.filter(p => {
             const matchesTab = (this.currentCategoryTab === 'all') || (p.gender === this.currentCategoryTab);
@@ -422,7 +425,7 @@ class AdminApp {
         });
 
         if (filtered.length === 0) {
-            const categoryLabel = this.currentCategoryTab === 'boy' ? 'niños' : (this.currentCategoryTab === 'girl' ? 'niñas' : (this.currentCategoryTab === 'pet' ? 'mascotas' : 'perfiles'));
+            const categoryLabel = this.currentCategoryTab === 'boy' ? 'niños' : (this.currentCategoryTab === 'girl' ? 'niñas' : (this.currentCategoryTab === 'pet' ? 'mascotas' : (this.currentCategoryTab === 'senior' ? 'adultos mayores' : 'perfiles')));
             const emptyHtml = `
                 <div style="grid-column: 1/-1; text-align: center; padding: 4rem 1rem; color: var(--text-secondary); background: var(--bg-card); border-radius: var(--radius-lg); border: 1px dashed var(--border-color);">
                     <i class="fa-solid fa-folder-open" style="font-size: 3rem; margin-bottom: 1rem; color: var(--accent-main); opacity: 0.7;"></i>
@@ -437,7 +440,7 @@ class AdminApp {
         const origin = window.location.origin;
 
         const cardsHtml = filtered.map(p => {
-            const genderParam = p.gender === 'pet' ? '?gender=pet' : (p.gender === 'girl' ? '?gender=girl' : '');
+            const genderParam = p.gender === 'pet' ? '?gender=pet' : (p.gender === 'girl' ? '?gender=girl' : (p.gender === 'senior' ? '?gender=senior' : ''));
             const publicUrl = `${origin}/${p.slug}${genderParam}`;
             const photo = (p.photoUrl && p.photoUrl.trim() !== '') ? p.photoUrl : NEUTRAL_AVATAR_SVG;
 
@@ -453,6 +456,10 @@ class AdminApp {
                 avatarBorder = 'border-color: #5e8c31;';
                 pillClass = 'pill-pet';
                 pillText = '🐾 Mascota';
+            } else if (p.gender === 'senior') {
+                avatarBorder = 'border-color: #f77f00;';
+                pillClass = 'pill-senior';
+                pillText = '👴 Adulto Mayor';
             }
 
             return `
@@ -603,6 +610,15 @@ class AdminApp {
             if (waInput && (!waInput.value || waInput.value.includes('perfil de'))) {
                 waInput.value = 'Hola, encontré a la mascota {nombre} y quiero comunicarme con su dueño.';
             }
+        } else if (genderVal === 'senior') {
+            if (bloodGroup) bloodGroup.style.display = '';
+            if (eduSection) eduSection.style.display = 'none';
+            if (nameLbl) nameLbl.textContent = 'Nombre del Adulto Mayor *';
+            if (phoneLbl) phoneLbl.textContent = 'Teléfono WhatsApp Familiar (Con código país) *';
+            if (bloodInput) bloodInput.setAttribute('required', 'true');
+            if (waInput && (!waInput.value || waInput.value.includes('perfil de'))) {
+                waInput.value = 'Hola, encontré el perfil de seguridad del adulto mayor {nombre} y quiero comunicarme con sus familiares.';
+            }
         } else {
             if (bloodGroup) bloodGroup.style.display = '';
             if (eduSection) eduSection.style.display = '';
@@ -615,10 +631,17 @@ class AdminApp {
     openCreateModal() {
         this.photoRemoved = false;
         this.pendingUploadedPhoto = null;
-        const initialGender = (this.currentCategoryTab === 'girl' || this.currentCategoryTab === 'pet') ? this.currentCategoryTab : 'boy';
+        const initialGender = (this.currentCategoryTab === 'girl' || this.currentCategoryTab === 'pet' || this.currentCategoryTab === 'senior') ? this.currentCategoryTab : 'boy';
 
-        const titleIcon = initialGender === 'pet' ? 'fa-paw' : 'fa-user-plus';
-        const titleText = initialGender === 'pet' ? 'Crear Perfil de Mascota 🐾' : 'Crear Perfil Infantil';
+        let titleIcon = 'fa-user-plus';
+        let titleText = 'Crear Perfil Infantil';
+        if (initialGender === 'pet') {
+            titleIcon = 'fa-paw';
+            titleText = 'Crear Perfil de Mascota 🐾';
+        } else if (initialGender === 'senior') {
+            titleIcon = 'fa-user-tie';
+            titleText = 'Crear Perfil de Adulto Mayor 👴';
+        }
 
         document.getElementById('modal-title').innerHTML = `<i class="fa-solid ${titleIcon}"></i> ${titleText}`;
         document.getElementById('form-save-profile').reset();
@@ -633,7 +656,7 @@ class AdminApp {
 
         const defaultWa = initialGender === 'pet'
             ? 'Hola, encontré a la mascota {nombre} y quiero comunicarme con su dueño.'
-            : '';
+            : (initialGender === 'senior' ? 'Hola, encontré el perfil de seguridad del adulto mayor {nombre} y quiero comunicarme con sus familiares.' : '');
         document.getElementById('input-whatsapp-msg').value = defaultWa;
         document.getElementById('input-maps-url').value = '';
         if (document.getElementById('input-school')) document.getElementById('input-school').value = '';
@@ -656,8 +679,15 @@ class AdminApp {
         this.pendingUploadedPhoto = null;
         const currentPhoto = (p.photoUrl && p.photoUrl.trim() !== '') ? p.photoUrl : NEUTRAL_AVATAR_SVG;
 
-        const titleIcon = p.gender === 'pet' ? 'fa-paw' : 'fa-pen-to-square';
-        const titleLabel = p.gender === 'pet' ? `Editar Perfil de Mascota: ${p.name}` : `Editar Perfil de ${p.name}`;
+        let titleIcon = 'fa-pen-to-square';
+        let titleLabel = `Editar Perfil de ${p.name}`;
+        if (p.gender === 'pet') {
+            titleIcon = 'fa-paw';
+            titleLabel = `Editar Perfil de Mascota: ${p.name}`;
+        } else if (p.gender === 'senior') {
+            titleIcon = 'fa-user-tie';
+            titleLabel = `Editar Perfil de Adulto Mayor: ${p.name}`;
+        }
         
         document.getElementById('modal-title').innerHTML = `<i class="fa-solid ${titleIcon}"></i> ${titleLabel}`;
         document.getElementById('input-profile-id').value = p.id;
@@ -671,7 +701,7 @@ class AdminApp {
         
         const defaultWa = p.gender === 'pet'
             ? 'Hola, encontré a la mascota {nombre} y quiero comunicarme con su dueño.'
-            : 'Hola, encontré la información del perfil de {nombre} y quiero comunicarme con sus padres.';
+            : (p.gender === 'senior' ? 'Hola, encontré el perfil de seguridad del adulto mayor {nombre} y quiero comunicarme con sus familiares.' : 'Hola, encontré la información del perfil de {nombre} y quiero comunicarme con sus padres.');
 
         document.getElementById('input-whatsapp-msg').value = p.whatsappMessage || defaultWa;
         document.getElementById('input-maps-url').value = p.locationMapsUrl || '';

@@ -457,6 +457,101 @@ body.theme-pet .bg-bubbles .bubble-2 {
     background: radial-gradient(circle, rgba(45, 90, 39, 0.35) 0%, rgba(0, 0, 0, 0) 70%);
 }
 
+/* ==========================================================================
+   THEME: SENIOR (ADULTO MAYOR - WARM ELEGANT AMBER & ORANGE)
+   ========================================================================== */
+html.theme-senior,
+body.theme-senior {
+    --bg-main: #fffbf5;
+    --bg-card: #ffffff;
+    --text-title: #2b1e16;
+    --text-secondary: #786355;
+    --border-color: #fce8d5;
+    --accent-main: #f77f00;
+    --accent-gradient: linear-gradient(135deg, #f77f00 0%, #d65a00 100%);
+    --accent-glow: rgba(247, 127, 0, 0.25);
+    background-color: #fffbf5 !important;
+}
+
+html.theme-senior .app-background,
+body.theme-senior .app-background {
+    background: radial-gradient(circle at 50% 0%, #fff2e0 0%, #fffbf5 75%) !important;
+}
+
+html.theme-senior .avatar-ring,
+body.theme-senior .avatar-ring {
+    border-color: #f77f00 !important;
+    box-shadow: 0 0 0 8px rgba(247, 127, 0, 0.15), 0 14px 32px rgba(214, 90, 0, 0.22) !important;
+}
+
+html.theme-senior .security-ribbon,
+body.theme-senior .security-ribbon {
+    background: linear-gradient(135deg, #f77f00 0%, #d65a00 100%) !important;
+    box-shadow: 0 6px 16px rgba(247, 127, 0, 0.35) !important;
+}
+
+html.theme-senior .btn-whatsapp,
+body.theme-senior .btn-whatsapp {
+    background: linear-gradient(135deg, #f77f00 0%, #d65a00 100%) !important;
+    color: #ffffff !important;
+    box-shadow: 0 8px 24px rgba(247, 127, 0, 0.35) !important;
+    border: none !important;
+}
+
+html.theme-senior .btn-whatsapp .btn-icon-circle,
+body.theme-senior .btn-whatsapp .btn-icon-circle {
+    background: rgba(255, 255, 255, 0.22) !important;
+    color: #ffffff !important;
+}
+
+html.theme-senior .btn-maps,
+body.theme-senior .btn-maps {
+    background: #ffffff !important;
+    color: #2b1e16 !important;
+    border: 1.5px solid #fbd38d !important;
+    box-shadow: 0 8px 20px rgba(247, 127, 0, 0.08) !important;
+}
+
+html.theme-senior .btn-maps .btn-icon-circle,
+body.theme-senior .btn-maps .btn-icon-circle {
+    background: linear-gradient(135deg, #f77f00 0%, #d65a00 100%) !important;
+    color: #ffffff !important;
+}
+
+html.theme-senior .info-card-box,
+body.theme-senior .info-card-box {
+    background: #ffffff;
+    border: 1.5px solid #fce8d5;
+}
+
+html.theme-senior .icon-age,
+body.theme-senior .icon-age {
+    background: rgba(247, 127, 0, 0.12);
+    color: #f77f00;
+}
+
+html.theme-senior .icon-blood,
+body.theme-senior .icon-blood {
+    background: rgba(239, 68, 68, 0.12);
+    color: #ef4444;
+}
+
+html.theme-senior .bg-bubbles .bubble-1,
+body.theme-senior .bg-bubbles .bubble-1 {
+    background: radial-gradient(circle, rgba(247, 127, 0, 0.3) 0%, rgba(0, 0, 0, 0) 70%);
+}
+
+html.theme-senior .bg-bubbles .bubble-2,
+body.theme-senior .bg-bubbles .bubble-2 {
+    background: radial-gradient(circle, rgba(214, 90, 0, 0.25) 0%, rgba(0, 0, 0, 0) 70%);
+}
+
+.pill-senior {
+    background: rgba(247, 127, 0, 0.15) !important;
+    color: #d65a00 !important;
+    border: 1px solid rgba(247, 127, 0, 0.3) !important;
+}
+
 @keyframes decoPulse {
     0% { transform: translateY(0px) scale(0.95); }
     100% { transform: translateY(-8px) scale(1.1); }

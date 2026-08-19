@@ -429,7 +429,7 @@ class ProfileApp {
             inactiveView.classList.add('hidden');
         }
 
-        // Apply Theme based on gender ('boy', 'girl', 'pet')
+        // Apply Theme based on gender ('boy', 'girl', 'pet', 'senior')
         const urlParams = new URLSearchParams(window.location.search);
         const explicitGender = urlParams.get('gender');
 
@@ -440,42 +440,51 @@ class ProfileApp {
         } else if (explicitGender === 'girl' || profile.gender === 'girl') {
             themeClass = 'theme-girl';
             profile.gender = 'girl';
+        } else if (explicitGender === 'senior' || profile.gender === 'senior') {
+            themeClass = 'theme-senior';
+            profile.gender = 'senior';
         }
 
         document.body.className = themeClass;
         document.documentElement.className = themeClass;
         this.renderFloatingDecorators(profile.gender);
 
+        const isSenior = profile.gender === 'senior';
+        const isGirl = profile.gender === 'girl';
+        const isPet = profile.gender === 'pet';
+
         // Render Page Title
-        document.title = profile.gender === 'pet' 
+        document.title = isPet 
             ? `Perfil de ${profile.name} | Identificación de Mascota`
-            : `Perfil de ${profile.name} | NFC Seguridad Infantil`;
+            : (isSenior ? `Perfil de ${profile.name} | Perfil de Seguridad Adulto Mayor` : `Perfil de ${profile.name} | NFC Seguridad Infantil`);
 
         const heroNameEl = document.getElementById('p-hero-name');
         if (heroNameEl) heroNameEl.textContent = profile.name;
 
         const topBrandTitleEl = document.getElementById('p-top-brand-title');
         if (topBrandTitleEl) {
-            topBrandTitleEl.textContent = profile.gender === 'pet' ? 'Identificación de Mascota' : 'Identificación Infantil';
+            topBrandTitleEl.textContent = isPet ? 'Identificación de Mascota' : (isSenior ? 'Perfil de Seguridad' : 'Identificación Infantil');
         }
 
         const genderTextEl = document.getElementById('p-gender-text');
         if (genderTextEl) {
-            genderTextEl.innerHTML = profile.gender === 'pet' 
+            genderTextEl.innerHTML = isPet 
                 ? '<i class="fa-solid fa-paw"></i> Mascota Registrada' 
                 : 'Perfil verificado';
         }
 
         const securityRibbonEl = document.getElementById('p-security-ribbon');
         if (securityRibbonEl) {
-            securityRibbonEl.innerHTML = profile.gender === 'pet' ? '<i class="fa-solid fa-paw"></i> Mi perfil de seguridad <i class="fa-solid fa-paw"></i>' : 'Mi perfil de seguridad';
+            securityRibbonEl.innerHTML = isPet ? '<i class="fa-solid fa-paw"></i> Mi perfil de seguridad <i class="fa-solid fa-paw"></i>' : (isSenior ? '<i class="fa-solid fa-shield-heart"></i> Mi perfil de seguridad <i class="fa-solid fa-shield-heart"></i>' : 'Mi perfil de seguridad');
         }
 
         const footerTagEl = document.getElementById('p-footer-tag');
         if (footerTagEl) {
-            if (profile.gender === 'girl') {
+            if (isSenior) {
+                footerTagEl.innerHTML = '<i class="fa-solid fa-shield-heart"></i> Protegido con amor <i class="fa-solid fa-heart" style="color: #f77f00;"></i>';
+            } else if (isGirl) {
                 footerTagEl.innerHTML = '<i class="fa-solid fa-shield-heart"></i> Protegida con amor <i class="fa-solid fa-heart" style="color: #ec4899;"></i>';
-            } else if (profile.gender === 'pet') {
+            } else if (isPet) {
                 footerTagEl.innerHTML = '<i class="fa-solid fa-paw"></i> Mascota protegida con amor <i class="fa-solid fa-heart" style="color: #10b981;"></i>';
             } else {
                 footerTagEl.innerHTML = '<i class="fa-solid fa-shield-heart"></i> Protegido con amor <i class="fa-solid fa-heart" style="color: #38bdf8;"></i>';
@@ -488,15 +497,15 @@ class ProfileApp {
 
         const ageIconEl = document.getElementById('p-age-icon');
         if (ageIconEl) {
-            ageIconEl.className = profile.gender === 'pet' ? 'fa-solid fa-paw' : 'fa-solid fa-cake-candles';
+            ageIconEl.className = isPet ? 'fa-solid fa-paw' : (isSenior ? 'fa-solid fa-cake-candles' : 'fa-solid fa-cake-candles');
         }
 
         const bloodValEl = document.getElementById('p-blood-val') || document.getElementById('p-blood');
-        if (bloodValEl) bloodValEl.textContent = profile.bloodType || (profile.gender === 'pet' ? 'N/A' : 'O+');
+        if (bloodValEl) bloodValEl.textContent = profile.bloodType || (isPet ? 'N/A' : 'O+');
 
         const boxBloodEl = document.getElementById('box-blood');
         if (boxBloodEl) {
-            if (profile.gender === 'pet') {
+            if (isPet) {
                 boxBloodEl.classList.add('hidden');
                 boxBloodEl.style.display = 'none';
             } else {
@@ -505,10 +514,10 @@ class ProfileApp {
             }
         }
 
-        // 1. School Optional Box
+        // 1. School Box (HIDDEN for Senior)
         const schoolBoxEl = document.getElementById('box-school');
         const schoolValEl = document.getElementById('p-school');
-        if (profile.school && String(profile.school).trim() !== '') {
+        if (!isSenior && profile.school && String(profile.school).trim() !== '') {
             if (schoolValEl) schoolValEl.textContent = profile.school.trim();
             if (schoolBoxEl) {
                 schoolBoxEl.classList.remove('hidden');
@@ -519,10 +528,10 @@ class ProfileApp {
             schoolBoxEl.style.display = 'none';
         }
 
-        // 2. Grade Optional Box
+        // 2. Grade Box (HIDDEN for Senior)
         const gradeBoxEl = document.getElementById('box-grade');
         const gradeValEl = document.getElementById('p-grade');
-        if (profile.grade && String(profile.grade).trim() !== '') {
+        if (!isSenior && profile.grade && String(profile.grade).trim() !== '') {
             if (gradeValEl) gradeValEl.textContent = profile.grade.trim();
             if (gradeBoxEl) {
                 gradeBoxEl.classList.remove('hidden');
@@ -533,10 +542,10 @@ class ProfileApp {
             gradeBoxEl.style.display = 'none';
         }
 
-        // 3. Medical / Special Care Notes Optional Box
+        // 3. Medical Box (HIDDEN for Senior)
         const medicalBoxEl = document.getElementById('box-medical');
         const medicalValEl = document.getElementById('p-medical-notes');
-        if (profile.medicalConditions && String(profile.medicalConditions).trim() !== '') {
+        if (!isSenior && profile.medicalConditions && String(profile.medicalConditions).trim() !== '') {
             if (medicalValEl) medicalValEl.textContent = profile.medicalConditions.trim();
             if (medicalBoxEl) {
                 medicalBoxEl.classList.remove('hidden');
@@ -548,22 +557,19 @@ class ProfileApp {
         }
 
         // Update Mockup Deco Icons per Gender
-        const isGirl = profile.gender === 'girl';
-        const isPet = profile.gender === 'pet';
-        
         const topLeftDeco = document.getElementById('deco-top-left');
         if (topLeftDeco) {
-            topLeftDeco.innerHTML = isPet ? '<i class="fa-solid fa-house-chimney-window"></i>' : (isGirl ? '<i class="fa-solid fa-feather-pointed"></i>' : '<i class="fa-solid fa-rocket"></i>');
+            topLeftDeco.innerHTML = isPet ? '<i class="fa-solid fa-house-chimney-window"></i>' : (isSenior ? '<i class="fa-solid fa-shield-heart"></i>' : (isGirl ? '<i class="fa-solid fa-feather-pointed"></i>' : '<i class="fa-solid fa-rocket"></i>'));
         }
 
         const topRightDeco = document.getElementById('deco-top-right');
         if (topRightDeco) {
-            topRightDeco.innerHTML = isPet ? '<i class="fa-solid fa-bone"></i>' : (isGirl ? '<i class="fa-solid fa-rainbow"></i>' : '<i class="fa-solid fa-atom"></i>');
+            topRightDeco.innerHTML = isPet ? '<i class="fa-solid fa-bone"></i>' : (isSenior ? '<i class="fa-solid fa-heart-pulse"></i>' : (isGirl ? '<i class="fa-solid fa-rainbow"></i>' : '<i class="fa-solid fa-atom"></i>'));
         }
 
         const bottomRightDeco = document.getElementById('deco-bottom-right');
         if (bottomRightDeco) {
-            bottomRightDeco.innerHTML = isPet ? '<i class="fa-solid fa-heart"></i>' : (isGirl ? '<i class="fa-solid fa-wand-magic-sparkles"></i>' : '<i class="fa-solid fa-user-astronaut"></i>');
+            bottomRightDeco.innerHTML = isPet ? '<i class="fa-solid fa-heart"></i>' : (isSenior ? '<i class="fa-solid fa-hand-holding-heart"></i>' : (isGirl ? '<i class="fa-solid fa-wand-magic-sparkles"></i>' : '<i class="fa-solid fa-user-astronaut"></i>'));
         }
 
         const bloodIconEl = document.getElementById('p-blood-icon');
@@ -573,12 +579,12 @@ class ProfileApp {
 
         const sceneLeft = document.getElementById('scene-left');
         if (sceneLeft) {
-            sceneLeft.innerHTML = isPet ? '<i class="fa-solid fa-bone"></i>' : (isGirl ? '<i class="fa-solid fa-seedling"></i>' : '<i class="fa-solid fa-tree"></i>');
+            sceneLeft.innerHTML = isPet ? '<i class="fa-solid fa-bone"></i>' : (isSenior ? '<i class="fa-solid fa-tree"></i>' : (isGirl ? '<i class="fa-solid fa-seedling"></i>' : '<i class="fa-solid fa-tree"></i>'));
         }
 
         const sceneRight = document.getElementById('scene-right');
         if (sceneRight) {
-            sceneRight.innerHTML = isPet ? '<i class="fa-solid fa-paw"></i>' : (isGirl ? '<i class="fa-solid fa-chess-rook"></i>' : '<i class="fa-solid fa-paw"></i>');
+            sceneRight.innerHTML = isPet ? '<i class="fa-solid fa-paw"></i>' : (isSenior ? '<i class="fa-solid fa-heart"></i>' : (isGirl ? '<i class="fa-solid fa-chess-rook"></i>' : '<i class="fa-solid fa-paw"></i>'));
         }
 
         // Avatar Photo
@@ -587,19 +593,23 @@ class ProfileApp {
             avatarEl.src = (profile.photoUrl && profile.photoUrl.trim() !== '') ? profile.photoUrl : NEUTRAL_AVATAR_SVG;
         }
 
-        // WhatsApp Link Generator ("CONTACTAR A MIS PAPÁS" / "CONTACTAR A MI DUEÑO")
+        // WhatsApp Link Generator ("CONTACTAR A MIS FAMILIARES")
         const waBtn = document.getElementById('btn-whatsapp-action');
         if (waBtn) {
             const mainTextEl = waBtn.querySelector('.btn-main-text');
+            const subTextEl = waBtn.querySelector('.btn-sub-text');
             if (mainTextEl) {
-                mainTextEl.textContent = isPet ? 'Contactar a mi dueño' : 'Contactar a mis papás';
+                mainTextEl.textContent = isPet ? 'Contactar a mi dueño' : (isSenior ? 'Contactar a mis familiares' : 'Contactar a mis papás');
+            }
+            if (subTextEl && isSenior) {
+                subTextEl.textContent = 'Escríbenos por WhatsApp';
             }
 
             const phone = (profile.parentPhone && String(profile.parentPhone).trim() !== '' && String(profile.parentPhone) !== 'undefined') ? String(profile.parentPhone).trim() : '573001234567';
             
             const defaultMsg = isPet
                 ? `Hola, encontré a la mascota ${profile.name} y quiero comunicarme con su dueño.`
-                : `Hola, encontré la información del perfil de ${profile.name} y me gustaría comunicarme con sus padres.`;
+                : (isSenior ? `Hola, encontré el perfil de seguridad del adulto mayor ${profile.name} y quiero comunicarme con sus familiares.` : `Hola, encontré la información del perfil de ${profile.name} y me gustaría comunicarme con sus padres.`);
 
             const customMsg = profile.whatsappMessage || defaultMsg;
             const formattedMsg = customMsg.replace('{nombre}', profile.name);
@@ -612,6 +622,11 @@ class ProfileApp {
         // Location Link Generator ("Ver ubicación" - OPCIONAL: Oculto si no hay link, visible con link)
         const mapsBtn = document.getElementById('btn-location-action');
         if (mapsBtn) {
+            const subTextEl = mapsBtn.querySelector('.btn-sub-text');
+            if (subTextEl && isSenior) {
+                subTextEl.textContent = 'Ver mi ubicación en el mapa';
+            }
+
             const hasLocation = profile.locationMapsUrl && 
                 String(profile.locationMapsUrl).trim() !== '' && 
                 String(profile.locationMapsUrl) !== 'undefined';
@@ -659,10 +674,12 @@ class ProfileApp {
         const boyIcons = ['fa-rocket', 'fa-user-astronaut', 'fa-star', 'fa-cloud-moon', 'fa-compass', 'fa-shuttle-space'];
         const girlIcons = ['fa-wand-magic-sparkles', 'fa-heart', 'fa-sun', 'fa-cloud', 'fa-feather', 'fa-spa'];
         const petIcons = ['fa-paw', 'fa-bone', 'fa-heart', 'fa-paw', 'fa-bone', 'fa-shield-dog'];
+        const seniorIcons = ['fa-shield-heart', 'fa-leaf', 'fa-heart-pulse', 'fa-sun', 'fa-shield', 'fa-house-user'];
         
         let icons = boyIcons;
         if (gender === 'girl') icons = girlIcons;
         else if (gender === 'pet') icons = petIcons;
+        else if (gender === 'senior') icons = seniorIcons;
 
         container.innerHTML = icons.map((icon, idx) => `
             <div class="decorator dec-${idx + 1}">
