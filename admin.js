@@ -447,10 +447,36 @@ class AdminApp {
         if (document.getElementById('tab-count-pet')) document.getElementById('tab-count-pet').textContent = countPet;
         if (document.getElementById('tab-count-senior')) document.getElementById('tab-count-senior').textContent = countSenior;
 
+        const query = (filterText || '').toLowerCase().trim();
         const filtered = this.profiles.filter(p => {
             const matchesTab = (this.currentCategoryTab === 'all') || (p.gender === this.currentCategoryTab);
-            const matchesSearch = p.name.toLowerCase().includes(filterText.toLowerCase()) ||
-                                  p.slug.toLowerCase().includes(filterText.toLowerCase());
+            
+            if (!query) return matchesTab;
+
+            const nameMatch = (p.name || '').toLowerCase().includes(query);
+            const slugMatch = (p.slug || '').toLowerCase().includes(query);
+            const schoolMatch = (p.school || '').toLowerCase().includes(query);
+            const gradeMatch = (p.grade || '').toLowerCase().includes(query);
+            
+            const computedAgeStr = String(this.calculateAgeFromBirthDate(p.birthDate, p.age)).toLowerCase();
+            const ageMatch = computedAgeStr === query || `${computedAgeStr} años`.includes(query) || `${computedAgeStr} anos`.includes(query);
+            
+            const bloodMatch = (p.bloodType || '').toLowerCase().includes(query);
+            const phoneMatch = (p.parentPhone || '').toLowerCase().includes(query);
+            const medicalMatch = (p.medicalConditions || '').toLowerCase().includes(query);
+            const mapsMatch = (p.locationMapsUrl || '').toLowerCase().includes(query);
+
+            let categoryName = 'niño nino';
+            if (p.gender === 'girl') categoryName = 'niña nina';
+            else if (p.gender === 'pet') categoryName = 'mascota pet';
+            else if (p.gender === 'senior') categoryName = 'adulto mayor senior';
+
+            const categoryMatch = categoryName.includes(query);
+
+            const matchesSearch = nameMatch || slugMatch || schoolMatch || gradeMatch || 
+                                  ageMatch || bloodMatch || phoneMatch || medicalMatch || 
+                                  mapsMatch || categoryMatch;
+
             return matchesTab && matchesSearch;
         });
 
