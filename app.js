@@ -1,117 +1,16 @@
 /* ==========================================================================
-   NFC INFANTIL - PUBLIC CHILD PROFILE APP LOGIC
+   NFC INFANTIL - PUBLIC PROFILE APP LOGIC (FIREBASE FIRESTORE REAL-TIME SINGLE SOURCE OF TRUTH)
    ========================================================================== */
 
-const CLOUD_DB_ENDPOINT = "/api/sync";
+import { 
+    db, 
+    collection, 
+    onSnapshot, 
+    INITIAL_PROFILES_SEED 
+} from './firebase-config.js';
 
 // Neutral SVG Silhouette for profiles without a custom photo
 const NEUTRAL_AVATAR_SVG = "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='%2364748b'%3E%3Ccircle cx='50' cy='35' r='22'/%3E%3Cpath d='M18 85c0-18 14-30 32-30s32 12 32 30Z'/%3E%3C/svg%3E";
-
-const DEFAULT_PROFILES = [
-    {
-        id: "prof-001",
-        slug: "samuel",
-        name: "Samuel Arias Rodríguez",
-        gender: "boy",
-        age: 11,
-        bloodType: "B+",
-        school: "RIO TAPAJE",
-        grade: "4",
-        medicalConditions: "ALERGICO",
-        parentPhone: "573001234567",
-        whatsappMessage: "Hola, encontré la información del perfil de Samuel y me gustaría comunicarme con sus padres.",
-        locationMapsUrl: "",
-        schoolMapsUrl: "",
-        photoUrl: "https://images.unsplash.com/photo-1543332164-6e82f355badc?w=400&auto=format&fit=crop&q=80",
-        active: true,
-        createdAt: "2026-08-18T00:00:00.000Z",
-        updatedAt: "2026-08-18T00:00:00.000Z"
-    },
-    {
-        id: "prof-1787105387792",
-        slug: "lucia-torres",
-        name: "LUCIA TORRES",
-        gender: "girl",
-        age: "",
-        bloodType: "",
-        parentPhone: "",
-        whatsappMessage: "Hola, encontré la información del perfil de LUCIA TORRES y quiero comunicarme con sus padres.",
-        locationMapsUrl: "",
-        schoolMapsUrl: "",
-        photoUrl: "",
-        active: true,
-        createdAt: "2026-08-19T02:10:00.000Z",
-        updatedAt: "2026-08-19T02:10:00.000Z"
-    },
-    {
-        id: "prof-1787128801484",
-        slug: "guillermo-diaz",
-        name: "Guillermo Diaz",
-        gender: "senior",
-        age: "",
-        bloodType: "",
-        parentPhone: "",
-        whatsappMessage: "Hola, encontré el perfil de seguridad del adulto mayor Guillermo Diaz y quiero comunicarme con sus familiares.",
-        locationMapsUrl: "",
-        schoolMapsUrl: "",
-        photoUrl: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&auto=format&fit=crop&q=80",
-        active: true,
-        createdAt: "2026-08-19T08:40:00.000Z",
-        updatedAt: "2026-08-19T08:40:00.000Z"
-    },
-    {
-        id: "prof-1787129656850",
-        slug: "zeus",
-        name: "ZEUS",
-        gender: "pet",
-        age: 6,
-        bloodType: "",
-        parentPhone: "",
-        whatsappMessage: "Hola, encontré a la mascota ZEUS y quiero comunicarme con su dueño.",
-        locationMapsUrl: "",
-        schoolMapsUrl: "",
-        photoUrl: "https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=400&auto=format&fit=crop&q=80",
-        active: true,
-        createdAt: "2026-08-19T08:54:00.000Z",
-        updatedAt: "2026-08-19T08:54:00.000Z"
-    },
-    {
-        id: "prof-006-jose",
-        slug: "jose-ramirez",
-        name: "José Ramírez",
-        gender: "senior",
-        birthDate: "1952-08-15",
-        age: 74,
-        bloodType: "O+",
-        parentPhone: "573109876543",
-        parentPhone2: "573209998877",
-        whatsappMessage: "Hola, encontré el perfil de seguridad del adulto mayor José Ramírez y quiero comunicarme con sus familiares.",
-        locationMapsUrl: "https://maps.google.com/?q=4.6097,74.0817",
-        schoolMapsUrl: "",
-        photoUrl: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&auto=format&fit=crop&q=80",
-        active: true,
-        createdAt: "2026-08-18T20:00:00.000Z",
-        updatedAt: "2026-08-18T20:00:00.000Z"
-    },
-    {
-        id: "prof-1787028202738",
-        slug: "arias-santi",
-        name: "Arias santi",
-        gender: "boy",
-        age: 6,
-        bloodType: "O+",
-        school: "Hshshs",
-        parentPhone: "545454",
-        whatsappMessage: "Hola, encontré la información del perfil de Arias santi y me gustaría comunicarme con sus padres.",
-        locationMapsUrl: "",
-        schoolMapsUrl: "",
-        medicalConditions: "",
-        photoUrl: "",
-        active: true,
-        createdAt: "2026-08-18T04:55:03.415Z",
-        updatedAt: "2026-08-18T04:55:03.415Z"
-    }
-];
 
 class ProfileApp {
     constructor() {
@@ -121,23 +20,25 @@ class ProfileApp {
 
     async init() {
         const targetSlug = this.getSlugFromUrl();
-        this.loadProfilesLocal();
 
-        // 1. Render immediately from local memory
-        this.renderSingleProfile(targetSlug);
-        document.documentElement.classList.add('ready');
+        // Listen to Firestore collection 'nfc_profiles' in real-time
+        onSnapshot(collection(db, "nfc_profiles"), (snapshot) => {
+            const loaded = [];
+            snapshot.forEach((docSnap) => {
+                const data = docSnap.data();
+                if (data) loaded.push(data);
+            });
 
-        // 2. Fetch latest Cloud DB automatically and re-render target profile immediately
-        await this.syncFromCloudDB();
-        if (targetSlug) {
+            if (loaded.length === 0) {
+                this.profiles = INITIAL_PROFILES_SEED.map(p => this.sanitizeProfile(p));
+            } else {
+                this.profiles = this.deduplicateProfiles(loaded);
+            }
+
             this.renderSingleProfile(targetSlug);
-        }
-
-        // 3. Continuous background auto-sync polling every 2 seconds
-        setInterval(() => this.syncFromCloudDB(), 2000);
-        window.addEventListener('focus', () => this.syncFromCloudDB());
-        document.addEventListener('visibilitychange', () => {
-            if (!document.hidden) this.syncFromCloudDB();
+            document.documentElement.classList.add('ready');
+        }, (error) => {
+            console.error("Firestore Public App Realtime Listener Error:", error);
         });
     }
 
@@ -164,23 +65,17 @@ class ProfileApp {
         const name = (p.name && String(p.name).trim() !== '' && String(p.name).trim() !== 'undefined') 
             ? String(p.name).trim() 
             : 'Perfil';
-        
-        let gender = (p.gender === 'girl' || p.gender === 'boy' || p.gender === 'pet' || p.gender === 'senior') ? p.gender : 'boy';
+
+        let gender = (p.gender === 'girl' || p.gender === 'pet' || p.gender === 'senior') ? p.gender : 'boy';
         if (p.id === 'prof-006-jose' || (p.slug && String(p.slug).toLowerCase().includes('jose-ramirez'))) {
             gender = 'senior';
         }
 
         let slug = (p.slug && String(p.slug).trim() !== '' && String(p.slug).trim() !== 'undefined') 
             ? String(p.slug).trim() 
-            : name.toLowerCase().replace(/[^a-z0-9]/g, '-');
+            : 'perfil';
 
         let locationMapsUrl = (p.locationMapsUrl !== undefined && p.locationMapsUrl !== null) ? String(p.locationMapsUrl).trim() : '';
-        if (locationMapsUrl.includes('maps.google.com/?q=4.6853') || 
-            locationMapsUrl.includes('maps.google.com/?q=6.2088') || 
-            locationMapsUrl.includes('maps.google.com/?q=4.6581') || 
-            locationMapsUrl.includes('maps.google.com/?q=3.4516')) {
-            locationMapsUrl = '';
-        }
 
         let schoolMapsUrl = (p.schoolMapsUrl !== undefined && p.schoolMapsUrl !== null) ? String(p.schoolMapsUrl).trim() : '';
         let school = (p.school !== undefined && p.school !== null) ? String(p.school).trim() : '';
@@ -220,20 +115,6 @@ class ProfileApp {
         };
     }
 
-    areProfilesEqual(listA, listB) {
-        if (!Array.isArray(listA) || !Array.isArray(listB)) return false;
-        if (listA.length !== listB.length) return false;
-        for (let i = 0; i < listA.length; i++) {
-            const pA = listA[i];
-            const pB = listB[i];
-            if (!pA || !pB) return false;
-            if (JSON.stringify(pA) !== JSON.stringify(pB)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
     deduplicateProfiles(list) {
         if (!Array.isArray(list)) return [];
         const seenIds = new Set();
@@ -243,138 +124,14 @@ class ProfileApp {
         for (const p of list) {
             const sanitized = this.sanitizeProfile(p);
             if (!sanitized) continue;
-            
+
             if (!seenIds.has(sanitized.id) && !seenSlugs.has(sanitized.slug)) {
                 seenIds.add(sanitized.id);
                 seenSlugs.add(sanitized.slug);
                 result.push(sanitized);
             }
         }
-        return result.sort((a, b) => (a.createdAt || a.id || '').localeCompare(b.createdAt || b.id || ''));
-    }
-
-    loadProfilesLocal() {
-        const stored = localStorage.getItem('nfc_profiles_db');
-        let localProfs = [];
-        if (stored) {
-            try {
-                const parsed = JSON.parse(stored);
-                if (Array.isArray(parsed) && parsed.length > 0) {
-                    localProfs = parsed;
-                }
-            } catch (e) {}
-        }
-        this.profiles = this.mergeAndPreserveProfiles(localProfs, DEFAULT_PROFILES);
-        this.saveProfilesLocal();
-    }
-
-    saveProfilesLocal() {
-        this.profiles = this.deduplicateProfiles(this.profiles);
-        localStorage.setItem('nfc_profiles_db', JSON.stringify(this.profiles));
-    }
-
-    mergeSingleProfile(base, override) {
-        if (!base) return override;
-        if (!override) return base;
-
-        const overrideTime = new Date(override.updatedAt || 0).getTime();
-        const baseTime = new Date(base.updatedAt || 0).getTime();
-        const isOverrideNewer = overrideTime >= baseTime;
-
-        const sourceNew = isOverrideNewer ? override : base;
-        const sourceOld = isOverrideNewer ? base : override;
-
-        let mergedGender = sourceNew.gender || sourceOld.gender || 'boy';
-        if (sourceNew.id === 'prof-006-jose' || sourceOld.id === 'prof-006-jose' || (sourceNew.slug && String(sourceNew.slug).includes('jose-ramirez')) || (sourceOld.slug && String(sourceOld.slug).includes('jose-ramirez'))) {
-            mergedGender = 'senior';
-        }
-
-        return {
-            ...sourceOld,
-            ...sourceNew,
-            name: (sourceNew.name && sourceNew.name.trim() !== '') ? sourceNew.name.trim() : (sourceOld.name || 'Perfil'),
-            gender: mergedGender,
-            photoUrl: (sourceNew.photoUrl && sourceNew.photoUrl.trim() !== '' && sourceNew.photoUrl !== NEUTRAL_AVATAR_SVG)
-                ? sourceNew.photoUrl.trim()
-                : (sourceOld.photoUrl || ''),
-            updatedAt: sourceNew.updatedAt || sourceOld.updatedAt || new Date().toISOString()
-        };
-    }
-
-    mergeAndPreserveProfiles(localProfiles = [], cloudProfiles = [], cloudDeletedIds = []) {
-        const masterDeletedIds = Array.isArray(cloudDeletedIds) ? cloudDeletedIds : [];
-        const localDeleted = JSON.parse(localStorage.getItem('nfc_deleted_ids') || '[]');
-        const allDeleted = new Set([...masterDeletedIds, ...localDeleted]);
-
-        const profileMap = new Map();
-
-        // 1. Load Local Profiles into map if not deleted
-        localProfiles.forEach(p => {
-            if (p && p.id && !allDeleted.has(p.id)) {
-                const sanitized = this.sanitizeProfile(p);
-                if (!sanitized) return;
-
-                if (profileMap.has(p.id)) {
-                    profileMap.set(p.id, this.mergeSingleProfile(profileMap.get(p.id), sanitized));
-                } else {
-                    profileMap.set(p.id, sanitized);
-                }
-            }
-        });
-
-        // 2. Merge Cloud Profiles (Cloud DB is Authoritative Master across devices)
-        cloudProfiles.forEach(p => {
-            if (p && p.id && !allDeleted.has(p.id)) {
-                const sanitizedCloud = this.sanitizeProfile(p);
-                if (!sanitizedCloud) return;
-
-                if (profileMap.has(p.id)) {
-                    const localProf = profileMap.get(p.id);
-                    const cloudTime = new Date(sanitizedCloud.updatedAt || sanitizedCloud.createdAt || 0).getTime();
-                    const localTime = new Date(localProf.updatedAt || localProf.createdAt || 0).getTime();
-
-                    if (cloudTime >= localTime) {
-                        profileMap.set(p.id, this.mergeSingleProfile(localProf, sanitizedCloud));
-                    } else {
-                        profileMap.set(p.id, this.mergeSingleProfile(sanitizedCloud, localProf));
-                    }
-                } else {
-                    profileMap.set(p.id, sanitizedCloud);
-                }
-            }
-        });
-
-        return Array.from(profileMap.values()).filter(p => p && p.id && !allDeleted.has(p.id));
-    }
-
-    async syncFromCloudDB() {
-        try {
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 3000);
-
-            const cacheBustUrl = `${CLOUD_DB_ENDPOINT}?t=${Date.now()}`;
-            const res = await fetch(cacheBustUrl, { cache: 'no-store', signal: controller.signal });
-            clearTimeout(timeoutId);
-
-            if (res.ok) {
-                const jsonRes = await res.json();
-                if (jsonRes && Array.isArray(jsonRes.profiles)) {
-                    const cloudProfiles = jsonRes.profiles;
-                    const cloudDeletedIds = Array.isArray(jsonRes.deletedIds) ? jsonRes.deletedIds : [];
-                    const merged = this.mergeAndPreserveProfiles(this.profiles, cloudProfiles, cloudDeletedIds);
-                    const sanitizedMerged = this.deduplicateProfiles(merged);
-
-                    if (!this.areProfilesEqual(sanitizedMerged, this.profiles)) {
-                        this.profiles = sanitizedMerged;
-                        this.saveProfilesLocal();
-                        const currentSlug = this.getSlugFromUrl();
-                        if (currentSlug) this.renderSingleProfile(currentSlug);
-                    }
-                }
-            }
-        } catch (err) {
-            console.log("Cloud sync load offline, using LocalStorage:", err);
-        }
+        return result;
     }
 
     getSlugFromUrl() {
@@ -520,267 +277,202 @@ class ProfileApp {
         const heroNameEl = document.getElementById('p-hero-name');
         if (heroNameEl) heroNameEl.textContent = profile.name;
 
-        const topBrandTitleEl = document.getElementById('p-top-brand-title');
-        if (topBrandTitleEl) {
-            topBrandTitleEl.textContent = isPet ? 'Identificación de Mascota' : (isSenior ? 'Perfil de Seguridad' : 'Identificación Infantil');
+        const subtitleEl = document.getElementById('p-badge-subtitle');
+        if (subtitleEl) {
+            subtitleEl.textContent = isPet 
+                ? 'Identificación de Mascota' 
+                : (isSenior ? 'Perfil de Seguridad' : 'Identificación Infantil');
         }
 
-        const genderTextEl = document.getElementById('p-gender-text');
-        if (genderTextEl) {
-            genderTextEl.innerHTML = isPet 
-                ? '<i class="fa-solid fa-paw"></i> Mascota Registrada' 
-                : 'Perfil verificado';
+        const tagTextEl = document.getElementById('p-header-tag-text');
+        if (tagTextEl) {
+            tagTextEl.textContent = isPet 
+                ? 'Mascota Registrada' 
+                : (isSenior ? 'Adulto Mayor Registrado' : 'Perfil verificado');
         }
 
-        const securityRibbonEl = document.getElementById('p-security-ribbon');
-        if (securityRibbonEl) {
-            securityRibbonEl.innerHTML = isPet 
-                ? '<i class="fa-solid fa-paw"></i> Mi perfil de seguridad <i class="fa-solid fa-paw"></i>' 
-                : (isSenior ? '<i class="fa-solid fa-shield-heart" style="color: #f77f00;"></i> Mi perfil de seguridad <i class="fa-solid fa-shield-heart" style="color: #f77f00;"></i>' : 'Mi perfil de seguridad');
+        // Photo rendering
+        const photoEl = document.getElementById('p-photo');
+        if (photoEl) {
+            const hasPhoto = profile.photoUrl && profile.photoUrl.trim() !== '' && profile.photoUrl !== NEUTRAL_AVATAR_SVG;
+            photoEl.src = hasPhoto ? profile.photoUrl.trim() : NEUTRAL_AVATAR_SVG;
+            photoEl.alt = profile.name;
         }
 
-        const footerTagEl = document.getElementById('p-footer-tag');
-        if (footerTagEl) {
-            if (isSenior) {
-                footerTagEl.innerHTML = '<i class="fa-solid fa-shield-heart" style="color: #f77f00;"></i> Protegido con amor <i class="fa-solid fa-heart" style="color: #f77f00;"></i>';
-            } else if (isGirl) {
-                footerTagEl.innerHTML = '<i class="fa-solid fa-shield-heart"></i> Protegida con amor <i class="fa-solid fa-heart" style="color: #ec4899;"></i>';
-            } else if (isPet) {
-                footerTagEl.innerHTML = '<i class="fa-solid fa-paw"></i> Mascota protegida con amor <i class="fa-solid fa-heart" style="color: #10b981;"></i>';
-            } else {
-                footerTagEl.innerHTML = '<i class="fa-solid fa-shield-heart"></i> Protegido con amor <i class="fa-solid fa-heart" style="color: #38bdf8;"></i>';
-            }
-        }
-
-        // 1. Age Box Handling (Dynamic Hide if Empty)
+        // Age / Birth Date
+        const ageBox = document.getElementById('box-age');
+        const ageValEl = document.getElementById('p-age');
         const computedAge = this.calculateAgeFromBirthDate(profile.birthDate, profile.age);
-        const hasAge = (profile.birthDate && String(profile.birthDate).trim() !== '') || (computedAge > 0);
-        const boxAgeEl = document.getElementById('box-age');
-        
-        if (hasAge && computedAge > 0) {
-            const ageValEl = document.getElementById('p-age-val') || document.getElementById('p-age');
-            if (ageValEl) ageValEl.textContent = `${computedAge} ${computedAge === 1 ? 'año' : 'años'}`;
-            const ageIconEl = document.getElementById('p-age-icon');
-            if (ageIconEl) ageIconEl.className = isPet ? 'fa-solid fa-paw' : (isSenior ? 'fa-solid fa-cake-candles' : 'fa-solid fa-cake-candles');
-            if (boxAgeEl) {
-                boxAgeEl.classList.remove('hidden');
-                boxAgeEl.style.display = 'flex';
-            }
-        } else if (boxAgeEl) {
-            boxAgeEl.classList.add('hidden');
-            boxAgeEl.style.display = 'none';
-        }
-
-        // 2. Blood Type Box Handling (Dynamic Hide if Empty or N/A)
-        const rawBlood = profile.bloodType ? String(profile.bloodType).trim() : '';
-        const hasBlood = rawBlood !== '' && rawBlood.toUpperCase() !== 'N/A' && rawBlood !== 'undefined';
-        const boxBloodEl = document.getElementById('box-blood');
-        
-        if (!isPet && hasBlood) {
-            const bloodValEl = document.getElementById('p-blood-val') || document.getElementById('p-blood');
-            if (bloodValEl) bloodValEl.textContent = rawBlood;
-            if (boxBloodEl) {
-                boxBloodEl.classList.remove('hidden');
-                boxBloodEl.style.display = 'flex';
-            }
-        } else if (boxBloodEl) {
-            boxBloodEl.classList.add('hidden');
-            boxBloodEl.style.display = 'none';
-        }
-
-        // Adjust Grid layout dynamically if only 1 card is visible
-        const cardsRowEl = document.querySelector('.info-cards-row');
-        if (cardsRowEl) {
-            const visibleAge = hasAge && computedAge > 0;
-            const visibleBlood = !isPet && hasBlood;
-            
-            if (visibleAge && visibleBlood) {
-                cardsRowEl.style.gridTemplateColumns = '1fr 1fr';
-                cardsRowEl.style.display = 'grid';
-            } else if (visibleAge || visibleBlood) {
-                cardsRowEl.style.gridTemplateColumns = '1fr';
-                cardsRowEl.style.display = 'grid';
+        if (ageBox && ageValEl) {
+            if (computedAge !== '' && computedAge !== undefined && computedAge !== null) {
+                ageValEl.textContent = `${computedAge} años`;
+                ageBox.style.display = 'flex';
             } else {
-                cardsRowEl.style.display = 'none';
+                ageBox.style.display = 'none';
             }
         }
 
-        // 3. School Box (HIDDEN for Senior or if Empty)
-        const schoolBoxEl = document.getElementById('box-school');
+        // Blood Type
+        const bloodBox = document.getElementById('box-blood');
+        const bloodValEl = document.getElementById('p-blood');
+        if (bloodBox && bloodValEl) {
+            if (!isPet && profile.bloodType && profile.bloodType.trim() !== '' && profile.bloodType.toUpperCase() !== 'N/A') {
+                bloodValEl.textContent = profile.bloodType.trim();
+                bloodBox.style.display = 'flex';
+            } else {
+                bloodBox.style.display = 'none';
+            }
+        }
+
+        // School Information
+        const schoolBox = document.getElementById('box-school');
         const schoolValEl = document.getElementById('p-school');
-        if (!isSenior && profile.school && String(profile.school).trim() !== '') {
-            if (schoolValEl) schoolValEl.textContent = profile.school.trim();
-            if (schoolBoxEl) {
-                schoolBoxEl.classList.remove('hidden');
-                schoolBoxEl.style.display = 'flex';
+        if (schoolBox && schoolValEl) {
+            if (!isPet && !isSenior && profile.school && profile.school.trim() !== '') {
+                schoolValEl.textContent = profile.school.trim();
+                schoolBox.style.display = 'flex';
+            } else {
+                schoolBox.style.display = 'none';
             }
-        } else if (schoolBoxEl) {
-            schoolBoxEl.classList.add('hidden');
-            schoolBoxEl.style.display = 'none';
         }
 
-        // 4. Grade Box (HIDDEN for Senior or if Empty)
-        const gradeBoxEl = document.getElementById('box-grade');
+        // Grade Information
+        const gradeBox = document.getElementById('box-grade');
         const gradeValEl = document.getElementById('p-grade');
-        if (!isSenior && profile.grade && String(profile.grade).trim() !== '') {
-            if (gradeValEl) gradeValEl.textContent = profile.grade.trim();
-            if (gradeBoxEl) {
-                gradeBoxEl.classList.remove('hidden');
-                gradeBoxEl.style.display = 'flex';
+        if (gradeBox && gradeValEl) {
+            if (!isPet && !isSenior && profile.grade && profile.grade.trim() !== '') {
+                gradeValEl.textContent = profile.grade.trim();
+                gradeBox.style.display = 'flex';
+            } else {
+                gradeBox.style.display = 'none';
             }
-        } else if (gradeBoxEl) {
-            gradeBoxEl.classList.add('hidden');
-            gradeBoxEl.style.display = 'none';
         }
 
-        // 5. Medical Box (HIDDEN if Empty)
-        const medicalBoxEl = document.getElementById('box-medical');
-        const medicalValEl = document.getElementById('p-medical-notes');
-        if (profile.medicalConditions && String(profile.medicalConditions).trim() !== '') {
-            if (medicalValEl) medicalValEl.textContent = profile.medicalConditions.trim();
-            if (medicalBoxEl) {
-                medicalBoxEl.classList.remove('hidden');
-                medicalBoxEl.style.display = 'block';
+        // Medical Conditions
+        const medicalBox = document.getElementById('box-medical');
+        const medicalValEl = document.getElementById('p-medical');
+        if (medicalBox && medicalValEl) {
+            if (!isPet && profile.medicalConditions && profile.medicalConditions.trim() !== '') {
+                medicalValEl.textContent = profile.medicalConditions.trim();
+                medicalBox.style.display = 'block';
+            } else {
+                medicalBox.style.display = 'none';
             }
-        } else if (medicalBoxEl) {
-            medicalBoxEl.classList.add('hidden');
-            medicalBoxEl.style.display = 'none';
         }
 
-        // 6. Important Medications Box (HIDDEN if Empty)
-        const medicationsBoxEl = document.getElementById('box-medications');
-        const medicationsValEl = document.getElementById('p-medications-notes');
-        if (profile.importantMedications && String(profile.importantMedications).trim() !== '') {
-            if (medicationsValEl) medicationsValEl.textContent = profile.importantMedications.trim();
-            if (medicationsBoxEl) {
-                medicationsBoxEl.classList.remove('hidden');
-                medicationsBoxEl.style.display = 'block';
-            }
-        } else if (medicationsBoxEl) {
-            medicationsBoxEl.classList.add('hidden');
-            medicationsBoxEl.style.display = 'none';
-        }
-
-        const bloodIconEl = document.getElementById('p-blood-icon');
-        if (bloodIconEl) {
-            bloodIconEl.innerHTML = isPet ? '<i class="fa-solid fa-paw"></i>' : (isGirl ? '<i class="fa-solid fa-heart"></i>' : '<i class="fa-solid fa-droplet"></i>');
-        }
-
-        // Dynamic Arch Floating Badges per theme
-        const decoTl = document.getElementById('p-deco-tl');
-        const decoTr = document.getElementById('p-deco-tr');
-        const decoBr = document.getElementById('p-deco-br');
-
-        if (isPet) {
-            if (decoTl) { decoTl.style.display = 'block'; decoTl.innerHTML = '<i class="fa-solid fa-house-chimney"></i>'; }
-            if (decoTr) { decoTr.style.display = 'block'; decoTr.innerHTML = '<i class="fa-solid fa-bone"></i>'; }
-            if (decoBr) { decoBr.style.display = 'block'; decoBr.innerHTML = '<i class="fa-solid fa-heart"></i>'; }
-        } else if (isGirl) {
-            if (decoTl) { decoTl.style.display = 'block'; decoTl.innerHTML = '<i class="fa-solid fa-crown"></i>'; }
-            if (decoTr) { decoTr.style.display = 'block'; decoTr.innerHTML = '<i class="fa-solid fa-star"></i>'; }
-            if (decoBr) { decoBr.style.display = 'block'; decoBr.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i>'; }
-        } else if (isSenior) {
-            if (decoTl) { decoTl.style.display = 'none'; decoTl.innerHTML = ''; }
-            if (decoTr) { decoTr.style.display = 'none'; decoTr.innerHTML = ''; }
-            if (decoBr) { decoBr.style.display = 'none'; decoBr.innerHTML = ''; }
-        } else {
-            // Boy
-            if (decoTl) { decoTl.style.display = 'block'; decoTl.innerHTML = '<i class="fa-solid fa-rocket"></i>'; }
-            if (decoTr) { decoTr.style.display = 'block'; decoTr.innerHTML = '<i class="fa-solid fa-atom"></i>'; }
-            if (decoBr) { decoBr.style.display = 'block'; decoBr.innerHTML = '<i class="fa-solid fa-user-astronaut"></i>'; }
-        }
-
-        const sceneLeft = document.getElementById('scene-left');
-        if (sceneLeft) {
-            sceneLeft.innerHTML = isPet ? '<i class="fa-solid fa-bone"></i>' : (isSenior ? '<i class="fa-solid fa-tree"></i>' : (isGirl ? '<i class="fa-solid fa-seedling"></i>' : '<i class="fa-solid fa-tree"></i>'));
-        }
-
-        const sceneRight = document.getElementById('scene-right');
-        if (sceneRight) {
-            sceneRight.innerHTML = isPet ? '<i class="fa-solid fa-paw"></i>' : (isSenior ? '<i class="fa-solid fa-heart"></i>' : (isGirl ? '<i class="fa-solid fa-chess-rook"></i>' : '<i class="fa-solid fa-paw"></i>'));
-        }
-
-        // Avatar Photo
-        const avatarEl = document.getElementById('p-avatar');
-        if (avatarEl) {
-            avatarEl.src = (profile.photoUrl && profile.photoUrl.trim() !== '') ? profile.photoUrl : NEUTRAL_AVATAR_SVG;
-        }
-
-        // WhatsApp Link Generator 1 & 2 (OPCIONAL: Ocultos dinámicamente si los teléfonos están vacíos)
+        // Primary WhatsApp Contact
         const waBtn1 = document.getElementById('btn-whatsapp-action');
-        const waBtn2 = document.getElementById('btn-whatsapp-action2');
-
-        const rawPhone1 = (profile.parentPhone && String(profile.parentPhone).trim() !== '' && String(profile.parentPhone) !== 'undefined' && String(profile.parentPhone) !== 'null') ? String(profile.parentPhone).trim() : '';
-        const rawPhone2 = (profile.parentPhone2 && String(profile.parentPhone2).trim() !== '' && String(profile.parentPhone2) !== 'undefined' && String(profile.parentPhone2) !== 'null') ? String(profile.parentPhone2).trim() : '';
-
-        const defaultMsg = isPet
-            ? `Hola, encontré a la mascota ${profile.name} y quiero comunicarme con su dueño.`
-            : (isSenior ? `Hola, encontré el perfil de seguridad del adulto mayor ${profile.name} y quiero comunicarme con sus familiares.` : `Hola, encontré la información del perfil de ${profile.name} y me gustaría comunicarme con sus padres.`);
-        const customMsg = profile.whatsappMessage || defaultMsg;
-        const formattedMsg = customMsg.replace('{nombre}', profile.name);
-
-        // WhatsApp Button 1
+        const waMainText1 = document.getElementById('wa-main-text-1');
+        const waSubText1 = document.getElementById('wa-sub-text-1');
+        
         if (waBtn1) {
-            if (rawPhone1 !== '') {
-                const title1El = document.getElementById('p-wa1-title') || waBtn1.querySelector('.btn-main-text');
-                const sub1El = waBtn1.querySelector('.btn-sub-text');
-                if (title1El) title1El.textContent = 'Contacto Principal';
-                if (sub1El) sub1El.textContent = 'Escríbenos por WhatsApp';
+            const hasPhone1 = profile.parentPhone && profile.parentPhone.trim() !== '';
+            if (hasPhone1) {
+                const phoneClean = profile.parentPhone.replace(/[^0-9]/g, '');
+                let rawMsg = profile.whatsappMessage;
+                if (!rawMsg || rawMsg.trim() === '') {
+                    rawMsg = isPet
+                        ? 'Hola, encontré a la mascota {nombre} y quiero comunicarme con su dueño.'
+                        : (isSenior ? 'Hola, encontré el perfil de seguridad del adulto mayor {nombre} y quiero comunicarme con sus familiares.' : 'Hola, encontré la información del perfil de {nombre}.');
+                }
+                const msgFinal = rawMsg.replace(/\{nombre\}/gi, profile.name);
+                waBtn1.href = `https://wa.me/${phoneClean}?text=${encodeURIComponent(msgFinal)}`;
+                waBtn1.style.display = 'flex';
 
-                const waCleanPhone1 = rawPhone1.replace(/[^0-9]/g, '');
-                waBtn1.href = `https://wa.me/${waCleanPhone1}?text=${encodeURIComponent(formattedMsg)}`;
-                waBtn1.classList.remove('hidden', 'hidden-btn');
-                waBtn1.style.setProperty('display', 'flex', 'important');
+                if (waMainText1) {
+                    waMainText1.textContent = (isPet || isSenior || isGirl) ? 'Contacto Principal' : 'Contactar a mis papás';
+                }
+                if (waSubText1) waSubText1.textContent = 'Escríbenos por WhatsApp';
             } else {
-                waBtn1.classList.add('hidden-btn');
-                waBtn1.style.setProperty('display', 'none', 'important');
+                waBtn1.style.display = 'none';
             }
         }
 
-        // WhatsApp Button 2
+        // Secondary WhatsApp Contact
+        const waBtn2 = document.getElementById('btn-whatsapp-action-2');
+        const waMainText2 = document.getElementById('wa-main-text-2');
+        const waSubText2 = document.getElementById('wa-sub-text-2');
+
         if (waBtn2) {
-            if (rawPhone2 !== '') {
-                const title2El = document.getElementById('p-wa2-title') || waBtn2.querySelector('.btn-main-text');
-                const sub2El = waBtn2.querySelector('.btn-sub-text');
-                if (title2El) title2El.textContent = 'Contacto Alterno';
-                if (sub2El) sub2El.textContent = 'Escríbenos por WhatsApp';
+            const hasPhone2 = profile.parentPhone2 && profile.parentPhone2.trim() !== '' && profile.parentPhone2.trim() !== 'null';
+            if (hasPhone2) {
+                const phoneClean2 = profile.parentPhone2.replace(/[^0-9]/g, '');
+                let rawMsg2 = profile.whatsappMessage;
+                if (!rawMsg2 || rawMsg2.trim() === '') {
+                    rawMsg2 = isPet
+                        ? 'Hola, encontré a la mascota {nombre} y quiero comunicarme con su dueño.'
+                        : (isSenior ? 'Hola, encontré el perfil de seguridad del adulto mayor {nombre} y quiero comunicarme con sus familiares.' : 'Hola, encontré la información del perfil de {nombre}.');
+                }
+                const msgFinal2 = rawMsg2.replace(/\{nombre\}/gi, profile.name);
+                waBtn2.href = `https://wa.me/${phoneClean2}?text=${encodeURIComponent(msgFinal2)}`;
+                waBtn2.style.display = 'flex';
 
-                const waCleanPhone2 = rawPhone2.replace(/[^0-9]/g, '');
-                waBtn2.href = `https://wa.me/${waCleanPhone2}?text=${encodeURIComponent(formattedMsg)}`;
-                waBtn2.classList.remove('hidden', 'hidden-btn');
-                waBtn2.style.setProperty('display', 'flex', 'important');
+                if (waMainText2) {
+                    waMainText2.textContent = 'Contacto Alterno';
+                }
+                if (waSubText2) waSubText2.textContent = 'Escríbenos por WhatsApp';
             } else {
-                waBtn2.classList.add('hidden', 'hidden-btn');
-                waBtn2.style.setProperty('display', 'none', 'important');
+                waBtn2.style.display = 'none';
             }
         }
 
-        // Location Link Generator ("Ver ubicación" - OPCIONAL: Oculto si no hay link, visible con link)
+        // Google Maps Location
         const mapsBtn = document.getElementById('btn-location-action');
         if (mapsBtn) {
-            const subTextEl = mapsBtn.querySelector('.btn-sub-text');
-            if (subTextEl && isSenior) {
-                subTextEl.textContent = 'Ver mi ubicación en el mapa';
-            }
-
-            const hasLocation = profile.locationMapsUrl && 
-                String(profile.locationMapsUrl).trim() !== '' && 
-                String(profile.locationMapsUrl) !== 'undefined' &&
-                String(profile.locationMapsUrl) !== 'null';
-
-            if (hasLocation) {
-                const url = String(profile.locationMapsUrl).trim();
-                mapsBtn.href = url.startsWith('http') ? url : `https://maps.google.com/?q=${encodeURIComponent(url)}`;
-                mapsBtn.classList.remove('hidden-btn');
-                mapsBtn.style.setProperty('display', 'flex', 'important');
+            const hasMaps = profile.locationMapsUrl && profile.locationMapsUrl.trim() !== '';
+            if (hasMaps) {
+                mapsBtn.href = profile.locationMapsUrl.trim();
+                mapsBtn.style.display = 'flex';
             } else {
-                mapsBtn.classList.add('hidden-btn');
-                mapsBtn.style.setProperty('display', 'none', 'important');
+                mapsBtn.style.display = 'none';
             }
+        }
+
+        // Footer Tag Text
+        const footerTag = document.getElementById('p-footer-tag');
+        if (footerTag) {
+            footerTag.innerHTML = isPet
+                ? `<i class="fa-solid fa-bone" style="margin-right: 4px;"></i> Mascota protegida con amor <i class="fa-solid fa-heart" style="color: #38bdf8; margin-left: 4px;"></i>`
+                : `<i class="fa-solid fa-shield-heart"></i> Protegido con amor <i class="fa-solid fa-heart" style="color: #ec4899;"></i>`;
         }
     }
 
-    showInactive(title, message) {
+    renderFloatingDecorators(gender) {
+        const float1 = document.getElementById('float-decor-1');
+        const float2 = document.getElementById('float-decor-2');
+        const float3 = document.getElementById('float-decor-3');
+
+        const sceneLeft = document.getElementById('scene-left');
+        const sceneRight = document.getElementById('scene-right');
+
+        if (gender === 'girl') {
+            if (float1) float1.className = 'floating-icon icon-1 fa-solid fa-wand-magic-sparkles';
+            if (float2) float2.className = 'floating-icon icon-2 fa-solid fa-star';
+            if (float3) float3.className = 'floating-icon icon-3 fa-solid fa-heart';
+            if (sceneLeft) sceneLeft.innerHTML = '<i class="fa-solid fa-cloud-moon"></i>';
+            if (sceneRight) sceneRight.innerHTML = '<i class="fa-solid fa-sparkles"></i>';
+        } else if (gender === 'pet') {
+            if (float1) float1.className = 'floating-icon icon-1 fa-solid fa-paw';
+            if (float2) float2.className = 'floating-icon icon-2 fa-solid fa-bone';
+            if (float3) float3.className = 'floating-icon icon-3 fa-solid fa-heart';
+            if (sceneLeft) sceneLeft.innerHTML = '<i class="fa-solid fa-house"></i>';
+            if (sceneRight) sceneRight.innerHTML = '<i class="fa-solid fa-shield-cat"></i>';
+        } else if (gender === 'senior') {
+            if (float1) float1.className = 'floating-icon icon-1 fa-solid fa-shield-halved';
+            if (float2) float2.className = 'floating-icon icon-2 fa-solid fa-heart-pulse';
+            if (float3) float3.className = 'floating-icon icon-3 fa-solid fa-hand-holding-heart';
+            if (sceneLeft) sceneLeft.innerHTML = '<i class="fa-solid fa-sun"></i>';
+            if (sceneRight) sceneRight.innerHTML = '<i class="fa-solid fa-user-shield"></i>';
+        } else {
+            if (float1) float1.className = 'floating-icon icon-1 fa-solid fa-rocket';
+            if (float2) float2.className = 'floating-icon icon-2 fa-solid fa-atom';
+            if (float3) float3.className = 'floating-icon icon-3 fa-solid fa-user-astronaut';
+            if (sceneLeft) sceneLeft.innerHTML = '<i class="fa-solid fa-tree"></i>';
+            if (sceneRight) sceneRight.innerHTML = '<i class="fa-solid fa-paw"></i>';
+        }
+    }
+
+    showInactive(title, desc) {
         const profileView = document.getElementById('view-profile');
         const inactiveView = document.getElementById('view-inactive');
 
@@ -788,45 +480,23 @@ class ProfileApp {
             profileView.classList.remove('active-view');
             profileView.classList.add('hidden');
         }
+
         if (inactiveView) {
             inactiveView.classList.remove('hidden');
             inactiveView.classList.add('active-view');
+
+            const titleEl = document.getElementById('inactive-title');
+            const descEl = document.getElementById('inactive-desc');
+            if (titleEl) titleEl.textContent = title;
+            if (descEl) descEl.textContent = desc;
         }
 
-        const titleEl = document.getElementById('inactive-title');
-        const descEl = document.getElementById('inactive-desc');
-        if (titleEl) titleEl.textContent = title;
-        if (descEl) descEl.textContent = message;
-    }
-
-    renderFloatingDecorators(gender) {
-        const container = document.getElementById('floating-decorators-container');
-        if (!container) return;
-
-        if (container.getAttribute('data-rendered-gender') === gender && container.children.length > 0) {
-            return;
-        }
-        container.setAttribute('data-rendered-gender', gender);
-
-        const boyIcons = ['fa-rocket', 'fa-user-astronaut', 'fa-star', 'fa-cloud-moon', 'fa-compass', 'fa-shuttle-space'];
-        const girlIcons = ['fa-wand-magic-sparkles', 'fa-heart', 'fa-sun', 'fa-cloud', 'fa-feather', 'fa-spa'];
-        const petIcons = ['fa-paw', 'fa-bone', 'fa-heart', 'fa-paw', 'fa-bone', 'fa-shield-dog'];
-        const seniorIcons = ['fa-shield-heart', 'fa-leaf', 'fa-heart-pulse', 'fa-sun', 'fa-shield', 'fa-house-user'];
-        
-        let icons = boyIcons;
-        if (gender === 'girl') icons = girlIcons;
-        else if (gender === 'pet') icons = petIcons;
-        else if (gender === 'senior') icons = seniorIcons;
-
-        container.innerHTML = icons.map((icon, idx) => `
-            <div class="decorator dec-${idx + 1}">
-                <i class="fa-solid ${icon}"></i>
-            </div>
-        `).join('');
+        document.documentElement.classList.add('ready');
     }
 }
 
-let profileApp;
+export let profileApp;
 document.addEventListener('DOMContentLoaded', () => {
     profileApp = new ProfileApp();
+    window.profileApp = profileApp;
 });
