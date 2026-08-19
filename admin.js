@@ -122,10 +122,15 @@ class AdminApp {
     }
 
     async init() {
+        if ('scrollRestoration' in history) {
+            history.scrollRestoration = 'manual';
+        }
+        window.scrollTo(0, 0);
         this.loadProfilesLocal();
         this.setupEventListeners();
         this.renderState();
         document.documentElement.classList.add('ready');
+        window.scrollTo(0, 0);
         await this.syncFromCloudDB();
 
         // Real-Time Multi-Device Auto-Sync every 2 seconds (paused while typing for zero lag)
@@ -1146,5 +1151,12 @@ class AdminApp {
 
 let adminApp;
 document.addEventListener('DOMContentLoaded', () => {
+    if ('scrollRestoration' in history) {
+        history.scrollRestoration = 'manual';
+    }
+    window.scrollTo(0, 0);
     adminApp = new AdminApp();
+    setTimeout(() => {
+        window.scrollTo(0, 0);
+    }, 0);
 });
