@@ -5,17 +5,24 @@
 
 import https from 'https';
 
-const DB_OBJECT_ID = 'ff8081819ff5b11001a0178475124974';
-const DB_URL = `https://api.restful-api.dev/objects/${DB_OBJECT_ID}`;
+let currentCloudObjectId = 'ff8081819ff5b11001a01bb511aa54c3';
 
 function requestCloudDB(method = 'GET', payload = null) {
     return new Promise((resolve) => {
         try {
-            const parsedUrl = new URL(DB_URL);
+            let targetUrl = `https://api.restful-api.dev/objects/${currentCloudObjectId}`;
+            let reqMethod = method;
+
+            if (method === 'PUT' || method === 'POST') {
+                targetUrl = 'https://api.restful-api.dev/objects';
+                reqMethod = 'POST';
+            }
+
+            const parsedUrl = new URL(targetUrl);
             const options = {
                 hostname: parsedUrl.hostname,
                 path: parsedUrl.pathname,
-                method: method,
+                method: reqMethod,
                 headers: payload ? {
                     'Content-Type': 'application/json',
                     'Content-Length': Buffer.byteLength(payload)
@@ -27,7 +34,16 @@ function requestCloudDB(method = 'GET', payload = null) {
                 res.on('end', () => {
                     try {
                         const parsed = JSON.parse(data);
-                        resolve(parsed && parsed.data ? parsed.data : null);
+                        if (parsed && parsed.id && (method === 'PUT' || method === 'POST')) {
+                            currentCloudObjectId = parsed.id;
+                        }
+                        if (parsed && parsed.data) {
+                            resolve(parsed.data);
+                        } else if (Array.isArray(parsed) && parsed[0] && parsed[0].data) {
+                            resolve(parsed[0].data);
+                        } else {
+                            resolve(null);
+                        }
                     } catch (e) {
                         resolve(null);
                     }
@@ -234,7 +250,7 @@ export default async function handler(req, res) {
                     }));
 
                 // Save updated master state to persistent cloud database synchronously/await
-                await requestCloudDB('PUT', JSON.stringify({
+                await requestCloudDB('POST', JSON.stringify({
                     name: 'NFC Master DB',
                     data: {
                         profiles: sharedProfilesStore,
