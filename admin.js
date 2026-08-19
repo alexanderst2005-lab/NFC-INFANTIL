@@ -681,7 +681,8 @@ class AdminApp {
 
     updateModalFormForCategory(genderVal) {
         const bloodGroup = document.getElementById('group-blood');
-        const eduSection = document.getElementById('section-education-health');
+        const schoolSection = document.getElementById('section-school');
+        const healthSection = document.getElementById('section-health');
         const nameLbl = document.getElementById('lbl-input-name');
         const phoneLbl = document.getElementById('lbl-input-phone');
         const bloodInput = document.getElementById('input-blood');
@@ -689,9 +690,10 @@ class AdminApp {
 
         if (genderVal === 'pet') {
             if (bloodGroup) bloodGroup.style.display = 'none';
-            if (eduSection) eduSection.style.display = 'none';
-            if (nameLbl) nameLbl.textContent = 'Nombre de la Mascota *';
-            if (phoneLbl) phoneLbl.textContent = 'Teléfono del Dueño (WhatsApp) *';
+            if (schoolSection) schoolSection.style.display = 'none';
+            if (healthSection) healthSection.style.display = 'none';
+            if (nameLbl) nameLbl.textContent = 'Nombre de la Mascota';
+            if (phoneLbl) phoneLbl.textContent = 'Teléfono del Dueño (WhatsApp)';
             if (bloodInput) {
                 bloodInput.removeAttribute('required');
                 bloodInput.value = '';
@@ -701,19 +703,19 @@ class AdminApp {
             }
         } else if (genderVal === 'senior') {
             if (bloodGroup) bloodGroup.style.display = '';
-            if (eduSection) eduSection.style.display = 'none';
-            if (nameLbl) nameLbl.textContent = 'Nombre del Adulto Mayor *';
-            if (phoneLbl) phoneLbl.textContent = 'Teléfono WhatsApp Familiar (Con código país) *';
-            if (bloodInput) bloodInput.setAttribute('required', 'true');
+            if (schoolSection) schoolSection.style.display = 'none';
+            if (healthSection) healthSection.style.display = '';
+            if (nameLbl) nameLbl.textContent = 'Nombre del Adulto Mayor';
+            if (phoneLbl) phoneLbl.textContent = 'Teléfono WhatsApp Familiar (Con código país)';
             if (waInput && (!waInput.value || waInput.value.includes('perfil de'))) {
                 waInput.value = 'Hola, encontré el perfil de seguridad del adulto mayor {nombre} y quiero comunicarme con sus familiares.';
             }
         } else {
             if (bloodGroup) bloodGroup.style.display = '';
-            if (eduSection) eduSection.style.display = '';
-            if (nameLbl) nameLbl.textContent = 'Nombre Completo del Niño/a *';
-            if (phoneLbl) phoneLbl.textContent = 'Teléfono WhatsApp (Con código país) *';
-            if (bloodInput) bloodInput.setAttribute('required', 'true');
+            if (schoolSection) schoolSection.style.display = '';
+            if (healthSection) healthSection.style.display = '';
+            if (nameLbl) nameLbl.textContent = 'Nombre Completo del Niño/a';
+            if (phoneLbl) phoneLbl.textContent = 'Teléfono WhatsApp (Con código país)';
         }
     }
 
