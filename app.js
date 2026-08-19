@@ -133,13 +133,13 @@ class ProfileApp {
         });
     }
 
-    calculateAgeFromBirthDate(birthDateStr, fallbackAge = 5) {
+    calculateAgeFromBirthDate(birthDateStr, fallbackAge = '') {
         if (!birthDateStr || String(birthDateStr).trim() === '') {
-            return parseInt(fallbackAge) >= 0 ? parseInt(fallbackAge) : 5;
+            return (fallbackAge !== undefined && fallbackAge !== null && String(fallbackAge).trim() !== '' && parseInt(fallbackAge) >= 0) ? parseInt(fallbackAge) : '';
         }
         const birthDate = new Date(birthDateStr);
         if (isNaN(birthDate.getTime())) {
-            return parseInt(fallbackAge) >= 0 ? parseInt(fallbackAge) : 5;
+            return (fallbackAge !== undefined && fallbackAge !== null && String(fallbackAge).trim() !== '' && parseInt(fallbackAge) >= 0) ? parseInt(fallbackAge) : '';
         }
         const today = new Date();
         let age = today.getFullYear() - birthDate.getFullYear();
@@ -147,7 +147,7 @@ class ProfileApp {
         if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
             age--;
         }
-        return age >= 0 ? age : 0;
+        return age >= 0 ? age : '';
     }
 
     sanitizeProfile(p) {
@@ -181,7 +181,7 @@ class ProfileApp {
         let importantMedications = (p.importantMedications !== undefined && p.importantMedications !== null) ? String(p.importantMedications).trim() : '';
 
         const birthDate = (p.birthDate !== undefined && p.birthDate !== null) ? String(p.birthDate).trim() : '';
-        const computedAge = this.calculateAgeFromBirthDate(birthDate, p.age !== undefined ? p.age : 5);
+        const computedAge = this.calculateAgeFromBirthDate(birthDate, (p.age !== undefined && p.age !== null) ? p.age : '');
         const bloodType = gender === 'pet' ? '' : ((p.bloodType !== undefined && p.bloodType !== null && String(p.bloodType).trim() !== 'undefined') ? String(p.bloodType).trim() : '');
         const parentPhone = (p.parentPhone !== undefined && p.parentPhone !== null && String(p.parentPhone).trim() !== 'undefined') ? String(p.parentPhone).trim() : '';
         const parentPhone2 = (p.parentPhone2 !== undefined && p.parentPhone2 !== null && String(p.parentPhone2).trim() !== 'undefined' && String(p.parentPhone2).trim() !== 'null') ? String(p.parentPhone2).trim() : '';

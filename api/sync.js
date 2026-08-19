@@ -214,7 +214,7 @@ export default async function handler(req, res) {
                         name: (p.name && String(p.name).trim() !== '' && String(p.name).trim() !== 'undefined') ? String(p.name).trim() : 'Perfil',
                         gender: (p.id === 'prof-006-jose' || (p.slug && String(p.slug).toLowerCase().includes('jose-ramirez'))) ? 'senior' : ((p.gender === 'girl' || p.gender === 'pet' || p.gender === 'senior') ? p.gender : 'boy'),
                         birthDate: p.birthDate !== undefined ? String(p.birthDate).trim() : '',
-                        age: parseInt(p.age) >= 0 ? parseInt(p.age) : 5,
+                        age: (p.age !== undefined && p.age !== null && String(p.age).trim() !== '' && parseInt(p.age) >= 0) ? parseInt(p.age) : '',
                         bloodType: p.gender === 'pet' ? '' : (p.bloodType !== undefined ? String(p.bloodType).trim() : ''),
                         parentPhone: p.parentPhone !== undefined ? String(p.parentPhone).trim() : '',
                         parentPhone2: p.parentPhone2 !== undefined ? String(p.parentPhone2).trim() : '',
