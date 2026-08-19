@@ -46,8 +46,114 @@ function requestCloudDB(method = 'GET', payload = null) {
     });
 }
 
-// In-Memory Warm Persistence Store for Vercel Edge/Serverless Instances
-let sharedProfilesStore = [];
+const INITIAL_PROFILES = [
+    {
+        id: "prof-001",
+        slug: "samuel",
+        name: "Samuel Arias Rodríguez",
+        gender: "boy",
+        age: 13,
+        bloodType: "B+",
+        parentPhone: "573001234567",
+        whatsappMessage: "Hola, encontré la información del perfil de Samuel y me gustaría comunicarme con sus padres.",
+        locationMapsUrl: "",
+        schoolMapsUrl: "",
+        photoUrl: "https://images.unsplash.com/photo-1543332164-6e82f355badc?w=400&auto=format&fit=crop&q=80",
+        active: true,
+        createdAt: "2026-08-18T00:00:00.000Z",
+        updatedAt: "2026-08-18T00:00:00.000Z"
+    },
+    {
+        id: "prof-002",
+        slug: "valentina",
+        name: "Valentina Gómez",
+        gender: "girl",
+        age: 5,
+        bloodType: "A+",
+        parentPhone: "573159876543",
+        whatsappMessage: "Hola, encontré la información del perfil de Valentina y quiero comunicarme con sus padres.",
+        locationMapsUrl: "",
+        schoolMapsUrl: "",
+        photoUrl: "https://images.unsplash.com/photo-1595454223600-91fb272189d5?w=400&auto=format&fit=crop&q=80",
+        active: true,
+        createdAt: "2026-08-18T00:00:00.000Z",
+        updatedAt: "2026-08-18T00:00:00.000Z"
+    },
+    {
+        id: "prof-003",
+        slug: "juan",
+        name: "Juan Diego Benítez",
+        gender: "boy",
+        age: 7,
+        bloodType: "B+",
+        parentPhone: "573204445566",
+        whatsappMessage: "Hola, encontré la información del perfil de Juan Diego y me comunico con sus padres.",
+        locationMapsUrl: "",
+        schoolMapsUrl: "",
+        photoUrl: "https://images.unsplash.com/photo-1519238263530-99bdd11df2ea?w=400&auto=format&fit=crop&q=80",
+        active: true,
+        createdAt: "2026-08-18T00:00:00.000Z",
+        updatedAt: "2026-08-18T00:00:00.000Z"
+    },
+    {
+        id: "prof-004",
+        slug: "sofia",
+        name: "Sofía Rodríguez",
+        gender: "girl",
+        age: 4,
+        bloodType: "AB+",
+        parentPhone: "573108889900",
+        whatsappMessage: "Hola, estoy escaneando la pulsera NFC de Sofía y me comunico con sus padres.",
+        locationMapsUrl: "",
+        schoolMapsUrl: "",
+        photoUrl: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400&auto=format&fit=crop&q=80",
+        active: true,
+        createdAt: "2026-08-18T00:00:00.000Z",
+        updatedAt: "2026-08-18T00:00:00.000Z"
+    },
+    {
+        id: "prof-005",
+        slug: "max",
+        name: "Max",
+        gender: "pet",
+        age: 3,
+        bloodType: "",
+        parentPhone: "573001234567",
+        whatsappMessage: "Hola, encontré a la mascota Max y quiero comunicarme con su dueño.",
+        locationMapsUrl: "",
+        schoolMapsUrl: "",
+        school: "",
+        grade: "",
+        medicalConditions: "",
+        photoUrl: "https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=400&auto=format&fit=crop&q=80",
+        active: true,
+        createdAt: "2026-08-18T00:00:00.000Z",
+        updatedAt: "2026-08-18T00:00:00.000Z"
+    },
+    {
+        id: "prof-006-jose",
+        slug: "jose-ramirez",
+        name: "José Ramírez",
+        gender: "senior",
+        birthDate: "1952-08-15",
+        age: 74,
+        bloodType: "O+",
+        parentPhone: "573109876543",
+        parentPhone2: "573209998877",
+        whatsappMessage: "Hola, encontré el perfil de seguridad del adulto mayor José Ramírez y quiero comunicarme con sus familiares.",
+        locationMapsUrl: "https://maps.google.com/?q=4.6097,74.0817",
+        schoolMapsUrl: "",
+        school: "",
+        grade: "",
+        medicalConditions: "",
+        photoUrl: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&auto=format&fit=crop&q=80",
+        active: true,
+        createdAt: "2026-08-18T20:00:00.000Z",
+        updatedAt: "2026-08-18T20:00:00.000Z"
+    }
+];
+
+let sharedProfilesStore = [...INITIAL_PROFILES];
 let sharedDeletedIdsStore = [];
 
 export default async function handler(req, res) {
@@ -72,8 +178,15 @@ export default async function handler(req, res) {
             if (Array.isArray(cloudState.deletedIds)) {
                 sharedDeletedIdsStore = Array.from(new Set([...sharedDeletedIdsStore, ...cloudState.deletedIds].filter(id => id && typeof id === 'string')));
             }
-            if (Array.isArray(cloudState.profiles)) {
-                sharedProfilesStore = cloudState.profiles.filter(p => p && p.id && !sharedDeletedIdsStore.includes(p.id));
+            if (Array.isArray(cloudState.profiles) && cloudState.profiles.length > 0) {
+                const map = new Map();
+                INITIAL_PROFILES.forEach(p => {
+                    if (!sharedDeletedIdsStore.includes(p.id)) map.set(p.id, p);
+                });
+                cloudState.profiles.forEach(p => {
+                    if (!sharedDeletedIdsStore.includes(p.id)) map.set(p.id, p);
+                });
+                sharedProfilesStore = Array.from(map.values());
             }
         }
 
