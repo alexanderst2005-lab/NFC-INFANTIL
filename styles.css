@@ -252,9 +252,9 @@ body.theme-girl .bg-bubbles .bubble-2 {
    ========================================================================== */
 .container {
     width: 100%;
-    max-width: 460px;
+    max-width: 440px;
     margin: 0 auto;
-    padding: 0 0.8rem 2.5rem 0.8rem;
+    padding: 0 0.6rem 2rem 0.6rem;
     position: relative;
     z-index: 10;
 }
@@ -266,15 +266,15 @@ body.theme-girl .bg-bubbles .bubble-2 {
 
 .profile-card {
     background: var(--card-bg);
-    border: 3.5px solid rgba(255, 255, 255, 0.95);
-    border-radius: var(--radius-card);
-    padding: 1.8rem 1.5rem;
-    box-shadow: 0 25px 65px rgba(0, 0, 0, 0.25), inset 0 2px 0 rgba(255, 255, 255, 0.9);
+    border: 3px solid rgba(255, 255, 255, 0.95);
+    border-radius: 24px;
+    padding: 1.25rem 1.15rem;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.22), inset 0 2px 0 rgba(255, 255, 255, 0.9);
     position: relative;
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    gap: 1.3rem;
+    gap: 0.85rem;
 }
 
 /* Top Bar Header */
@@ -335,21 +335,21 @@ body.theme-girl .verified-badge-pill {
 /* Arch Photo Avatar Frame & Decorations */
 .hero-arch-wrapper {
     position: relative;
-    width: 180px;
-    height: 180px;
-    margin: 0.4rem auto 0 auto;
+    width: 145px;
+    height: 145px;
+    margin: 0.1rem auto 0 auto;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
 .arch-photo-container {
-    width: 165px;
-    height: 165px;
+    width: 132px;
+    height: 132px;
     border-radius: 50%;
     overflow: hidden;
-    border: 4.5px solid #ffffff;
-    box-shadow: 0 16px 40px rgba(2, 132, 199, 0.35), 0 0 0 5px rgba(56, 189, 248, 0.45);
+    border: 3.5px solid #ffffff;
+    box-shadow: 0 12px 30px rgba(2, 132, 199, 0.3), 0 0 0 4px rgba(56, 189, 248, 0.4);
     background: #e2e8f0;
     position: relative;
     z-index: 2;
@@ -664,26 +664,26 @@ body.theme-senior .bg-bubbles .bubble-2 {
 }
 
 .profile-hero-name {
-    font-size: 1.65rem;
+    font-size: 1.45rem;
     font-weight: 800;
     color: var(--text-title);
-    letter-spacing: -0.3px;
+    letter-spacing: -0.2px;
     text-transform: uppercase;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
-    line-height: 1.2;
+    line-height: 1.15;
 }
 
 .security-ribbon {
     background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
     color: #ffffff;
     font-weight: 800;
-    font-size: 0.88rem;
-    padding: 0.48rem 1.5rem;
+    font-size: 0.82rem;
+    padding: 0.38rem 1.2rem;
     border-radius: 20px;
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
-    box-shadow: 0 6px 16px rgba(2, 132, 199, 0.35);
+    gap: 0.45rem;
+    box-shadow: 0 5px 14px rgba(2, 132, 199, 0.32);
 }
 
 html.theme-girl .security-ribbon,
@@ -700,19 +700,19 @@ body.theme-girl .security-ribbon {
 .info-cards-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 0.9rem;
+    gap: 0.65rem;
     width: 100%;
 }
 
 .info-card-box {
     background: #ffffff;
     border: 1.5px solid rgba(226, 232, 240, 0.9);
-    border-radius: var(--radius-box);
-    padding: 1rem 1.1rem;
+    border-radius: 14px;
+    padding: 0.72rem 0.85rem;
     display: flex;
     align-items: center;
-    gap: 0.85rem;
-    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.06);
+    gap: 0.65rem;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.04);
     transition: var(--transition);
 }
 
@@ -781,40 +781,40 @@ body.theme-girl .icon-grade {
     background: #fff8f8;
     border: 1.5px solid #fecaca;
     border-left: 4px solid #ef4444;
-    border-radius: var(--radius-box);
-    padding: 1.1rem 1.25rem;
-    margin-top: 1.1rem;
-    box-shadow: 0 10px 24px rgba(239, 68, 68, 0.08);
+    border-radius: 14px;
+    padding: 0.75rem 0.95rem;
+    margin-top: 0.15rem;
+    box-shadow: 0 6px 16px rgba(239, 68, 68, 0.06);
     transition: var(--transition);
 }
 
 .special-care-box:hover {
     transform: translateY(-2px);
-    box-shadow: 0 14px 30px rgba(239, 68, 68, 0.12);
+    box-shadow: 0 10px 22px rgba(239, 68, 68, 0.1);
 }
 
 .special-care-header {
     display: flex;
     align-items: center;
-    gap: 0.6rem;
-    font-size: 0.85rem;
+    gap: 0.55rem;
+    font-size: 0.78rem;
     font-weight: 800;
     color: #991b1b;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.28rem;
     text-transform: uppercase;
-    letter-spacing: 0.6px;
+    letter-spacing: 0.5px;
 }
 
 .special-care-header i {
-    font-size: 1.2rem;
+    font-size: 1.05rem;
     color: #dc2626;
 }
 
 .special-care-body {
-    font-size: 1.05rem;
+    font-size: 0.92rem;
     font-weight: 700;
     color: #7f1d1d;
-    line-height: 1.5;
+    line-height: 1.38;
     word-break: break-word;
 }
 
@@ -882,7 +882,7 @@ body.theme-senior .medications-box .special-care-body {
 .profile-actions-stack {
     display: flex;
     flex-direction: column;
-    gap: 0.95rem;
+    gap: 0.6rem;
     width: 100%;
 }
 
@@ -894,27 +894,27 @@ body.theme-senior .medications-box .special-care-body {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0.95rem 1.4rem;
-    border-radius: var(--radius-btn);
+    padding: 0.68rem 1rem;
+    border-radius: 16px;
     font-weight: 800;
     text-decoration: none;
     cursor: pointer;
     border: none;
     transition: var(--transition);
     width: 100%;
-    min-height: 62px;
+    min-height: 52px;
     box-sizing: border-box;
 }
 
 .btn-icon-circle {
-    width: 44px;
-    height: 44px;
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.28);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.4rem;
+    font-size: 1.15rem;
     flex-shrink: 0;
 }
 
@@ -923,23 +923,23 @@ body.theme-senior .medications-box .special-care-body {
     flex-direction: column;
     align-items: flex-start;
     flex: 1;
-    margin-left: 0.95rem;
+    margin-left: 0.8rem;
 }
 
 .btn-main-text {
-    font-size: 1.1rem;
+    font-size: 0.96rem;
     font-weight: 800;
-    line-height: 1.2;
+    line-height: 1.15;
 }
 
 .btn-sub-text {
-    font-size: 0.78rem;
+    font-size: 0.72rem;
     font-weight: 600;
     opacity: 0.9;
 }
 
 .btn-arrow {
-    font-size: 1.15rem;
+    font-size: 1rem;
     opacity: 0.85;
 }
 
