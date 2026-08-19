@@ -531,13 +531,15 @@ class ProfileApp {
 
         const securityRibbonEl = document.getElementById('p-security-ribbon');
         if (securityRibbonEl) {
-            securityRibbonEl.innerHTML = isPet ? '<i class="fa-solid fa-paw"></i> Mi perfil de seguridad <i class="fa-solid fa-paw"></i>' : (isSenior ? '<i class="fa-solid fa-shield-heart"></i> Mi perfil de seguridad <i class="fa-solid fa-shield-heart"></i>' : 'Mi perfil de seguridad');
+            securityRibbonEl.innerHTML = isPet 
+                ? '<i class="fa-solid fa-paw"></i> Mi perfil de seguridad <i class="fa-solid fa-paw"></i>' 
+                : (isSenior ? '<i class="fa-solid fa-shield-heart" style="color: #fbbf24;"></i> Mi perfil de seguridad <i class="fa-solid fa-shield-heart" style="color: #fbbf24;"></i>' : 'Mi perfil de seguridad');
         }
 
         const footerTagEl = document.getElementById('p-footer-tag');
         if (footerTagEl) {
             if (isSenior) {
-                footerTagEl.innerHTML = '<i class="fa-solid fa-shield-heart"></i> Protegido con amor <i class="fa-solid fa-heart" style="color: #f77f00;"></i>';
+                footerTagEl.innerHTML = '<i class="fa-solid fa-shield-heart" style="color: #fbbf24;"></i> Protegido con amor <i class="fa-solid fa-heart" style="color: #fbbf24;"></i>';
             } else if (isGirl) {
                 footerTagEl.innerHTML = '<i class="fa-solid fa-shield-heart"></i> Protegida con amor <i class="fa-solid fa-heart" style="color: #ec4899;"></i>';
             } else if (isPet) {
