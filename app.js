@@ -242,17 +242,11 @@ class ProfileApp {
     }
 
     mergeAndPreserveProfiles(localProfiles = [], cloudProfiles = [], cloudDeletedIds = []) {
-        // 1. Build Master Tombstone Set from both Local and Cloud immediately
-        const localDeleted = JSON.parse(localStorage.getItem('nfc_deleted_ids') || '[]');
-        const cloudDeleted = Array.isArray(cloudDeletedIds) ? cloudDeletedIds : [];
-        const masterDeletedIds = Array.from(new Set([...localDeleted, ...cloudDeleted].filter(id => id && typeof id === 'string')));
-        localStorage.setItem('nfc_deleted_ids', JSON.stringify(masterDeletedIds));
-
         const profileMap = new Map();
 
-        // 2. Load Local Profiles first into map
+        // 1. Load ALL Local Profiles into map (100% Preservation Safety)
         localProfiles.forEach(p => {
-            if (p && p.id && !masterDeletedIds.includes(p.id)) {
+            if (p && p.id) {
                 const sanitized = this.sanitizeProfile(p);
                 if (!sanitized) return;
 
@@ -264,9 +258,9 @@ class ProfileApp {
             }
         });
 
-        // 4. Merge Cloud Profiles (Cloud DB is Authoritative Master across devices)
+        // 2. Merge Cloud Profiles (Cloud DB is Authoritative Master across devices)
         cloudProfiles.forEach(p => {
-            if (p && p.id && !masterDeletedIds.includes(p.id)) {
+            if (p && p.id) {
                 const sanitizedCloud = this.sanitizeProfile(p);
                 if (!sanitizedCloud) return;
 
@@ -276,10 +270,8 @@ class ProfileApp {
                     const localTime = new Date(localProf.updatedAt || localProf.createdAt || 0).getTime();
 
                     if (cloudTime >= localTime) {
-                        // Cloud edit is newer or equal: Cloud overwrites local stale cache
                         profileMap.set(p.id, this.mergeSingleProfile(localProf, sanitizedCloud));
                     } else {
-                        // Local edit is newer: Local overwrites cloud
                         profileMap.set(p.id, this.mergeSingleProfile(sanitizedCloud, localProf));
                     }
                 } else {
@@ -288,8 +280,7 @@ class ProfileApp {
             }
         });
 
-        // 5. Final Filter: guarantee zero deleted profiles ever resurrect
-        return Array.from(profileMap.values()).filter(p => p && p.id && !masterDeletedIds.includes(p.id));
+        return Array.from(profileMap.values()).filter(p => p && p.id);
     }
 
     async syncFromCloudDB() {

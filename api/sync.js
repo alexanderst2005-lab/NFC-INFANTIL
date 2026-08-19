@@ -110,16 +110,13 @@ export default async function handler(req, res) {
         // Fetch persistent Cloud DB state first (Authoritative Central Master)
         const cloudState = await requestCloudDB('GET');
         if (cloudState) {
-            if (Array.isArray(cloudState.deletedIds)) {
-                sharedDeletedIdsStore = Array.from(new Set([...sharedDeletedIdsStore, ...cloudState.deletedIds].filter(id => id && typeof id === 'string')));
-            }
             if (Array.isArray(cloudState.profiles) && cloudState.profiles.length > 0) {
                 const map = new Map();
                 INITIAL_PROFILES.forEach(p => {
-                    if (!sharedDeletedIdsStore.includes(p.id)) map.set(p.id, p);
+                    if (p && p.id) map.set(p.id, p);
                 });
                 cloudState.profiles.forEach(p => {
-                    if (!sharedDeletedIdsStore.includes(p.id)) map.set(p.id, p);
+                    if (p && p.id) map.set(p.id, p);
                 });
                 sharedProfilesStore = Array.from(map.values());
             }
@@ -148,7 +145,7 @@ export default async function handler(req, res) {
 
             if (incomingProfiles !== null && Array.isArray(incomingProfiles)) {
                 sharedProfilesStore = incomingProfiles
-                    .filter(p => p && p.id && !sharedDeletedIdsStore.includes(p.id))
+                    .filter(p => p && p.id)
                     .map(p => ({
                         id: p.id || `prof-${Date.now()}`,
                         slug: (p.slug && String(p.slug).trim() !== '' && String(p.slug).trim() !== 'undefined') ? String(p.slug).trim() : 'perfil',
