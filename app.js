@@ -255,20 +255,16 @@ class ProfileApp {
 
     loadProfilesLocal() {
         const stored = localStorage.getItem('nfc_profiles_db');
+        let localProfs = [];
         if (stored) {
             try {
                 const parsed = JSON.parse(stored);
                 if (Array.isArray(parsed) && parsed.length > 0) {
-                    this.profiles = this.deduplicateProfiles(parsed);
-                } else {
-                    this.profiles = this.deduplicateProfiles(DEFAULT_PROFILES);
+                    localProfs = parsed;
                 }
-            } catch (e) {
-                this.profiles = this.deduplicateProfiles(DEFAULT_PROFILES);
-            }
-        } else {
-            this.profiles = this.deduplicateProfiles(DEFAULT_PROFILES);
+            } catch (e) {}
         }
+        this.profiles = this.mergeAndPreserveProfiles(localProfs, DEFAULT_PROFILES);
         this.saveProfilesLocal();
     }
 
