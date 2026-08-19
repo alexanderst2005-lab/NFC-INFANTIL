@@ -1941,3 +1941,15 @@ body.modal-open .admin-grid {
         will-change: transform;
     }
 }
+
+/* Ocultar el molde de la tarjeta hasta que Firebase inyecte los datos */
+html:not(.ready) .container {
+    opacity: 0 !important;
+    visibility: hidden;
+}
+html.ready .container {
+    opacity: 1 !important;
+    visibility: visible;
+    transition: opacity 0.4s ease;
+}
+
