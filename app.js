@@ -733,19 +733,9 @@ class ProfileApp {
             if (rawPhone1 !== '') {
                 const title1El = document.getElementById('p-wa1-title') || waBtn1.querySelector('.btn-main-text');
                 const sub1El = waBtn1.querySelector('.btn-sub-text');
-                if (isPet) {
-                    if (title1El) title1El.textContent = 'Contacto Principal';
-                    if (sub1El) sub1El.textContent = 'Escríbenos por WhatsApp';
-                } else {
-                    if (title1El) {
-                        if (rawPhone2 !== '') {
-                            title1El.textContent = isSenior ? 'Contactar Familiar 1' : 'Contactar a Papá / Contacto 1';
-                        } else {
-                            title1El.textContent = isSenior ? 'Contactar a mis familiares' : 'Contactar a mis papás';
-                        }
-                    }
-                    if (sub1El) sub1El.textContent = 'Enviar mensaje de WhatsApp';
-                }
+                if (title1El) title1El.textContent = 'Contacto Principal';
+                if (sub1El) sub1El.textContent = 'Escríbenos por WhatsApp';
+
                 const waCleanPhone1 = rawPhone1.replace(/[^0-9]/g, '');
                 waBtn1.href = `https://wa.me/${waCleanPhone1}?text=${encodeURIComponent(formattedMsg)}`;
                 waBtn1.classList.remove('hidden', 'hidden-btn');
@@ -761,15 +751,9 @@ class ProfileApp {
             if (rawPhone2 !== '') {
                 const title2El = document.getElementById('p-wa2-title') || waBtn2.querySelector('.btn-main-text');
                 const sub2El = waBtn2.querySelector('.btn-sub-text');
-                if (isPet) {
-                    if (title2El) title2El.textContent = 'Contacto Alterno';
-                    if (sub2El) sub2El.textContent = 'Escríbenos por WhatsApp';
-                } else {
-                    if (title2El) {
-                        title2El.textContent = isSenior ? 'Contactar Familiar 2' : 'Contactar a Mamá / Contacto 2';
-                    }
-                    if (sub2El) sub2El.textContent = 'Segundo contacto de WhatsApp';
-                }
+                if (title2El) title2El.textContent = 'Contacto Alterno';
+                if (sub2El) sub2El.textContent = 'Escríbenos por WhatsApp';
+
                 const waCleanPhone2 = rawPhone2.replace(/[^0-9]/g, '');
                 waBtn2.href = `https://wa.me/${waCleanPhone2}?text=${encodeURIComponent(formattedMsg)}`;
                 waBtn2.classList.remove('hidden', 'hidden-btn');
