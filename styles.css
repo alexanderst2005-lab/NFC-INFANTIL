@@ -1459,22 +1459,35 @@ html.is-authenticated-init #admin-dashboard-screen {
     border-radius: 10px;
 }
 
-/* Scroll Lock when Modal is Active */
+/* Scroll Lock & Heavy Background Blur when Modal is Active */
 body.modal-open {
     overflow: hidden;
+}
+
+body.modal-open .app-header,
+body.modal-open .container,
+body.modal-open .dashboard-banner,
+body.modal-open .admin-toolbar,
+body.modal-open .admin-grid {
+    filter: blur(20px) !important;
+    opacity: 0.05 !important;
+    pointer-events: none !important;
+    transition: filter 0.25s ease, opacity 0.25s ease;
 }
 
 /* Modal Form Overlay - Starts cleanly from TOP for PC & Cellphones */
 .modal-overlay {
     position: fixed;
-    top: 0; left: 0;
-    width: 100vw; height: 100vh;
-    background: #070d18 !important;
+    top: 0; left: 0; right: 0; bottom: 0;
+    width: 100%; height: 100%;
+    background: rgba(7, 13, 24, 0.98) !important;
+    backdrop-filter: blur(28px) !important;
+    -webkit-backdrop-filter: blur(28px) !important;
     display: flex;
     align-items: flex-start; /* Aligned cleanly from TOP */
     justify-content: center;
     z-index: 999999;
-    padding: 1.8rem 1rem 2.5rem 1rem;
+    padding: 1.2rem 0.8rem 2.5rem 0.8rem;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
 }
