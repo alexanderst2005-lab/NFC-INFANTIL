@@ -96,6 +96,7 @@ class AdminApp {
         this.isAuthenticated = (localStorage.getItem('nfc_admin_auth') === 'true' || sessionStorage.getItem('nfc_admin_auth') === 'true');
         this.photoRemoved = false;
         this.currentCategoryTab = 'all';
+        this.isSaving = false;
         this.init();
     }
 
@@ -108,7 +109,7 @@ class AdminApp {
 
         // Real-Time Multi-Device Auto-Sync every 3.5 seconds
         setInterval(() => {
-            if (this.isAuthenticated && !document.body.classList.contains('modal-open')) {
+            if (this.isAuthenticated && !this.isSaving && !document.body.classList.contains('modal-open')) {
                 this.syncFromCloudDB();
             }
         }, 3500);
@@ -720,78 +721,83 @@ class AdminApp {
     }
 
     async saveProfileFromForm() {
-        const id = document.getElementById('input-profile-id').value;
-        const name = document.getElementById('input-name').value.trim();
-        let slug = document.getElementById('input-slug').value.trim();
-        const gender = document.getElementById('input-gender').value;
+        this.isSaving = true;
+        try {
+            const id = document.getElementById('input-profile-id').value;
+            const name = document.getElementById('input-name').value.trim();
+            let slug = document.getElementById('input-slug').value.trim();
+            const gender = document.getElementById('input-gender').value;
 
-        if (!name) return;
+            if (!name) return;
 
-        slug = this.generateUniqueSlug(slug || name, id);
+            slug = this.generateUniqueSlug(slug || name, id);
 
-        const photoUrlInput = document.getElementById('input-photo-url').value.trim();
-        const previewSrc = document.getElementById('photo-preview').src;
+            const photoUrlInput = document.getElementById('input-photo-url').value.trim();
+            const previewSrc = document.getElementById('photo-preview').src;
 
-        let finalPhoto = '';
-        if (this.photoRemoved) {
-            finalPhoto = '';
-        } else if (previewSrc && previewSrc.startsWith('data:image/') && !previewSrc.includes('data:image/svg+xml')) {
-            finalPhoto = previewSrc;
-        } else if (photoUrlInput) {
-            finalPhoto = photoUrlInput;
-        } else if (previewSrc && previewSrc !== NEUTRAL_AVATAR_SVG && !previewSrc.includes('data:image/svg+xml')) {
-            finalPhoto = previewSrc;
+            let finalPhoto = '';
+            if (this.photoRemoved) {
+                finalPhoto = '';
+            } else if (previewSrc && previewSrc.startsWith('data:image/') && !previewSrc.includes('data:image/svg+xml')) {
+                finalPhoto = previewSrc;
+            } else if (photoUrlInput) {
+                finalPhoto = photoUrlInput;
+            } else if (previewSrc && previewSrc !== NEUTRAL_AVATAR_SVG && !previewSrc.includes('data:image/svg+xml')) {
+                finalPhoto = previewSrc;
+            }
+
+            const existingProf = id ? this.profiles.find(p => p.id === id) : null;
+
+            if (!finalPhoto && existingProf && existingProf.photoUrl && !this.photoRemoved) {
+                finalPhoto = existingProf.photoUrl;
+            }
+
+            const schoolVal = document.getElementById('input-school')?.value.trim() || '';
+            const gradeVal = document.getElementById('input-grade')?.value.trim() || '';
+            const medicalVal = document.getElementById('input-medical')?.value.trim() || '';
+
+            const birthDateVal = document.getElementById('input-birthdate')?.value || '';
+            const ageInputVal = document.getElementById('input-age')?.value;
+            const computedAge = this.calculateAgeFromBirthDate(birthDateVal, ageInputVal);
+
+            const rawProfile = {
+                id: id || `prof-${Date.now()}`,
+                slug: slug,
+                name: name,
+                gender: gender,
+                birthDate: birthDateVal,
+                age: computedAge,
+                bloodType: document.getElementById('input-blood').value || (gender === 'pet' ? 'N/A' : 'O+'),
+                parentPhone: document.getElementById('input-phone').value.trim(),
+                whatsappMessage: document.getElementById('input-whatsapp-msg').value.trim(),
+                locationMapsUrl: document.getElementById('input-maps-url').value.trim(),
+                schoolMapsUrl: (document.getElementById('input-school-url')?.value || '').trim(),
+                school: schoolVal,
+                grade: gradeVal,
+                medicalConditions: medicalVal,
+                photoUrl: finalPhoto,
+                active: true,
+                createdAt: existingProf ? (existingProf.createdAt || new Date().toISOString()) : new Date().toISOString(),
+                updatedAt: new Date().toISOString()
+            };
+
+            const profileData = this.sanitizeProfile(rawProfile);
+
+            if (id) {
+                const idx = this.profiles.findIndex(p => p.id === id);
+                if (idx !== -1) this.profiles[idx] = profileData;
+            } else {
+                this.profiles.unshift(profileData);
+            }
+
+            this.saveProfilesLocal();
+            this.closeModal();
+            this.renderProfilesGrid();
+            this.showToast(`¡Perfil de ${name} guardado! URL: /${slug}`);
+            await this.pushToCloudDB();
+        } finally {
+            setTimeout(() => { this.isSaving = false; }, 2000);
         }
-
-        const existingProf = id ? this.profiles.find(p => p.id === id) : null;
-
-        if (!finalPhoto && existingProf && existingProf.photoUrl && !this.photoRemoved) {
-            finalPhoto = existingProf.photoUrl;
-        }
-
-        const schoolVal = document.getElementById('input-school')?.value.trim() || '';
-        const gradeVal = document.getElementById('input-grade')?.value.trim() || '';
-        const medicalVal = document.getElementById('input-medical')?.value.trim() || '';
-
-        const birthDateVal = document.getElementById('input-birthdate')?.value || '';
-        const ageInputVal = document.getElementById('input-age')?.value;
-        const computedAge = this.calculateAgeFromBirthDate(birthDateVal, ageInputVal);
-
-        const rawProfile = {
-            id: id || `prof-${Date.now()}`,
-            slug: slug,
-            name: name,
-            gender: gender,
-            birthDate: birthDateVal,
-            age: computedAge,
-            bloodType: document.getElementById('input-blood').value || (gender === 'pet' ? 'N/A' : 'O+'),
-            parentPhone: document.getElementById('input-phone').value.trim(),
-            whatsappMessage: document.getElementById('input-whatsapp-msg').value.trim(),
-            locationMapsUrl: document.getElementById('input-maps-url').value.trim(),
-            schoolMapsUrl: (document.getElementById('input-school-url')?.value || '').trim(),
-            school: schoolVal,
-            grade: gradeVal,
-            medicalConditions: medicalVal,
-            photoUrl: finalPhoto,
-            active: true,
-            createdAt: existingProf ? (existingProf.createdAt || new Date().toISOString()) : new Date().toISOString(),
-            updatedAt: new Date().toISOString()
-        };
-
-        const profileData = this.sanitizeProfile(rawProfile);
-
-        if (id) {
-            const idx = this.profiles.findIndex(p => p.id === id);
-            if (idx !== -1) this.profiles[idx] = profileData;
-        } else {
-            this.profiles.unshift(profileData);
-        }
-
-        this.saveProfilesLocal();
-        this.closeModal();
-        this.renderProfilesGrid();
-        this.showToast(`¡Perfil de ${name} guardado! URL: /${slug}`);
-        await this.pushToCloudDB();
     }
 
     compressImage(base64Data, maxWidth = 500, quality = 0.82) {
