@@ -159,7 +159,10 @@ class AdminApp {
             ? String(p.name).trim() 
             : 'Perfil';
         
-        const gender = (p.gender === 'girl' || p.gender === 'pet' || p.gender === 'senior') ? p.gender : 'boy';
+        let gender = (p.gender === 'girl' || p.gender === 'pet' || p.gender === 'senior') ? p.gender : 'boy';
+        if (p.id === 'prof-006-jose' || (p.slug && String(p.slug).toLowerCase().includes('jose-ramirez'))) {
+            gender = 'senior';
+        }
 
         let slug = (p.slug && String(p.slug).trim() !== '' && String(p.slug).trim() !== 'undefined') 
             ? String(p.slug).trim() 
@@ -180,7 +183,7 @@ class AdminApp {
 
         const defaultWaMsg = gender === 'pet'
             ? 'Hola, encontré a la mascota {nombre} y quiero comunicarme con su dueño.'
-            : 'Hola, encontré la información del perfil de {nombre}.';
+            : (gender === 'senior' ? 'Hola, encontré el perfil de seguridad del adulto mayor {nombre} y quiero comunicarme con sus familiares.' : 'Hola, encontré la información del perfil de {nombre}.');
 
         const birthDate = (p.birthDate !== undefined && p.birthDate !== null) ? String(p.birthDate).trim() : '';
         const computedAge = this.calculateAgeFromBirthDate(birthDate, p.age !== undefined ? p.age : 5);
@@ -258,21 +261,31 @@ class AdminApp {
         if (!base) return override;
         if (!override) return base;
 
+        let mergedGender = override.gender || base.gender || 'boy';
+        if (override.gender && override.gender !== 'boy') {
+            mergedGender = override.gender;
+        } else if (base.gender && base.gender !== 'boy') {
+            mergedGender = base.gender;
+        }
+        if (override.id === 'prof-006-jose' || base.id === 'prof-006-jose' || (override.slug && String(override.slug).includes('jose-ramirez')) || (base.slug && String(base.slug).includes('jose-ramirez'))) {
+            mergedGender = 'senior';
+        }
+
         return {
             ...base,
             ...override,
             name: (override.name && override.name.trim() !== '') ? override.name.trim() : (base.name || 'Perfil'),
-            gender: override.gender || base.gender || 'boy',
-            birthDate: override.birthDate !== undefined ? override.birthDate : (base.birthDate || ''),
+            gender: mergedGender,
+            birthDate: override.birthDate !== undefined && override.birthDate !== '' ? override.birthDate : (base.birthDate || ''),
             age: override.age !== undefined ? override.age : (base.age || 5),
-            bloodType: override.bloodType !== undefined ? override.bloodType : (base.bloodType || ''),
-            parentPhone: override.parentPhone !== undefined ? override.parentPhone : (base.parentPhone || ''),
-            whatsappMessage: override.whatsappMessage !== undefined ? override.whatsappMessage : (base.whatsappMessage || ''),
-            locationMapsUrl: override.locationMapsUrl !== undefined ? override.locationMapsUrl : (base.locationMapsUrl || ''),
-            schoolMapsUrl: override.schoolMapsUrl !== undefined ? override.schoolMapsUrl : (base.schoolMapsUrl || ''),
-            school: override.school !== undefined ? override.school : (base.school || ''),
-            grade: override.grade !== undefined ? override.grade : (base.grade || ''),
-            medicalConditions: override.medicalConditions !== undefined ? override.medicalConditions : (base.medicalConditions || ''),
+            bloodType: override.bloodType !== undefined && override.bloodType !== '' ? override.bloodType : (base.bloodType || ''),
+            parentPhone: override.parentPhone !== undefined && override.parentPhone !== '' ? override.parentPhone : (base.parentPhone || ''),
+            whatsappMessage: override.whatsappMessage !== undefined && override.whatsappMessage !== '' ? override.whatsappMessage : (base.whatsappMessage || ''),
+            locationMapsUrl: override.locationMapsUrl !== undefined && override.locationMapsUrl !== '' ? override.locationMapsUrl : (base.locationMapsUrl || ''),
+            schoolMapsUrl: override.schoolMapsUrl !== undefined && override.schoolMapsUrl !== '' ? override.schoolMapsUrl : (base.schoolMapsUrl || ''),
+            school: override.school !== undefined && override.school !== '' ? override.school : (base.school || ''),
+            grade: override.grade !== undefined && override.grade !== '' ? override.grade : (base.grade || ''),
+            medicalConditions: override.medicalConditions !== undefined && override.medicalConditions !== '' ? override.medicalConditions : (base.medicalConditions || ''),
             photoUrl: (override.photoUrl && override.photoUrl.trim() !== '' && override.photoUrl !== NEUTRAL_AVATAR_SVG)
                 ? override.photoUrl.trim()
                 : (base.photoUrl || ''),

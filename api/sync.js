@@ -206,7 +206,7 @@ export default async function handler(req, res) {
                         id: p.id || `prof-${Date.now()}`,
                         slug: (p.slug && String(p.slug).trim() !== '' && String(p.slug).trim() !== 'undefined') ? String(p.slug).trim() : 'perfil',
                         name: (p.name && String(p.name).trim() !== '' && String(p.name).trim() !== 'undefined') ? String(p.name).trim() : 'Perfil',
-                        gender: (p.gender === 'girl' || p.gender === 'pet' || p.gender === 'senior') ? p.gender : 'boy',
+                        gender: (p.id === 'prof-006-jose' || (p.slug && String(p.slug).toLowerCase().includes('jose-ramirez'))) ? 'senior' : ((p.gender === 'girl' || p.gender === 'pet' || p.gender === 'senior') ? p.gender : 'boy'),
                         birthDate: p.birthDate !== undefined ? String(p.birthDate).trim() : '',
                         age: parseInt(p.age) >= 0 ? parseInt(p.age) : 5,
                         bloodType: p.gender === 'pet' ? '' : (p.bloodType !== undefined ? String(p.bloodType).trim() : ''),
