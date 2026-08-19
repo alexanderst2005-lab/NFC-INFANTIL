@@ -129,7 +129,7 @@ class ProfileApp {
             ? String(p.name).trim() 
             : 'Perfil';
         
-        const gender = (p.gender === 'girl' || p.gender === 'boy' || p.gender === 'pet') ? p.gender : 'boy';
+        const gender = (p.gender === 'girl' || p.gender === 'boy' || p.gender === 'pet' || p.gender === 'senior') ? p.gender : 'boy';
 
         let slug = (p.slug && String(p.slug).trim() !== '' && String(p.slug).trim() !== 'undefined') 
             ? String(p.slug).trim() 
