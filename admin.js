@@ -95,6 +95,7 @@ class AdminApp {
         this.profiles = [];
         this.isAuthenticated = (localStorage.getItem('nfc_admin_auth') === 'true' || sessionStorage.getItem('nfc_admin_auth') === 'true');
         this.photoRemoved = false;
+        this.pendingUploadedPhoto = null;
         this.currentCategoryTab = 'all';
         this.isSaving = false;
         this.init();
@@ -630,11 +631,12 @@ class AdminApp {
 
     openCreateModal() {
         this.photoRemoved = false;
+        this.pendingUploadedPhoto = null;
         const initialGender = (this.currentCategoryTab === 'girl' || this.currentCategoryTab === 'pet') ? this.currentCategoryTab : 'boy';
-        
+
         const titleIcon = initialGender === 'pet' ? 'fa-paw' : 'fa-user-plus';
         const titleText = initialGender === 'pet' ? 'Crear Perfil de Mascota 🐾' : 'Crear Perfil Infantil';
-        
+
         document.getElementById('modal-title').innerHTML = `<i class="fa-solid ${titleIcon}"></i> ${titleText}`;
         document.getElementById('form-save-profile').reset();
         document.getElementById('input-profile-id').value = '';
@@ -645,7 +647,7 @@ class AdminApp {
         document.getElementById('input-age').value = '';
         document.getElementById('input-blood').value = initialGender === 'pet' ? 'N/A' : '';
         document.getElementById('input-phone').value = '';
-        
+
         const defaultWa = initialGender === 'pet'
             ? 'Hola, encontré a la mascota {nombre} y quiero comunicarme con su dueño.'
             : '';
@@ -656,7 +658,7 @@ class AdminApp {
         if (document.getElementById('input-medical')) document.getElementById('input-medical').value = '';
         document.getElementById('input-photo-url').value = '';
         document.getElementById('photo-preview').src = NEUTRAL_AVATAR_SVG;
-        
+
         this.updateModalFormForCategory(initialGender);
 
         document.getElementById('modal-profile').classList.remove('hidden');
@@ -668,6 +670,7 @@ class AdminApp {
         if (!p) return;
 
         this.photoRemoved = false;
+        this.pendingUploadedPhoto = null;
         const currentPhoto = (p.photoUrl && p.photoUrl.trim() !== '') ? p.photoUrl : NEUTRAL_AVATAR_SVG;
 
         const titleIcon = p.gender === 'pet' ? 'fa-paw' : 'fa-pen-to-square';
@@ -738,11 +741,13 @@ class AdminApp {
             let finalPhoto = '';
             if (this.photoRemoved) {
                 finalPhoto = '';
+            } else if (this.pendingUploadedPhoto && this.pendingUploadedPhoto.trim() !== '') {
+                finalPhoto = this.pendingUploadedPhoto.trim();
+            } else if (photoUrlInput && photoUrlInput.trim() !== '') {
+                finalPhoto = photoUrlInput.trim();
             } else if (previewSrc && previewSrc.startsWith('data:image/') && !previewSrc.includes('data:image/svg+xml')) {
                 finalPhoto = previewSrc;
-            } else if (photoUrlInput) {
-                finalPhoto = photoUrlInput;
-            } else if (previewSrc && previewSrc !== NEUTRAL_AVATAR_SVG && !previewSrc.includes('data:image/svg+xml')) {
+            } else if (previewSrc && previewSrc !== NEUTRAL_AVATAR_SVG && !previewSrc.includes('data:image/svg+xml') && previewSrc.length > 50) {
                 finalPhoto = previewSrc;
             }
 
@@ -920,8 +925,10 @@ class AdminApp {
                 const reader = new FileReader();
                 reader.onload = async (evt) => {
                     const compressedBase64 = await this.compressImage(evt.target.result);
-                    previewImg.src = compressedBase64;
-                    document.getElementById('input-photo-url').value = '';
+                    this.pendingUploadedPhoto = compressedBase64;
+                    if (previewImg) previewImg.src = compressedBase64;
+                    const urlInput = document.getElementById('input-photo-url');
+                    if (urlInput) urlInput.value = '';
                 };
                 reader.readAsDataURL(file);
             }
@@ -930,6 +937,7 @@ class AdminApp {
         // Remove Photo Button: Sets photoUrl = '' in Cloud DB immediately!
         document.getElementById('btn-remove-photo')?.addEventListener('click', async () => {
             this.photoRemoved = true;
+            this.pendingUploadedPhoto = null;
             
             if (previewImg) previewImg.src = NEUTRAL_AVATAR_SVG;
             document.getElementById('input-photo-url').value = '';
