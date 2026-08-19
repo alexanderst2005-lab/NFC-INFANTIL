@@ -690,22 +690,22 @@ class ProfileApp {
         const decoBr = document.getElementById('p-deco-br');
 
         if (isPet) {
-            if (decoTl) decoTl.innerHTML = '<i class="fa-solid fa-house-chimney"></i>';
-            if (decoTr) decoTr.innerHTML = '<i class="fa-solid fa-bone"></i>';
-            if (decoBr) decoBr.innerHTML = '<i class="fa-solid fa-heart"></i>';
-        } else if (isSenior) {
-            if (decoTl) decoTl.innerHTML = '<i class="fa-solid fa-tree"></i>';
-            if (decoTr) decoTr.innerHTML = '<i class="fa-solid fa-sun"></i>';
-            if (decoBr) decoBr.innerHTML = '<i class="fa-solid fa-heart"></i>';
+            if (decoTl) { decoTl.style.display = 'block'; decoTl.innerHTML = '<i class="fa-solid fa-house-chimney"></i>'; }
+            if (decoTr) { decoTr.style.display = 'block'; decoTr.innerHTML = '<i class="fa-solid fa-bone"></i>'; }
+            if (decoBr) { decoBr.style.display = 'block'; decoBr.innerHTML = '<i class="fa-solid fa-heart"></i>'; }
         } else if (isGirl) {
-            if (decoTl) decoTl.innerHTML = '<i class="fa-solid fa-crown"></i>';
-            if (decoTr) decoTr.innerHTML = '<i class="fa-solid fa-star"></i>';
-            if (decoBr) decoBr.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i>';
+            if (decoTl) { decoTl.style.display = 'block'; decoTl.innerHTML = '<i class="fa-solid fa-crown"></i>'; }
+            if (decoTr) { decoTr.style.display = 'block'; decoTr.innerHTML = '<i class="fa-solid fa-star"></i>'; }
+            if (decoBr) { decoBr.style.display = 'block'; decoBr.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i>'; }
+        } else if (isSenior) {
+            if (decoTl) { decoTl.style.display = 'none'; decoTl.innerHTML = ''; }
+            if (decoTr) { decoTr.style.display = 'none'; decoTr.innerHTML = ''; }
+            if (decoBr) { decoBr.style.display = 'none'; decoBr.innerHTML = ''; }
         } else {
             // Boy
-            if (decoTl) decoTl.innerHTML = '<i class="fa-solid fa-rocket"></i>';
-            if (decoTr) decoTr.innerHTML = '<i class="fa-solid fa-atom"></i>';
-            if (decoBr) decoBr.innerHTML = '<i class="fa-solid fa-user-astronaut"></i>';
+            if (decoTl) { decoTl.style.display = 'block'; decoTl.innerHTML = '<i class="fa-solid fa-rocket"></i>'; }
+            if (decoTr) { decoTr.style.display = 'block'; decoTr.innerHTML = '<i class="fa-solid fa-atom"></i>'; }
+            if (decoBr) { decoBr.style.display = 'block'; decoBr.innerHTML = '<i class="fa-solid fa-user-astronaut"></i>'; }
         }
 
         const sceneLeft = document.getElementById('scene-left');
