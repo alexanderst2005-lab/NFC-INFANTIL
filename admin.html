@@ -34,7 +34,7 @@
     <script>
         (function() {
             var isAuth = (localStorage.getItem('nfc_admin_auth') === 'true' || sessionStorage.getItem('nfc_admin_auth') === 'true');
-            document.documentElement.className += isAuth ? ' is-auth ready' : ' is-no-auth ready';
+            document.documentElement.className += isAuth ? ' is-auth' : ' is-no-auth';
         })();
     </script>
 </head>

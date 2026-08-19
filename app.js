@@ -120,6 +120,7 @@ class ProfileApp {
 
         // 1. Render immediately from local memory
         this.renderSingleProfile(targetSlug);
+        document.documentElement.classList.add('ready');
 
         // 2. Fetch latest Cloud DB automatically (syncFromCloudDB re-renders only if data changed)
         await this.syncFromCloudDB();
