@@ -128,12 +128,14 @@ class AdminApp {
         document.documentElement.classList.add('ready');
         await this.syncFromCloudDB();
 
-        // Real-Time Multi-Device Auto-Sync every 3.5 seconds
+        // Real-Time Multi-Device Auto-Sync every 4.5 seconds (paused while typing for zero lag)
         setInterval(() => {
-            if (this.isAuthenticated && !this.isSaving && !document.body.classList.contains('modal-open')) {
+            const activeInputId = document.activeElement?.id;
+            const isTyping = activeInputId === 'admin-search-input' || activeInputId === 'input-name' || activeInputId === 'input-phone';
+            if (this.isAuthenticated && !this.isSaving && !document.body.classList.contains('modal-open') && !isTyping) {
                 this.syncFromCloudDB();
             }
-        }, 3500);
+        }, 4500);
 
         window.addEventListener('focus', () => {
             if (this.isAuthenticated && !this.isSaving) {
@@ -1024,8 +1026,13 @@ class AdminApp {
             this.showToast("Sesión cerrada.");
         });
 
+        let searchRafTimer = null;
         document.getElementById('admin-search-input')?.addEventListener('input', (e) => {
-            this.renderProfilesGrid(e.target.value);
+            const queryVal = e.target.value;
+            if (searchRafTimer) cancelAnimationFrame(searchRafTimer);
+            searchRafTimer = requestAnimationFrame(() => {
+                this.renderProfilesGrid(queryVal);
+            });
         });
 
         document.getElementById('btn-open-create-modal')?.addEventListener('click', () => this.openCreateModal());
