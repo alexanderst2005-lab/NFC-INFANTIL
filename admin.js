@@ -772,6 +772,8 @@ class AdminApp {
 
         document.getElementById('modal-profile').classList.remove('hidden');
         document.body.classList.add('modal-open');
+        const modalBody = document.querySelector('#modal-profile .modal-body');
+        if (modalBody) modalBody.scrollTop = 0;
     }
 
     openEditModal(id) {
@@ -822,6 +824,8 @@ class AdminApp {
 
         document.getElementById('modal-profile').classList.remove('hidden');
         document.body.classList.add('modal-open');
+        const modalBody = document.querySelector('#modal-profile .modal-body');
+        if (modalBody) modalBody.scrollTop = 0;
     }
 
     closeModal() {
@@ -927,7 +931,8 @@ class AdminApp {
 
             this.saveProfilesLocal();
             this.closeModal();
-            this.renderProfilesGrid();
+            const currentSearch = document.getElementById('admin-search-input')?.value || '';
+            this.renderProfilesGrid(currentSearch);
             this.showToast(`¡Perfil de ${name} guardado! URL: /${slug}`);
             await this.pushToCloudDB();
         } finally {
