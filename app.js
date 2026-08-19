@@ -183,6 +183,7 @@ class ProfileApp {
         const computedAge = this.calculateAgeFromBirthDate(birthDate, p.age !== undefined ? p.age : 5);
         const bloodType = gender === 'pet' ? '' : ((p.bloodType !== undefined && p.bloodType !== null && String(p.bloodType).trim() !== 'undefined') ? String(p.bloodType).trim() : '');
         const parentPhone = (p.parentPhone !== undefined && p.parentPhone !== null && String(p.parentPhone).trim() !== 'undefined') ? String(p.parentPhone).trim() : '';
+        const parentPhone2 = (p.parentPhone2 !== undefined && p.parentPhone2 !== null && String(p.parentPhone2).trim() !== 'undefined' && String(p.parentPhone2).trim() !== 'null') ? String(p.parentPhone2).trim() : '';
         const whatsappMessage = (p.whatsappMessage && String(p.whatsappMessage).trim() !== '') ? String(p.whatsappMessage).trim() : 'Hola, encontré el perfil de {nombre}.';
         const photoUrl = (p.photoUrl !== undefined && p.photoUrl !== null && String(p.photoUrl).trim() !== 'undefined') ? String(p.photoUrl).trim() : '';
 
@@ -195,6 +196,7 @@ class ProfileApp {
             age: computedAge,
             bloodType: bloodType,
             parentPhone: parentPhone,
+            parentPhone2: parentPhone2,
             whatsappMessage: whatsappMessage,
             locationMapsUrl: locationMapsUrl,
             schoolMapsUrl: schoolMapsUrl,
