@@ -255,9 +255,7 @@ class App {
     renderSingleProfile(rawSlug) {
         const viewProfile = document.getElementById('view-profile');
         const viewInactive = document.getElementById('view-inactive');
-
         const profile = this.findProfileBySlug(rawSlug);
-
         if (!profile || profile.active === false) {
             viewProfile?.classList.add('hidden');
             viewInactive?.classList.remove('hidden');
@@ -267,25 +265,22 @@ class App {
             if (inactiveDesc) inactiveDesc.textContent = profile ? 'Este perfil ha sido deshabilitado temporalmente.' : 'No existe ningún perfil registrado con este enlace.';
             return;
         }
-
         this.currentProfile = profile;
         viewInactive?.classList.add('hidden');
         viewProfile?.classList.remove('hidden');
-
-        // Apply Theme (theme-boy, theme-girl, theme-pet, theme-senior)
+        // Apply Theme
         const isPet = profile.gender === 'pet';
         const isSenior = profile.gender === 'senior';
         const themeClass = isPet ? 'theme-pet' : (isSenior ? 'theme-senior' : (profile.gender === 'girl' ? 'theme-girl' : 'theme-boy'));
         
         document.documentElement.classList.remove('theme-boy', 'theme-girl', 'theme-pet', 'theme-senior');
         document.documentElement.classList.add(themeClass);
-
         // Header Title Badge
         const badgeTitle = document.getElementById('badge-category-title');
         const headerBadgeText = document.getElementById('header-badge-text');
         
         if (isPet) {
-            if (badgeTitle) badgeTitle.textContent = 'Mascota Perdisa / Identificación';
+            if (badgeTitle) badgeTitle.textContent = 'Mascota Perdida / Identificación';
             if (headerBadgeText) headerBadgeText.textContent = 'Perfil de Seguridad Mascota';
         } else if (isSenior) {
             if (badgeTitle) badgeTitle.textContent = 'Adulto Mayor / Identificación';
@@ -294,9 +289,8 @@ class App {
             if (badgeTitle) badgeTitle.textContent = 'NFC - INFANTIL';
             if (headerBadgeText) headerBadgeText.textContent = 'Perfil Oficial de Seguridad';
         }
-
         // Avatar Image
-        const avatarImg = document.getElementById('profile-avatar');
+        const avatarImg = document.getElementById('p-avatar');
         if (avatarImg) {
             avatarImg.src = (profile.photoUrl && profile.photoUrl.trim() !== '') ? profile.photoUrl : NEUTRAL_AVATAR_SVG;
             avatarImg.onerror = function() {
@@ -304,62 +298,54 @@ class App {
                 this.src = NEUTRAL_AVATAR_SVG;
             };
         }
-
         // Name
-        const nameEl = document.getElementById('profile-name');
+        const nameEl = document.getElementById('p-hero-name');
         if (nameEl) nameEl.textContent = profile.name;
-
         // Category Badge Pill
-        const pillBadge = document.getElementById('profile-category-pill');
-        if (pillBadge) {
-            pillBadge.className = `category-pill ${isPet ? 'pill-pet' : (isSenior ? 'pill-senior' : (profile.gender === 'girl' ? 'pill-girl' : 'pill-boy'))}`;
-            pillBadge.innerHTML = isPet 
-                ? '<i class="fa-solid fa-paw"></i> Mascota' 
-                : (isSenior ? '<i class="fa-solid fa-person-cane"></i> Adulto Mayor' : (profile.gender === 'girl' ? '<i class="fa-solid fa-child-dress"></i> Niña' : '<i class="fa-solid fa-child"></i> Niño'));
+        const genderText = document.getElementById('p-gender-text');
+        if (genderText) {
+            genderText.textContent = isPet ? 'Mascota Protegida' : (isSenior ? 'Adulto Mayor Protegido' : 'Perfil Verificado');
         }
-
         // Age
-        const ageEl = document.getElementById('profile-age');
+        const ageEl = document.getElementById('p-age-val');
         if (ageEl) {
-            const ageVal = (profile.age !== undefined && profile.age !== null && profile.age !== '') ? `${profile.age} años` : 'No especificada';
+            const ageVal = (profile.age !== undefined && profile.age !== null && profile.age !== '') ? `${profile.age} años` : 'N/A';
             ageEl.textContent = ageVal;
         }
-
         // Blood Type Card Visibility
-        const bloodCard = document.getElementById('card-blood-type');
-        const bloodEl = document.getElementById('profile-blood');
+        const bloodCard = document.getElementById('box-blood');
+        const bloodEl = document.getElementById('p-blood-val');
         if (isPet) {
             bloodCard?.classList.add('hidden');
         } else {
             bloodCard?.classList.remove('hidden');
-            if (bloodEl) bloodEl.textContent = profile.bloodType || 'No especificado';
+            if (bloodEl) bloodEl.textContent = profile.bloodType || 'N/A';
         }
-
         // School Card Visibility
-        const schoolCard = document.getElementById('card-school');
-        const schoolEl = document.getElementById('profile-school');
-        const gradeEl = document.getElementById('profile-grade');
-        const btnSchoolMaps = document.getElementById('btn-school-maps');
-
+        const schoolCard = document.getElementById('box-school');
+        const schoolEl = document.getElementById('p-school');
+        const gradeCard = document.getElementById('box-grade');
+        const gradeEl = document.getElementById('p-grade');
         if (isPet || isSenior) {
             schoolCard?.classList.add('hidden');
+            gradeCard?.classList.add('hidden');
         } else {
-            schoolCard?.classList.remove('hidden');
-            if (schoolEl) schoolEl.textContent = profile.school || 'No asignado';
-            if (gradeEl) gradeEl.textContent = profile.grade ? `Grado: ${profile.grade}` : '';
-            if (btnSchoolMaps) {
-                if (profile.schoolMapsUrl && profile.schoolMapsUrl.trim() !== '') {
-                    btnSchoolMaps.classList.remove('hidden');
-                    btnSchoolMaps.onclick = () => window.open(profile.schoolMapsUrl, '_blank');
-                } else {
-                    btnSchoolMaps.classList.add('hidden');
-                }
+            if (profile.school && profile.school.trim() !== '') {
+                schoolCard?.classList.remove('hidden');
+                if (schoolEl) schoolEl.textContent = profile.school;
+            } else {
+                schoolCard?.classList.add('hidden');
+            }
+            if (profile.grade && profile.grade.trim() !== '') {
+                gradeCard?.classList.remove('hidden');
+                if (gradeEl) gradeEl.textContent = profile.grade;
+            } else {
+                gradeCard?.classList.add('hidden');
             }
         }
-
         // Medical Conditions
-        const medicalCard = document.getElementById('card-medical');
-        const medicalEl = document.getElementById('profile-medical');
+        const medicalCard = document.getElementById('box-medical');
+        const medicalEl = document.getElementById('p-medical-notes');
         if (medicalCard) {
             if (profile.medicalConditions && profile.medicalConditions.trim() !== '') {
                 medicalCard.classList.remove('hidden');
@@ -368,61 +354,55 @@ class App {
                 medicalCard.classList.add('hidden');
             }
         }
-
-        // Parent / Contact Phones & WhatsApp Buttons
-        const parentLabel = document.getElementById('label-parent-contact');
-        if (parentLabel) {
-            parentLabel.textContent = isPet ? 'Contacto del Dueño:' : (isSenior ? 'Contacto de Familiares:' : 'Contacto de Padres:');
+        
+        // Medications
+        const medsCard = document.getElementById('box-medications');
+        const medsEl = document.getElementById('p-medications-notes');
+        if (medsCard) {
+            if (profile.importantMedications && profile.importantMedications.trim() !== '') {
+                medsCard.classList.remove('hidden');
+                if (medsEl) medsEl.textContent = profile.importantMedications;
+            } else {
+                medsCard.classList.add('hidden');
+            }
         }
-
-        const phone1Btn = document.getElementById('btn-call-parent-1');
-        const phone1Number = document.getElementById('phone-number-1');
-        if (phone1Btn) {
+        // WhatsApp Main Action Button 1
+        const btnWa1 = document.getElementById('btn-whatsapp-action');
+        if (btnWa1) {
             if (profile.parentPhone && profile.parentPhone.trim() !== '') {
-                phone1Btn.classList.remove('hidden');
-                if (phone1Number) phone1Number.textContent = `+${profile.parentPhone}`;
-                phone1Btn.onclick = () => window.open(`tel:+${profile.parentPhone}`, '_self');
-            } else {
-                phone1Btn.classList.add('hidden');
-            }
-        }
-
-        const phone2Btn = document.getElementById('btn-call-parent-2');
-        const phone2Number = document.getElementById('phone-number-2');
-        if (phone2Btn) {
-            if (profile.parentPhone2 && profile.parentPhone2.trim() !== '') {
-                phone2Btn.classList.remove('hidden');
-                if (phone2Number) phone2Number.textContent = `+${profile.parentPhone2}`;
-                phone2Btn.onclick = () => window.open(`tel:+${profile.parentPhone2}`, '_self');
-            } else {
-                phone2Btn.classList.add('hidden');
-            }
-        }
-
-        // WhatsApp Main Action Button
-        const btnWa = document.getElementById('btn-whatsapp-emergency');
-        if (btnWa) {
-            const targetPhone = profile.parentPhone || profile.parentPhone2;
-            if (targetPhone) {
-                btnWa.classList.remove('hidden');
+                btnWa1.classList.remove('hidden');
                 let waText = profile.whatsappMessage || (isPet 
                     ? `Hola, encontré a la mascota ${profile.name} y me quiero comunicar con su dueño.`
                     : (isSenior ? `Hola, encontré el perfil de seguridad del adulto mayor ${profile.name} y me quiero comunicar con sus familiares.` : `Hola, encontré la información del perfil de ${profile.name}.`));
                 waText = waText.replace('{nombre}', profile.name);
-                
                 const encodedWa = encodeURIComponent(waText);
-                btnWa.onclick = () => window.open(`https://wa.me/${targetPhone}?text=${encodedWa}`, '_blank');
+                btnWa1.onclick = (e) => { e.preventDefault(); window.open(`https://wa.me/${profile.parentPhone}?text=${encodedWa}`, '_blank'); };
             } else {
-                btnWa.classList.add('hidden');
+                btnWa1.classList.add('hidden');
             }
         }
-
+        
+        // WhatsApp Action Button 2
+        const btnWa2 = document.getElementById('btn-whatsapp-action2');
+        if (btnWa2) {
+            if (profile.parentPhone2 && profile.parentPhone2.trim() !== '') {
+                btnWa2.classList.remove('hidden');
+                let waText = profile.whatsappMessage || (isPet 
+                    ? `Hola, encontré a la mascota ${profile.name} y me quiero comunicar con su dueño.`
+                    : (isSenior ? `Hola, encontré el perfil de seguridad del adulto mayor ${profile.name} y me quiero comunicar con sus familiares.` : `Hola, encontré la información del perfil de ${profile.name}.`));
+                waText = waText.replace('{nombre}', profile.name);
+                const encodedWa = encodeURIComponent(waText);
+                btnWa2.onclick = (e) => { e.preventDefault(); window.open(`https://wa.me/${profile.parentPhone2}?text=${encodedWa}`, '_blank'); };
+            } else {
+                btnWa2.classList.add('hidden');
+            }
+        }
         // Location / Home Maps Button
-        const btnLocation = document.getElementById('btn-location-maps');
+        const btnLocation = document.getElementById('btn-location-action');
         if (btnLocation) {
             if (profile.locationMapsUrl && profile.locationMapsUrl.trim() !== '') {
                 btnLocation.classList.remove('hidden');
-                btnLocation.onclick = () => window.open(profile.locationMapsUrl, '_blank');
+                btnLocation.onclick = (e) => { e.preventDefault(); window.open(profile.locationMapsUrl, '_blank'); };
             } else {
                 btnLocation.classList.add('hidden');
             }
