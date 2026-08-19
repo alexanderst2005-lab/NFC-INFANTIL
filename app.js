@@ -450,15 +450,13 @@ class ProfileApp {
             });
         }
 
-        // 5. Ultimate Fallback: Smart category fallback to prevent theme flickering
+        // 5. If specific slug was requested and not found, return null (404 Not Found)
+        if (!profile && cleanSlug && cleanSlug !== 'index' && cleanSlug !== 'home') {
+            return null;
+        }
+
         if (!profile) {
-            if (document.documentElement.className.includes('theme-pet') || (cleanSlug && (cleanSlug.includes('max') || cleanSlug.includes('pet') || cleanSlug.includes('mascota')))) {
-                profile = this.profiles.find(p => p && p.gender === 'pet') || this.profiles[0];
-            } else if (document.documentElement.className.includes('theme-girl') || (cleanSlug && (cleanSlug.includes('valentina') || cleanSlug.includes('sofia')))) {
-                profile = this.profiles.find(p => p && p.gender === 'girl') || this.profiles[0];
-            } else {
-                profile = this.profiles[0];
-            }
+            profile = this.profiles[0];
         }
 
         return profile;
