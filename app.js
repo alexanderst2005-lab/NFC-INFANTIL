@@ -7,106 +7,7 @@ const CLOUD_DB_ENDPOINT = "/api/sync";
 // Neutral SVG Silhouette for profiles without a custom photo
 const NEUTRAL_AVATAR_SVG = "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='%2364748b'%3E%3Ccircle cx='50' cy='35' r='22'/%3E%3Cpath d='M18 85c0-18 14-30 32-30s32 12 32 30Z'/%3E%3C/svg%3E";
 
-const DEFAULT_PROFILES = [
-    {
-        id: "prof-001",
-        slug: "samuel",
-        name: "Samuel Arias Rodríguez",
-        gender: "boy",
-        age: 13,
-        bloodType: "B+",
-        parentPhone: "573001234567",
-        whatsappMessage: "Hola, encontré la información del perfil de Samuel y me gustaría comunicarme con sus padres.",
-        locationMapsUrl: "",
-        schoolMapsUrl: "",
-        photoUrl: "https://images.unsplash.com/photo-1543332164-6e82f355badc?w=400&auto=format&fit=crop&q=80",
-        active: true,
-        createdAt: new Date().toISOString()
-    },
-    {
-        id: "prof-002",
-        slug: "valentina",
-        name: "Valentina Gómez",
-        gender: "girl",
-        age: 5,
-        bloodType: "A+",
-        parentPhone: "573159876543",
-        whatsappMessage: "Hola, encontré la información del perfil de Valentina y quiero comunicarme con sus padres.",
-        locationMapsUrl: "",
-        schoolMapsUrl: "",
-        photoUrl: "https://images.unsplash.com/photo-1595454223600-91fb272189d5?w=400&auto=format&fit=crop&q=80",
-        active: true,
-        createdAt: new Date().toISOString()
-    },
-    {
-        id: "prof-003",
-        slug: "juan",
-        name: "Juan Diego Benítez",
-        gender: "boy",
-        age: 7,
-        bloodType: "B+",
-        parentPhone: "573204445566",
-        whatsappMessage: "Hola, encontré la información del perfil de Juan Diego y me comunico con sus padres.",
-        locationMapsUrl: "",
-        schoolMapsUrl: "",
-        photoUrl: "https://images.unsplash.com/photo-1519238263530-99bdd11df2ea?w=400&auto=format&fit=crop&q=80",
-        active: true,
-        createdAt: new Date().toISOString()
-    },
-    {
-        id: "prof-004",
-        slug: "sofia",
-        name: "Sofía Rodríguez",
-        gender: "girl",
-        age: 4,
-        bloodType: "AB+",
-        parentPhone: "573108889900",
-        whatsappMessage: "Hola, estoy escaneando la pulsera NFC de Sofía y me comunico con sus padres.",
-        locationMapsUrl: "",
-        schoolMapsUrl: "",
-        photoUrl: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400&auto=format&fit=crop&q=80",
-        active: true,
-        createdAt: new Date().toISOString()
-    },
-    {
-        id: "prof-005",
-        slug: "max",
-        name: "Max",
-        gender: "pet",
-        age: 3,
-        bloodType: "",
-        parentPhone: "573001234567",
-        whatsappMessage: "Hola, encontré a la mascota Max y quiero comunicarme con su dueño.",
-        locationMapsUrl: "",
-        schoolMapsUrl: "",
-        school: "",
-        grade: "",
-        medicalConditions: "",
-        photoUrl: "https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=400&auto=format&fit=crop&q=80",
-        active: true,
-        createdAt: new Date().toISOString()
-    },
-    {
-        id: "prof-006-jose",
-        slug: "jose-ramirez",
-        name: "José Ramírez",
-        gender: "senior",
-        birthDate: "1952-08-15",
-        age: 74,
-        bloodType: "O+",
-        parentPhone: "573109876543",
-        parentPhone2: "573209998877",
-        whatsappMessage: "Hola, encontré el perfil de seguridad del adulto mayor José Ramírez y quiero comunicarme con sus familiares.",
-        locationMapsUrl: "https://maps.google.com/?q=4.6097,74.0817",
-        schoolMapsUrl: "",
-        school: "",
-        grade: "",
-        medicalConditions: "",
-        photoUrl: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&auto=format&fit=crop&q=80",
-        active: true,
-        createdAt: new Date().toISOString()
-    }
-];
+const DEFAULT_PROFILES = [];
 
 class ProfileApp {
     constructor() {
@@ -309,14 +210,7 @@ class ProfileApp {
 
         const profileMap = new Map();
 
-        // 2. Seed DEFAULT_PROFILES into profileMap first (unless in masterDeletedIds)
-        DEFAULT_PROFILES.forEach(p => {
-            if (p && p.id && !masterDeletedIds.includes(p.id)) {
-                profileMap.set(p.id, this.sanitizeProfile({ ...p }));
-            }
-        });
-
-        // 3. Load Local Profiles first into map
+        // 2. Load Local Profiles first into map
         localProfiles.forEach(p => {
             if (p && p.id && !masterDeletedIds.includes(p.id)) {
                 const sanitized = this.sanitizeProfile(p);
