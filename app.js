@@ -684,6 +684,30 @@ class ProfileApp {
             bloodIconEl.innerHTML = isPet ? '<i class="fa-solid fa-paw"></i>' : (isGirl ? '<i class="fa-solid fa-heart"></i>' : '<i class="fa-solid fa-droplet"></i>');
         }
 
+        // Dynamic Arch Floating Badges per theme
+        const decoTl = document.getElementById('p-deco-tl');
+        const decoTr = document.getElementById('p-deco-tr');
+        const decoBr = document.getElementById('p-deco-br');
+
+        if (isPet) {
+            if (decoTl) decoTl.innerHTML = '<i class="fa-solid fa-house-chimney"></i>';
+            if (decoTr) decoTr.innerHTML = '<i class="fa-solid fa-bone"></i>';
+            if (decoBr) decoBr.innerHTML = '<i class="fa-solid fa-heart"></i>';
+        } else if (isSenior) {
+            if (decoTl) decoTl.innerHTML = '<i class="fa-solid fa-tree"></i>';
+            if (decoTr) decoTr.innerHTML = '<i class="fa-solid fa-sun"></i>';
+            if (decoBr) decoBr.innerHTML = '<i class="fa-solid fa-heart"></i>';
+        } else if (isGirl) {
+            if (decoTl) decoTl.innerHTML = '<i class="fa-solid fa-crown"></i>';
+            if (decoTr) decoTr.innerHTML = '<i class="fa-solid fa-star"></i>';
+            if (decoBr) decoBr.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i>';
+        } else {
+            // Boy
+            if (decoTl) decoTl.innerHTML = '<i class="fa-solid fa-rocket"></i>';
+            if (decoTr) decoTr.innerHTML = '<i class="fa-solid fa-atom"></i>';
+            if (decoBr) decoBr.innerHTML = '<i class="fa-solid fa-user-astronaut"></i>';
+        }
+
         const sceneLeft = document.getElementById('scene-left');
         if (sceneLeft) {
             sceneLeft.innerHTML = isPet ? '<i class="fa-solid fa-bone"></i>' : (isSenior ? '<i class="fa-solid fa-tree"></i>' : (isGirl ? '<i class="fa-solid fa-seedling"></i>' : '<i class="fa-solid fa-tree"></i>'));

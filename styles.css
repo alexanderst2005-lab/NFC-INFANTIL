@@ -410,6 +410,15 @@ body.theme-pet .deco-top-right { color: #5e8c31; }
 html.theme-pet .deco-bottom-right,
 body.theme-pet .deco-bottom-right { color: #84a955; }
 
+html.theme-senior .deco-top-left,
+body.theme-senior .deco-top-left { color: #f77f00; }
+
+html.theme-senior .deco-top-right,
+body.theme-senior .deco-top-right { color: #d65a00; }
+
+html.theme-senior .deco-bottom-right,
+body.theme-senior .deco-bottom-right { color: #f59e0b; }
+
 html.theme-pet .profile-card,
 body.theme-pet .profile-card {
     background: #fffdf7 !important;
