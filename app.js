@@ -211,6 +211,20 @@ class ProfileApp {
         };
     }
 
+    areProfilesEqual(listA, listB) {
+        if (!Array.isArray(listA) || !Array.isArray(listB)) return false;
+        if (listA.length !== listB.length) return false;
+        for (let i = 0; i < listA.length; i++) {
+            const pA = listA[i];
+            const pB = listB[i];
+            if (!pA || !pB) return false;
+            if (pA.id !== pB.id || pA.slug !== pB.slug || pA.name !== pB.name || pA.updatedAt !== pB.updatedAt || pA.parentPhone !== pB.parentPhone || pA.parentPhone2 !== pB.parentPhone2) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     deduplicateProfiles(list) {
         if (!Array.isArray(list)) return [];
         const seenIds = new Set();
@@ -227,7 +241,7 @@ class ProfileApp {
                 result.push(sanitized);
             }
         }
-        return result;
+        return result.sort((a, b) => (a.createdAt || a.id || '').localeCompare(b.createdAt || b.id || ''));
     }
 
     loadProfilesLocal() {
@@ -367,7 +381,7 @@ class ProfileApp {
                     const merged = this.mergeAndPreserveProfiles(this.profiles, cloudProfiles, cloudDeletedIds);
                     const sanitizedMerged = this.deduplicateProfiles(merged);
 
-                    if (JSON.stringify(sanitizedMerged) !== JSON.stringify(this.profiles)) {
+                    if (!this.areProfilesEqual(sanitizedMerged, this.profiles)) {
                         this.profiles = sanitizedMerged;
                         this.saveProfilesLocal();
                         const currentSlug = this.getSlugFromUrl();
