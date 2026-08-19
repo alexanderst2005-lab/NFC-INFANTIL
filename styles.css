@@ -1044,6 +1044,11 @@ body.theme-girl .scene-item {
     color: #ec4899;
 }
 
+html.theme-pet .scene-item,
+body.theme-pet .scene-item {
+    color: #2d5a27 !important;
+}
+
 html.theme-senior .scene-item,
 body.theme-senior .scene-item {
     color: #f77f00 !important;
