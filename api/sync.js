@@ -5,15 +5,16 @@
 
 import https from 'https';
 
-const KV_KEY = 'https://kvdb.io/A8Z3nQjJ7W9xK2mP4vL9rT/nfc_infantil_master_store_v4';
+const DB_OBJECT_ID = 'ff8081819ff5b11001a0178475124974';
+const DB_URL = `https://api.restful-api.dev/objects/${DB_OBJECT_ID}`;
 
-function requestKV(url, method = 'GET', payload = null) {
+function requestCloudDB(method = 'GET', payload = null) {
     return new Promise((resolve) => {
         try {
-            const parsedUrl = new URL(url);
+            const parsedUrl = new URL(DB_URL);
             const options = {
                 hostname: parsedUrl.hostname,
-                path: parsedUrl.pathname + parsedUrl.search,
+                path: parsedUrl.pathname,
                 method: method,
                 headers: payload ? {
                     'Content-Type': 'application/json',
@@ -25,14 +26,15 @@ function requestKV(url, method = 'GET', payload = null) {
                 res.on('data', chunk => data += chunk);
                 res.on('end', () => {
                     try {
-                        resolve(JSON.parse(data));
+                        const parsed = JSON.parse(data);
+                        resolve(parsed && parsed.data ? parsed.data : null);
                     } catch (e) {
                         resolve(null);
                     }
                 });
             });
             req.on('error', () => resolve(null));
-            req.setTimeout(2500, () => {
+            req.setTimeout(3500, () => {
                 req.destroy();
                 resolve(null);
             });
@@ -143,12 +145,12 @@ export default async function handler(req, res) {
     }
 
     try {
-        // Try fetching persistent KV state first
-        const kvState = await requestKV(KV_KEY, 'GET');
-        if (kvState && Array.isArray(kvState.profiles) && kvState.profiles.length > 0) {
-            sharedProfilesStore = kvState.profiles;
-            if (Array.isArray(kvState.deletedIds)) {
-                sharedDeletedIdsStore = kvState.deletedIds;
+        // Fetch persistent Cloud DB state first
+        const cloudState = await requestCloudDB('GET');
+        if (cloudState && Array.isArray(cloudState.profiles) && cloudState.profiles.length > 0) {
+            sharedProfilesStore = cloudState.profiles;
+            if (Array.isArray(cloudState.deletedIds)) {
+                sharedDeletedIdsStore = cloudState.deletedIds;
             }
         }
 
@@ -197,10 +199,13 @@ export default async function handler(req, res) {
                         updatedAt: p.updatedAt || new Date().toISOString()
                     }));
 
-                // Save updated master state to persistent cloud KV asynchronously
-                await requestKV(KV_KEY, 'POST', JSON.stringify({
-                    profiles: sharedProfilesStore,
-                    deletedIds: sharedDeletedIdsStore
+                // Save updated master state to persistent cloud database synchronously/await
+                await requestCloudDB('PUT', JSON.stringify({
+                    name: 'NFC Master DB',
+                    data: {
+                        profiles: sharedProfilesStore,
+                        deletedIds: sharedDeletedIdsStore
+                    }
                 }));
             }
 
