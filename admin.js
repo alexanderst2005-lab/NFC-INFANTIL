@@ -87,6 +87,25 @@ const DEFAULT_PROFILES = [
         photoUrl: "https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=400&auto=format&fit=crop&q=80",
         active: true,
         createdAt: new Date().toISOString()
+    },
+    {
+        id: "prof-006-jose",
+        slug: "jose-ramirez",
+        name: "José Ramírez",
+        gender: "senior",
+        birthDate: "1952-08-15",
+        age: 74,
+        bloodType: "O+",
+        parentPhone: "573109876543",
+        whatsappMessage: "Hola, encontré el perfil de seguridad del adulto mayor José Ramírez y quiero comunicarme con sus familiares.",
+        locationMapsUrl: "https://maps.google.com/?q=4.6097,74.0817",
+        schoolMapsUrl: "",
+        school: "",
+        grade: "",
+        medicalConditions: "",
+        photoUrl: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&auto=format&fit=crop&q=80",
+        active: true,
+        createdAt: new Date().toISOString()
     }
 ];
 
@@ -273,10 +292,21 @@ class AdminApp {
 
         const profileMap = new Map();
 
+        // 0. Seed DEFAULT_PROFILES into profileMap first (unless in deletedIds)
+        DEFAULT_PROFILES.forEach(p => {
+            if (p && p.id && !deletedIds.includes(p.id)) {
+                profileMap.set(p.id, { ...p });
+            }
+        });
+
         // 1. Load Local Profiles first into map
         localProfiles.forEach(p => {
             if (p && p.id && !deletedIds.includes(p.id)) {
-                profileMap.set(p.id, { ...p });
+                if (profileMap.has(p.id)) {
+                    profileMap.set(p.id, this.mergeSingleProfile(profileMap.get(p.id), p));
+                } else {
+                    profileMap.set(p.id, { ...p });
+                }
             }
         });
 

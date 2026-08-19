@@ -125,6 +125,25 @@ let sharedProfilesStore = [
         photoUrl: "https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=400&auto=format&fit=crop&q=80",
         active: true,
         createdAt: new Date().toISOString()
+    },
+    {
+        id: "prof-006-jose",
+        slug: "jose-ramirez",
+        name: "José Ramírez",
+        gender: "senior",
+        birthDate: "1952-08-15",
+        age: 74,
+        bloodType: "O+",
+        parentPhone: "573109876543",
+        whatsappMessage: "Hola, encontré el perfil de seguridad del adulto mayor José Ramírez y quiero comunicarme con sus familiares.",
+        locationMapsUrl: "https://maps.google.com/?q=4.6097,74.0817",
+        schoolMapsUrl: "",
+        school: "",
+        grade: "",
+        medicalConditions: "",
+        photoUrl: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&auto=format&fit=crop&q=80",
+        active: true,
+        createdAt: new Date().toISOString()
     }
 ];
 
@@ -148,7 +167,12 @@ export default async function handler(req, res) {
         // Fetch persistent Cloud DB state first
         const cloudState = await requestCloudDB('GET');
         if (cloudState && Array.isArray(cloudState.profiles) && cloudState.profiles.length > 0) {
-            sharedProfilesStore = cloudState.profiles;
+            const mergedMap = new Map();
+            sharedProfilesStore.forEach(p => mergedMap.set(p.id, p));
+            cloudState.profiles.forEach(p => {
+                if (p && p.id) mergedMap.set(p.id, p);
+            });
+            sharedProfilesStore = Array.from(mergedMap.values());
             if (Array.isArray(cloudState.deletedIds)) {
                 sharedDeletedIdsStore = cloudState.deletedIds;
             }
