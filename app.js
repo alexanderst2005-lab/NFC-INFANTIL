@@ -274,24 +274,32 @@ class ProfileApp {
         };
     }
 
-    mergeAndPreserveProfiles(localProfiles = [], cloudProfiles = []) {
+    mergeAndPreserveProfiles(localProfiles = [], cloudProfiles = [], cloudDeletedIds = []) {
+        const deletedIds = JSON.parse(localStorage.getItem('nfc_deleted_ids') || '[]');
+
+        if (Array.isArray(cloudDeletedIds) && cloudDeletedIds.length > 0) {
+            cloudDeletedIds.forEach(id => {
+                if (id && !deletedIds.includes(id)) deletedIds.push(id);
+            });
+            localStorage.setItem('nfc_deleted_ids', JSON.stringify(deletedIds));
+        }
+
         const profileMap = new Map();
 
-        // 1. Load Cloud Profiles
+        // 1. Load Cloud Profiles (excluding deleted IDs)
         cloudProfiles.forEach(p => {
-            if (p && p.id) {
+            if (p && p.id && !deletedIds.includes(p.id)) {
                 profileMap.set(p.id, { ...p });
             }
         });
 
-        // 2. Merge Local Profiles (preserving user custom data across serverless cold-starts & redeploys)
+        // 2. Merge Local Profiles (excluding deleted IDs)
         localProfiles.forEach(p => {
-            if (p && p.id) {
+            if (p && p.id && !deletedIds.includes(p.id)) {
                 if (profileMap.has(p.id)) {
                     const existing = profileMap.get(p.id);
                     profileMap.set(p.id, this.mergeSingleProfile(existing, p));
                 } else {
-                    // Local profile not in cloud (created locally or cold-started) -> PRESERVE IT!
                     profileMap.set(p.id, { ...p });
                 }
             }
@@ -313,7 +321,8 @@ class ProfileApp {
                 const jsonRes = await res.json();
                 if (jsonRes && Array.isArray(jsonRes.profiles)) {
                     const cloudProfiles = jsonRes.profiles;
-                    const merged = this.mergeAndPreserveProfiles(this.profiles, cloudProfiles);
+                    const cloudDeletedIds = Array.isArray(jsonRes.deletedIds) ? jsonRes.deletedIds : [];
+                    const merged = this.mergeAndPreserveProfiles(this.profiles, cloudProfiles, cloudDeletedIds);
                     const sanitizedMerged = this.deduplicateProfiles(merged);
 
                     if (JSON.stringify(sanitizedMerged) !== JSON.stringify(this.profiles)) {

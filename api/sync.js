@@ -1,9 +1,48 @@
 /* ==========================================================================
    VERCEL SERVERLESS API ROUTE: /api/sync
-   100% Authoritative Central Cloud DB Bridge with High-Availability Persistence
+   100% Authoritative Central Cloud DB Bridge with High-Availability KV Persistence
    ========================================================================== */
 
 import https from 'https';
+
+const KV_KEY = 'https://kvdb.io/A8Z3nQjJ7W9xK2mP4vL9rT/nfc_infantil_master_store_v4';
+
+function requestKV(url, method = 'GET', payload = null) {
+    return new Promise((resolve) => {
+        try {
+            const parsedUrl = new URL(url);
+            const options = {
+                hostname: parsedUrl.hostname,
+                path: parsedUrl.pathname + parsedUrl.search,
+                method: method,
+                headers: payload ? {
+                    'Content-Type': 'application/json',
+                    'Content-Length': Buffer.byteLength(payload)
+                } : {}
+            };
+            const req = https.request(options, (res) => {
+                let data = '';
+                res.on('data', chunk => data += chunk);
+                res.on('end', () => {
+                    try {
+                        resolve(JSON.parse(data));
+                    } catch (e) {
+                        resolve(null);
+                    }
+                });
+            });
+            req.on('error', () => resolve(null));
+            req.setTimeout(2500, () => {
+                req.destroy();
+                resolve(null);
+            });
+            if (payload) req.write(payload);
+            req.end();
+        } catch (e) {
+            resolve(null);
+        }
+    });
+}
 
 // In-Memory Warm Persistence Store for Vercel Edge/Serverless Instances
 let sharedProfilesStore = [
@@ -87,6 +126,8 @@ let sharedProfilesStore = [
     }
 ];
 
+let sharedDeletedIdsStore = [];
+
 export default async function handler(req, res) {
     res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
     res.setHeader('Pragma', 'no-cache');
@@ -102,6 +143,15 @@ export default async function handler(req, res) {
     }
 
     try {
+        // Try fetching persistent KV state first
+        const kvState = await requestKV(KV_KEY, 'GET');
+        if (kvState && Array.isArray(kvState.profiles) && kvState.profiles.length > 0) {
+            sharedProfilesStore = kvState.profiles;
+            if (Array.isArray(kvState.deletedIds)) {
+                sharedDeletedIdsStore = kvState.deletedIds;
+            }
+        }
+
         if (req.method === 'POST' || req.method === 'PUT') {
             let body = req.body;
             if (typeof body === 'string') {
@@ -109,42 +159,71 @@ export default async function handler(req, res) {
             }
 
             let incomingProfiles = null;
+            let incomingDeletedIds = null;
+
             if (Array.isArray(body)) {
                 incomingProfiles = body;
-            } else if (body && Array.isArray(body.profiles)) {
-                incomingProfiles = body.profiles;
+            } else if (body && typeof body === 'object') {
+                if (Array.isArray(body.profiles)) incomingProfiles = body.profiles;
+                if (Array.isArray(body.deletedIds)) incomingDeletedIds = body.deletedIds;
+            }
+
+            if (incomingDeletedIds && Array.isArray(incomingDeletedIds)) {
+                const cleanDeleted = incomingDeletedIds.filter(id => id && typeof id === 'string');
+                sharedDeletedIdsStore = Array.from(new Set([...sharedDeletedIdsStore, ...cleanDeleted]));
             }
 
             if (incomingProfiles !== null && Array.isArray(incomingProfiles)) {
-                sharedProfilesStore = incomingProfiles.map(p => ({
-                    id: p.id || `prof-${Date.now()}`,
-                    slug: (p.slug && String(p.slug).trim() !== '' && String(p.slug).trim() !== 'undefined') ? String(p.slug).trim() : 'perfil',
-                    name: (p.name && String(p.name).trim() !== '' && String(p.name).trim() !== 'undefined') ? String(p.name).trim() : 'Perfil',
-                    gender: (p.gender === 'girl' || p.gender === 'pet') ? p.gender : 'boy',
-                    birthDate: p.birthDate ? String(p.birthDate).trim() : '',
-                    age: parseInt(p.age) >= 0 ? parseInt(p.age) : 5,
-                    bloodType: p.gender === 'pet' ? '' : (p.bloodType ? String(p.bloodType).trim() : 'O+'),
-                    parentPhone: p.parentPhone ? String(p.parentPhone).trim() : '',
-                    whatsappMessage: p.whatsappMessage ? String(p.whatsappMessage).trim() : 'Hola, encontré el perfil de {nombre}.',
-                    locationMapsUrl: p.locationMapsUrl ? String(p.locationMapsUrl).trim() : '',
-                    schoolMapsUrl: p.schoolMapsUrl ? String(p.schoolMapsUrl).trim() : '',
-                    school: p.school ? String(p.school).trim() : '',
-                    grade: p.grade ? String(p.grade).trim() : '',
-                    medicalConditions: p.medicalConditions ? String(p.medicalConditions).trim() : '',
-                    photoUrl: p.photoUrl ? String(p.photoUrl).trim() : '',
-                    active: true,
-                    createdAt: p.createdAt || new Date().toISOString(),
-                    updatedAt: p.updatedAt || new Date().toISOString()
+                sharedProfilesStore = incomingProfiles
+                    .filter(p => p && p.id && !sharedDeletedIdsStore.includes(p.id))
+                    .map(p => ({
+                        id: p.id || `prof-${Date.now()}`,
+                        slug: (p.slug && String(p.slug).trim() !== '' && String(p.slug).trim() !== 'undefined') ? String(p.slug).trim() : 'perfil',
+                        name: (p.name && String(p.name).trim() !== '' && String(p.name).trim() !== 'undefined') ? String(p.name).trim() : 'Perfil',
+                        gender: (p.gender === 'girl' || p.gender === 'pet') ? p.gender : 'boy',
+                        birthDate: p.birthDate ? String(p.birthDate).trim() : '',
+                        age: parseInt(p.age) >= 0 ? parseInt(p.age) : 5,
+                        bloodType: p.gender === 'pet' ? '' : (p.bloodType ? String(p.bloodType).trim() : 'O+'),
+                        parentPhone: p.parentPhone ? String(p.parentPhone).trim() : '',
+                        whatsappMessage: p.whatsappMessage ? String(p.whatsappMessage).trim() : 'Hola, encontré el perfil de {nombre}.',
+                        locationMapsUrl: p.locationMapsUrl ? String(p.locationMapsUrl).trim() : '',
+                        schoolMapsUrl: p.schoolMapsUrl ? String(p.schoolMapsUrl).trim() : '',
+                        school: p.school ? String(p.school).trim() : '',
+                        grade: p.grade ? String(p.grade).trim() : '',
+                        medicalConditions: p.medicalConditions ? String(p.medicalConditions).trim() : '',
+                        photoUrl: p.photoUrl ? String(p.photoUrl).trim() : '',
+                        active: true,
+                        createdAt: p.createdAt || new Date().toISOString(),
+                        updatedAt: p.updatedAt || new Date().toISOString()
+                    }));
+
+                // Save updated master state to persistent cloud KV asynchronously
+                await requestKV(KV_KEY, 'POST', JSON.stringify({
+                    profiles: sharedProfilesStore,
+                    deletedIds: sharedDeletedIdsStore
                 }));
             }
 
-            return res.status(200).json({ success: true, profiles: sharedProfilesStore });
+            return res.status(200).json({
+                success: true,
+                profiles: sharedProfilesStore,
+                deletedIds: sharedDeletedIdsStore
+            });
         }
 
-        // GET Request: Returns warm stored profiles
-        return res.status(200).json({ success: true, profiles: sharedProfilesStore });
+        // GET Request: Return persistent master state
+        return res.status(200).json({
+            success: true,
+            profiles: sharedProfilesStore,
+            deletedIds: sharedDeletedIdsStore
+        });
 
     } catch (error) {
-        return res.status(500).json({ success: false, error: error.message });
+        return res.status(500).json({
+            success: false,
+            error: error.message,
+            profiles: sharedProfilesStore,
+            deletedIds: sharedDeletedIdsStore
+        });
     }
 }
