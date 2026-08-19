@@ -730,6 +730,7 @@ class AdminApp {
     }
 
     openCreateModal() {
+        this.savedScrollY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0;
         this.photoRemoved = false;
         this.pendingUploadedPhoto = null;
         const initialGender = (this.currentCategoryTab === 'girl' || this.currentCategoryTab === 'pet' || this.currentCategoryTab === 'senior') ? this.currentCategoryTab : 'boy';
@@ -777,6 +778,7 @@ class AdminApp {
     }
 
     openEditModal(id) {
+        this.savedScrollY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0;
         const p = this.profiles.find(item => item.id === id);
         if (!p) return;
 
@@ -831,6 +833,9 @@ class AdminApp {
     closeModal() {
         document.getElementById('modal-profile').classList.add('hidden');
         document.body.classList.remove('modal-open');
+        if (typeof this.savedScrollY === 'number') {
+            window.scrollTo({ top: this.savedScrollY, behavior: 'instant' });
+        }
     }
 
     onLogoClick() {

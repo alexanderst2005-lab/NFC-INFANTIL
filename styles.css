@@ -1458,18 +1458,9 @@ html.is-authenticated-init #admin-dashboard-screen {
     border-radius: 10px;
 }
 
-/* Scroll Lock & Hide Background Panel when Modal is Active */
+/* Scroll Lock when Modal is Active */
 body.modal-open {
-    overflow: hidden !important;
-    height: 100vh !important;
-    touch-action: none;
-}
-
-body.modal-open .app-header,
-body.modal-open .container {
-    visibility: hidden !important;
-    opacity: 0 !important;
-    pointer-events: none !important;
+    overflow: hidden;
 }
 
 /* Modal Form Overlay - Starts cleanly from TOP for PC & Cellphones */
