@@ -258,19 +258,26 @@ class ProfileApp {
 
         const profileMap = new Map();
 
-        // 1. Load Cloud Profiles (excluding deleted IDs)
-        cloudProfiles.forEach(p => {
+        // 1. Load Local Profiles first into map
+        localProfiles.forEach(p => {
             if (p && p.id && !deletedIds.includes(p.id)) {
                 profileMap.set(p.id, { ...p });
             }
         });
 
-        // 2. Merge Local Profiles (excluding deleted IDs)
-        localProfiles.forEach(p => {
+        // 2. Merge Cloud Profiles (Cloud DB is Authoritative Master across devices)
+        cloudProfiles.forEach(p => {
             if (p && p.id && !deletedIds.includes(p.id)) {
                 if (profileMap.has(p.id)) {
-                    const existing = profileMap.get(p.id);
-                    profileMap.set(p.id, this.mergeSingleProfile(existing, p));
+                    const localProf = profileMap.get(p.id);
+                    const cloudTime = new Date(p.updatedAt || p.createdAt || 0).getTime();
+                    const localTime = new Date(localProf.updatedAt || localProf.createdAt || 0).getTime();
+
+                    if (cloudTime >= localTime) {
+                        profileMap.set(p.id, this.mergeSingleProfile(localProf, p));
+                    } else {
+                        profileMap.set(p.id, this.mergeSingleProfile(p, localProf));
+                    }
                 } else {
                     profileMap.set(p.id, { ...p });
                 }
