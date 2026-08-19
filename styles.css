@@ -430,6 +430,19 @@ body.theme-pet .verified-badge-pill {
     border-color: #a4c27b !important;
 }
 
+html.theme-pet .brand-shield-icon,
+body.theme-pet .brand-shield-icon {
+    background: linear-gradient(135deg, #2d5a27 0%, #1e401b 100%) !important;
+    box-shadow: 0 4px 12px rgba(45, 90, 39, 0.3) !important;
+}
+
+html.theme-pet .verified-badge-pill,
+body.theme-pet .verified-badge-pill {
+    background: rgba(45, 90, 39, 0.14) !important;
+    color: #1e401b !important;
+    border-color: rgba(94, 140, 49, 0.35) !important;
+}
+
 html.theme-pet .arch-photo-container,
 body.theme-pet .arch-photo-container {
     border: 5px solid #2d5a27 !important;
@@ -529,6 +542,24 @@ html.theme-senior .app-header .brand-logo {
 html.theme-senior .app-header .brand-icon {
     background: rgba(247, 127, 0, 0.15) !important;
     color: #f77f00 !important;
+}
+
+html.theme-senior .brand-shield-icon,
+body.theme-senior .brand-shield-icon {
+    background: linear-gradient(135deg, #f77f00 0%, #d65a00 100%) !important;
+    box-shadow: 0 4px 12px rgba(247, 127, 0, 0.3) !important;
+}
+
+html.theme-senior .verified-badge-pill,
+body.theme-senior .verified-badge-pill {
+    background: rgba(247, 127, 0, 0.14) !important;
+    color: #d65a00 !important;
+    border-color: rgba(247, 127, 0, 0.35) !important;
+}
+
+html.theme-senior .arch-photo-container,
+body.theme-senior .arch-photo-container {
+    box-shadow: 0 16px 40px rgba(247, 127, 0, 0.35), 0 0 0 5px rgba(247, 127, 0, 0.45) !important;
 }
 
 html.theme-senior .avatar-ring,
