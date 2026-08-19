@@ -515,7 +515,7 @@ class ProfileApp {
         // Render Page Title
         document.title = isPet 
             ? `Perfil de ${profile.name} | Identificación de Mascota`
-            : (isSenior ? `Perfil de ${profile.name} | Perfil de Seguridad Adulto Mayor` : `Perfil de ${profile.name} | NFC Seguridad Infantil`);
+            : (isSenior ? `Perfil de ${profile.name} | Perfil de Seguridad Adulto Mayor` : `Perfil de ${profile.name} | NFC - COL`);
 
         const heroNameEl = document.getElementById('p-hero-name');
         if (heroNameEl) heroNameEl.textContent = profile.name;
