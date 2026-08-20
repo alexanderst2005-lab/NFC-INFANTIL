@@ -351,12 +351,26 @@ class AdminApp {
             const categoryLabel = isPet ? 'Mascota 🐾' : (isSenior ? 'Adulto Mayor 👵👴' : (p.gender === 'girl' ? 'Niña 👧' : 'Niño 🧒'));
             const categoryClass = isPet ? 'pill-pet' : (isSenior ? 'pill-senior' : (p.gender === 'girl' ? 'pill-girl' : 'pill-boy'));
 
-            const ageText = (p.age !== undefined && p.age !== null && p.age !== '') ? `${p.age} años` : 'No especificada';
-            const bloodText = isPet ? 'N/A' : (p.bloodType || 'No especificado');
-            const schoolText = (isPet || isSenior) ? 'N/A' : (p.school ? `${p.school} ${p.grade ? '('+p.grade+')' : ''}` : 'No asignado');
-            const phoneText = p.parentPhone ? `+${p.parentPhone}` : 'Sin teléfono';
-            const phone2Text = p.parentPhone2 ? ` | +${p.parentPhone2}` : '';
-
+            // Ocultar iconos si el campo no está diligenciado
+            let metaHtml = '';
+            
+            if (p.age !== undefined && p.age !== null && String(p.age).trim() !== '') {
+                metaHtml += `<div class="meta-item"><i class="fa-solid fa-cake-candles"></i> ${p.age} años</div>`;
+            }
+            if (!isPet && p.bloodType && p.bloodType.trim() !== '') {
+                metaHtml += `<div class="meta-item"><i class="fa-solid fa-droplet"></i> ${p.bloodType}</div>`;
+            }
+            if (!isPet && !isSenior && p.school && p.school.trim() !== '') {
+                const gradeStr = p.grade ? ` (${p.grade})` : '';
+                metaHtml += `<div class="meta-item meta-item-full"><i class="fa-solid fa-school"></i> ${p.school}${gradeStr}</div>`;
+            }
+            if (p.parentPhone && String(p.parentPhone).trim() !== '') {
+                const phone2Str = p.parentPhone2 ? ` | +${p.parentPhone2}` : '';
+                metaHtml += `<div class="meta-item meta-item-full"><i class="fa-solid fa-phone"></i> +${p.parentPhone}${phone2Str}</div>`;
+            }
+            
+            // Solo renderizar el contenedor si hay al menos un campo lleno
+            const metaContainer = metaHtml ? `<div class="card-meta-grid">${metaHtml}</div>` : '';
             return `
             <div class="admin-card" data-id="${p.id}">
                 <div class="admin-card-header">
@@ -373,14 +387,7 @@ class AdminApp {
                         <i class="fa-solid fa-copy"></i> Copiar URL
                     </button>
                 </div>
-
-                <div class="card-meta-grid">
-                    <div class="meta-item"><i class="fa-solid fa-cake-candles"></i> ${ageText}</div>
-                    <div class="meta-item"><i class="fa-solid fa-droplet"></i> ${bloodText}</div>
-                    <div class="meta-item meta-item-full"><i class="fa-solid fa-school"></i> ${schoolText}</div>
-                    <div class="meta-item meta-item-full"><i class="fa-solid fa-phone"></i> ${phoneText}${phone2Text}</div>
-                </div>
-
+                ${metaContainer}
                 <div class="admin-card-footer">
                     <button type="button" class="btn btn-secondary" onclick="adminApp.openEditModal('${p.id}')">
                         <i class="fa-solid fa-pen-to-square"></i> Editar
