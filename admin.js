@@ -687,30 +687,36 @@ class AdminApp {
                 btnSubmit.disabled = true;
             }
             try {
+                let success = false;
                 if (user && user.includes('@')) {
-                    await signInWithEmailAndPassword(auth, user, pass);
+                    try {
+                        await signInWithEmailAndPassword(auth, user, pass);
+                        success = true;
+                    } catch (fbErr) {
+                        if ((user === "admin" || user === "admin@nfc.com") && (pass === "1234" || pass === "admin" || pass === "admin123")) {
+                            success = true;
+                        } else {
+                            throw fbErr;
+                        }
+                    }
                 } else if ((user === "admin" || user === "admin@nfc.com") && (pass === "1234" || pass === "admin" || pass === "admin123")) {
+                    success = true;
+                } else {
+                    await signInWithEmailAndPassword(auth, user, pass);
+                    success = true;
+                }
+
+                if (success) {
                     this.isAuthenticated = true;
                     localStorage.setItem('nfc_admin_auth', 'true');
                     sessionStorage.setItem('nfc_admin_auth', 'true');
                     this.renderState();
                     this.showToast("¡Sesión iniciada correctamente!");
                     this.renderProfilesGrid();
-                } else {
-                    await signInWithEmailAndPassword(auth, user, pass);
                 }
             } catch (error) {
                 console.error("Login Error:", error);
-                if ((user === "admin" || user === "admin@nfc.com") && (pass === "1234" || pass === "admin" || pass === "admin123")) {
-                    this.isAuthenticated = true;
-                    localStorage.setItem('nfc_admin_auth', 'true');
-                    sessionStorage.setItem('nfc_admin_auth', 'true');
-                    this.renderState();
-                    this.showToast("¡Sesión iniciada correctamente!");
-                    this.renderProfilesGrid();
-                } else {
-                    alert("Usuario o contraseña incorrectos.");
-                }
+                alert("Usuario o contraseña incorrectos.");
             } finally {
                 if (btnSubmit) {
                     btnSubmit.innerHTML = originalBtnHtml;
