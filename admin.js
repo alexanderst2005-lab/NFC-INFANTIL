@@ -417,7 +417,7 @@ class AdminApp {
         
         document.getElementById('input-birthdate').value = '';
         document.getElementById('input-age').value = '';
-        document.getElementById('input-blood').value = 'O+';
+        document.getElementById('input-blood').value = '';
         document.getElementById('input-phone').value = '';
         document.getElementById('input-phone2').value = '';
         document.getElementById('input-whatsapp-msg').value = '';
@@ -455,7 +455,7 @@ class AdminApp {
         
         document.getElementById('input-birthdate').value = profile.birthDate || '';
         document.getElementById('input-age').value = (profile.age !== undefined && profile.age !== null) ? profile.age : '';
-        document.getElementById('input-blood').value = profile.bloodType || 'O+';
+        document.getElementById('input-blood').value = profile.bloodType || '';
         document.getElementById('input-phone').value = profile.parentPhone || '';
         document.getElementById('input-phone2').value = profile.parentPhone2 || '';
         document.getElementById('input-whatsapp-msg').value = profile.whatsappMessage || '';

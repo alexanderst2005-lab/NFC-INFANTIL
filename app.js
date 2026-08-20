@@ -281,19 +281,23 @@ class App {
             genderText.textContent = isPet ? 'Mascota Protegida' : (isSenior ? 'Adulto Mayor Protegido' : 'Perfil Verificado');
         }
         // Age
+        const ageCard = document.getElementById('box-age');
         const ageEl = document.getElementById('p-age-val');
-        if (ageEl) {
-            const ageVal = (profile.age !== undefined && profile.age !== null && profile.age !== '') ? `${profile.age} años` : 'N/A';
-            ageEl.textContent = ageVal;
+        if (profile.age !== undefined && profile.age !== null && String(profile.age).trim() !== '') {
+            ageCard?.classList.remove('hidden');
+            if (ageEl) ageEl.textContent = `${profile.age} años`;
+        } else {
+            ageCard?.classList.add('hidden'); // Ocultar si no hay edad
         }
+        
         // Blood Type Card Visibility
         const bloodCard = document.getElementById('box-blood');
         const bloodEl = document.getElementById('p-blood-val');
-        if (isPet) {
-            bloodCard?.classList.add('hidden');
+        if (isPet || !profile.bloodType || profile.bloodType.trim() === '') {
+            bloodCard?.classList.add('hidden'); // Ocultar si está vacío o es mascota
         } else {
             bloodCard?.classList.remove('hidden');
-            if (bloodEl) bloodEl.textContent = profile.bloodType || 'N/A';
+            if (bloodEl) bloodEl.textContent = profile.bloodType;
         }
         // School Card Visibility
         const schoolCard = document.getElementById('box-school');
