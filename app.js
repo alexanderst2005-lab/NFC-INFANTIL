@@ -16,8 +16,16 @@ const NEUTRAL_AVATAR_SVG = "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http:
 class App {
     constructor() {
         const stored = localStorage.getItem('nfc_profiles_db');
-        const cached = stored ? JSON.parse(stored) : [];
-        this.profiles = this.deduplicateProfiles([...INITIAL_PROFILES_SEED, ...cached]);
+        let initialList = INITIAL_PROFILES_SEED;
+        if (stored) {
+            try {
+                const parsed = JSON.parse(stored);
+                if (Array.isArray(parsed) && parsed.length > 0) {
+                    initialList = parsed;
+                }
+            } catch (e) {}
+        }
+        this.profiles = this.deduplicateProfiles(initialList);
         this.currentProfile = null;
         this.nfcSession = null;
         this.init();
@@ -42,7 +50,7 @@ class App {
 
             if (loaded.length === 0) {
                 console.log("Firestore empty: Seeding initial real profiles...");
-                this.profiles = this.deduplicateProfiles([...INITIAL_PROFILES_SEED, ...this.profiles]);
+                this.profiles = this.deduplicateProfiles(INITIAL_PROFILES_SEED);
                 for (const seedProf of INITIAL_PROFILES_SEED) {
                     try {
                         await setDoc(doc(db, "nfc_profiles", seedProf.id), seedProf);
