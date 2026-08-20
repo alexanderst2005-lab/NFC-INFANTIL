@@ -751,42 +751,52 @@ class AdminApp {
         // ==========================================
         // SISTEMA DE LOGOUT PROFESIONAL (MODAL + SPINNER)
         // ==========================================
-        const logoutModal = document.getElementById('modal-logout');
-        const btnConfirmLogout = document.getElementById('btn-confirm-logout');
         
-        // 1. Mostrar modal al hacer clic en salir
+        // 1. Mostrar modal al hacer clic en salir (Búsqueda Dinámica Inmune)
         document.getElementById('btn-admin-logout')?.addEventListener('click', () => {
-            if (logoutModal) logoutModal.classList.remove('hidden');
+            const modal = document.getElementById('modal-logout');
+            if (modal) {
+                modal.classList.remove('hidden');
+            } else {
+                alert("Error técnico: Asegúrate de que el modal de logout esté en el HTML.");
+            }
         });
-        // 2. Ocultar modal si se cancela
-        document.getElementById('btn-cancel-logout')?.addEventListener('click', () => {
-            if (logoutModal) logoutModal.classList.add('hidden');
+        
+        // 2. Ocultar modal si se cancela (Usando delegación de eventos)
+        document.body.addEventListener('click', (e) => {
+            if (e.target.id === 'btn-cancel-logout') {
+                const modal = document.getElementById('modal-logout');
+                if (modal) modal.classList.add('hidden');
+            }
         });
-        // 3. Ejecutar Firebase Auth SignOut con estado de carga
-        btnConfirmLogout?.addEventListener('click', async () => {
-            const originalHtml = btnConfirmLogout.innerHTML;
-            
-            // Estado visual de carga (Spinner animado)
-            btnConfirmLogout.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Cerrando...';
-            btnConfirmLogout.disabled = true;
-            btnConfirmLogout.style.opacity = '0.7';
-            try {
-                await signOut(auth); // Desconecta del servidor Firebase
-                localStorage.removeItem('nfc_profiles_db'); // Limpieza absoluta de caché local
-                localStorage.removeItem('nfc_admin_auth');
-                sessionStorage.removeItem('nfc_admin_auth');
+        // 3. Ejecutar Firebase Auth SignOut con estado de carga (Delegación)
+        document.body.addEventListener('click', async (e) => {
+            if (e.target.id === 'btn-confirm-logout') {
+                const btnConfirmLogout = e.target;
+                const originalHtml = btnConfirmLogout.innerHTML;
                 
-                // Redirección forzada e instantánea a la pantalla de Login
-                window.location.reload(); 
-                
-            } catch (error) {
-                console.error("Logout Error:", error);
-                alert("Hubo un error de conexión al intentar cerrar sesión.");
-                
-                // Restaurar botón solo si falla
-                btnConfirmLogout.innerHTML = originalHtml;
-                btnConfirmLogout.disabled = false;
-                btnConfirmLogout.style.opacity = '1';
+                // Estado visual de carga (Spinner animado)
+                btnConfirmLogout.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Cerrando...';
+                btnConfirmLogout.disabled = true;
+                btnConfirmLogout.style.opacity = '0.7';
+                try {
+                    await signOut(auth); // Desconecta del servidor Firebase
+                    localStorage.removeItem('nfc_profiles_db'); // Limpieza de caché local
+                    localStorage.removeItem('nfc_admin_auth');
+                    sessionStorage.removeItem('nfc_admin_auth');
+                    
+                    // Redirección forzada e instantánea a la pantalla de Login
+                    window.location.reload(); 
+                    
+                } catch (error) {
+                    console.error("Logout Error:", error);
+                    alert("Hubo un error de conexión al intentar cerrar sesión.");
+                    
+                    // Restaurar botón solo si falla
+                    btnConfirmLogout.innerHTML = originalHtml;
+                    btnConfirmLogout.disabled = false;
+                    btnConfirmLogout.style.opacity = '1';
+                }
             }
         });
 
