@@ -743,20 +743,18 @@ class AdminApp {
             btnConfirmLogout.style.opacity = '0.7';
             try {
                 await signOut(auth); // Desconecta del servidor Firebase
-                logoutModal?.classList.add('hidden');
-                
-                // Limpieza absoluta de caché local por seguridad
-                localStorage.removeItem('nfc_profiles_db');
+                localStorage.removeItem('nfc_profiles_db'); // Limpieza absoluta de caché local
                 localStorage.removeItem('nfc_admin_auth');
                 sessionStorage.removeItem('nfc_admin_auth');
-                this.isAuthenticated = false;
-                this.renderState();
-                this.showToast("Sesión cerrada correctamente.");
+                
+                // Redirección forzada e instantánea a la pantalla de Login
+                window.location.reload(); 
+                
             } catch (error) {
                 console.error("Logout Error:", error);
                 alert("Hubo un error de conexión al intentar cerrar sesión.");
-            } finally {
-                // Restaurar botón (Por si falla o se cancela)
+                
+                // Restaurar botón solo si falla
                 btnConfirmLogout.innerHTML = originalHtml;
                 btnConfirmLogout.disabled = false;
                 btnConfirmLogout.style.opacity = '1';
