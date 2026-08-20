@@ -101,14 +101,39 @@ class AdminApp {
         if (!birthDateStr || String(birthDateStr).trim() === '') {
             return (fallbackAge !== undefined && fallbackAge !== null && String(fallbackAge).trim() !== '' && parseInt(fallbackAge) >= 0) ? parseInt(fallbackAge) : '';
         }
-        const birthDate = new Date(birthDateStr);
-        if (isNaN(birthDate.getTime())) {
-            return (fallbackAge !== undefined && fallbackAge !== null && String(fallbackAge).trim() !== '' && parseInt(fallbackAge) >= 0) ? parseInt(fallbackAge) : '';
+        const str = String(birthDateStr).trim();
+        let birthYear, birthMonth, birthDay;
+
+        // Parse YYYY-MM-DD or YYYY/MM/DD directly as calendar date
+        const isoMatch = str.match(/^(\d{4})[-/](\d{1,2})[-/](\d{1,2})/);
+        // Parse DD/MM/YYYY or DD-MM-YYYY
+        const dmyMatch = str.match(/^(\d{1,2})[-/](\d{1,2})[-/](\d{4})/);
+
+        if (isoMatch) {
+            birthYear = parseInt(isoMatch[1], 10);
+            birthMonth = parseInt(isoMatch[2], 10);
+            birthDay = parseInt(isoMatch[3], 10);
+        } else if (dmyMatch) {
+            birthDay = parseInt(dmyMatch[1], 10);
+            birthMonth = parseInt(dmyMatch[2], 10);
+            birthYear = parseInt(dmyMatch[3], 10);
+        } else {
+            const d = new Date(str);
+            if (isNaN(d.getTime())) {
+                return (fallbackAge !== undefined && fallbackAge !== null && String(fallbackAge).trim() !== '' && parseInt(fallbackAge) >= 0) ? parseInt(fallbackAge) : '';
+            }
+            birthYear = d.getUTCFullYear();
+            birthMonth = d.getUTCMonth() + 1;
+            birthDay = d.getUTCDate();
         }
+
         const today = new Date();
-        let age = today.getFullYear() - birthDate.getFullYear();
-        const monthDiff = today.getMonth() - birthDate.getMonth();
-        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+        const currentYear = today.getFullYear();
+        const currentMonth = today.getMonth() + 1; // 1 to 12
+        const currentDay = today.getDate(); // 1 to 31
+
+        let age = currentYear - birthYear;
+        if (currentMonth < birthMonth || (currentMonth === birthMonth && currentDay < birthDay)) {
             age--;
         }
         return age >= 0 ? age : '';
