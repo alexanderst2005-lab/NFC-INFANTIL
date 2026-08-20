@@ -230,27 +230,37 @@ class AdminApp {
     }
 
     renderState() {
-        const loginView = document.getElementById('admin-login-screen');
-        const dashboardView = document.getElementById('admin-dashboard-screen');
+        // Busca las ventanas usando cualquiera de los dos nombres posibles
+        const loginView = document.getElementById('admin-login-screen') || document.getElementById('view-admin-login');
+        const dashboardView = document.getElementById('admin-dashboard-screen') || document.getElementById('view-admin-dashboard');
         const logoutBtn = document.getElementById('btn-admin-logout');
         if (this.isAuthenticated) {
-            // Entrando: Ocultar login, Mostrar dashboard
-            loginView?.classList.remove('active-view');
-            loginView?.classList.add('hidden');
+            // SI ESTÁ LOGUEADO: Ocultar login y Forzar aparición del dashboard
+            if (loginView) {
+                loginView.classList.remove('active-view');
+                loginView.classList.add('hidden');
+                loginView.style.setProperty('display', 'none', 'important'); // <- Fuerza bruta
+            }
+            if (dashboardView) {
+                dashboardView.classList.add('active-view');
+                dashboardView.classList.remove('hidden');
+                dashboardView.style.setProperty('display', 'block', 'important'); // <- Fuerza bruta
+            }
+            if (logoutBtn) logoutBtn.classList.remove('hidden');
             
-            dashboardView?.classList.add('active-view');
-            dashboardView?.classList.remove('hidden');
-            
-            logoutBtn?.classList.remove('hidden');
         } else {
-            // Saliendo: Mostrar login, Ocultar dashboard
-            loginView?.classList.add('active-view');
-            loginView?.classList.remove('hidden');
-            
-            dashboardView?.classList.remove('active-view');
-            dashboardView?.classList.add('hidden');
-            
-            logoutBtn?.classList.add('hidden');
+            // SI NO ESTÁ LOGUEADO: Mostrar login y Ocultar dashboard
+            if (loginView) {
+                loginView.classList.add('active-view');
+                loginView.classList.remove('hidden');
+                loginView.style.setProperty('display', 'block', 'important');
+            }
+            if (dashboardView) {
+                dashboardView.classList.remove('active-view');
+                dashboardView.classList.add('hidden');
+                dashboardView.style.setProperty('display', 'none', 'important');
+            }
+            if (logoutBtn) logoutBtn.classList.add('hidden');
         }
     }
 
