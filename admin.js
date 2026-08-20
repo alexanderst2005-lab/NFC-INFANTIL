@@ -232,15 +232,25 @@ class AdminApp {
     renderState() {
         const loginView = document.getElementById('admin-login-screen');
         const dashboardView = document.getElementById('admin-dashboard-screen');
-        const logoutBtn = document.getElementById('btn-admin-logout'); // <- Referencia al botón
+        const logoutBtn = document.getElementById('btn-admin-logout');
         if (this.isAuthenticated) {
+            // Entrando: Ocultar login, Mostrar dashboard
+            loginView?.classList.remove('active-view');
             loginView?.classList.add('hidden');
+            
+            dashboardView?.classList.add('active-view');
             dashboardView?.classList.remove('hidden');
-            logoutBtn?.classList.remove('hidden'); // <- Hace visible el botón
+            
+            logoutBtn?.classList.remove('hidden');
         } else {
+            // Saliendo: Mostrar login, Ocultar dashboard
+            loginView?.classList.add('active-view');
             loginView?.classList.remove('hidden');
+            
+            dashboardView?.classList.remove('active-view');
             dashboardView?.classList.add('hidden');
-            logoutBtn?.classList.add('hidden'); // <- Oculta el botón
+            
+            logoutBtn?.classList.add('hidden');
         }
     }
 
