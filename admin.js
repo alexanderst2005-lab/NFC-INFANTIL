@@ -716,15 +716,48 @@ class AdminApp {
             }
         });
 
-        document.getElementById('btn-admin-logout')?.addEventListener('click', async () => {
+        // ==========================================
+        // SISTEMA DE LOGOUT PROFESIONAL (MODAL + SPINNER)
+        // ==========================================
+        const logoutModal = document.getElementById('modal-logout');
+        const btnConfirmLogout = document.getElementById('btn-confirm-logout');
+        
+        // 1. Mostrar modal al hacer clic en salir
+        document.getElementById('btn-admin-logout')?.addEventListener('click', () => {
+            if (logoutModal) logoutModal.classList.remove('hidden');
+        });
+        // 2. Ocultar modal si se cancela
+        document.getElementById('btn-cancel-logout')?.addEventListener('click', () => {
+            if (logoutModal) logoutModal.classList.add('hidden');
+        });
+        // 3. Ejecutar Firebase Auth SignOut con estado de carga
+        btnConfirmLogout?.addEventListener('click', async () => {
+            const originalHtml = btnConfirmLogout.innerHTML;
+            
+            // Estado visual de carga (Spinner animado)
+            btnConfirmLogout.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Cerrando...';
+            btnConfirmLogout.disabled = true;
+            btnConfirmLogout.style.opacity = '0.7';
             try {
-                await signOut(auth);
-            } catch (error) {}
-            this.isAuthenticated = false;
-            localStorage.removeItem('nfc_admin_auth');
-            sessionStorage.removeItem('nfc_admin_auth');
-            this.renderState();
-            this.showToast("Sesión cerrada correctamente.");
+                await signOut(auth); // Desconecta del servidor Firebase
+                logoutModal?.classList.add('hidden');
+                
+                // Limpieza absoluta de caché local por seguridad
+                localStorage.removeItem('nfc_profiles_db');
+                localStorage.removeItem('nfc_admin_auth');
+                sessionStorage.removeItem('nfc_admin_auth');
+                this.isAuthenticated = false;
+                this.renderState();
+                this.showToast("Sesión cerrada correctamente.");
+            } catch (error) {
+                console.error("Logout Error:", error);
+                alert("Hubo un error de conexión al intentar cerrar sesión.");
+            } finally {
+                // Restaurar botón (Por si falla o se cancela)
+                btnConfirmLogout.innerHTML = originalHtml;
+                btnConfirmLogout.disabled = false;
+                btnConfirmLogout.style.opacity = '1';
+            }
         });
 
         let searchRafTimer = null;
