@@ -230,10 +230,46 @@ class App {
         // Apply Theme
         const isPet = profile.gender === 'pet';
         const isSenior = profile.gender === 'senior';
-        const themeClass = isPet ? 'theme-pet' : (isSenior ? 'theme-senior' : (profile.gender === 'girl' ? 'theme-girl' : 'theme-boy'));
+        const isGirl = profile.gender === 'girl';
+        const themeClass = isPet ? 'theme-pet' : (isSenior ? 'theme-senior' : (isGirl ? 'theme-girl' : 'theme-boy'));
         
         document.documentElement.classList.remove('theme-boy', 'theme-girl', 'theme-pet', 'theme-senior');
         document.documentElement.classList.add(themeClass);
+
+        // Update Category-Specific Decorator Icons (Niñas: Pluma, Arcoíris, Varita Mágica, Brote, Torre)
+        const decoTl = document.getElementById('p-deco-tl');
+        const decoTr = document.getElementById('p-deco-tr');
+        const decoBr = document.getElementById('p-deco-br');
+        const sceneLeft = document.getElementById('scene-left');
+        const sceneRight = document.getElementById('scene-right');
+
+        if (isGirl) {
+            if (decoTl) decoTl.innerHTML = '<i class="fa-solid fa-feather"></i>';
+            if (decoTr) decoTr.innerHTML = '<i class="fa-solid fa-rainbow"></i>';
+            if (decoBr) decoBr.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i>';
+            if (sceneLeft) sceneLeft.innerHTML = '<i class="fa-solid fa-seedling"></i>';
+            if (sceneRight) sceneRight.innerHTML = '<i class="fa-solid fa-chess-rook"></i>';
+        } else if (isPet) {
+            if (decoTl) decoTl.innerHTML = '<i class="fa-solid fa-paw"></i>';
+            if (decoTr) decoTr.innerHTML = '<i class="fa-solid fa-bone"></i>';
+            if (decoBr) decoBr.innerHTML = '<i class="fa-solid fa-heart"></i>';
+            if (sceneLeft) sceneLeft.innerHTML = '<i class="fa-solid fa-tree"></i>';
+            if (sceneRight) sceneRight.innerHTML = '<i class="fa-solid fa-paw"></i>';
+        } else if (isSenior) {
+            if (decoTl) decoTl.innerHTML = '<i class="fa-solid fa-heart-pulse"></i>';
+            if (decoTr) decoTr.innerHTML = '<i class="fa-solid fa-user-shield"></i>';
+            if (decoBr) decoBr.innerHTML = '<i class="fa-solid fa-hand-holding-heart"></i>';
+            if (sceneLeft) sceneLeft.innerHTML = '<i class="fa-solid fa-tree"></i>';
+            if (sceneRight) sceneRight.innerHTML = '<i class="fa-solid fa-shield-heart"></i>';
+        } else {
+            // Default Boy Theme
+            if (decoTl) decoTl.innerHTML = '<i class="fa-solid fa-rocket"></i>';
+            if (decoTr) decoTr.innerHTML = '<i class="fa-solid fa-atom"></i>';
+            if (decoBr) decoBr.innerHTML = '<i class="fa-solid fa-user-astronaut"></i>';
+            if (sceneLeft) sceneLeft.innerHTML = '<i class="fa-solid fa-tree"></i>';
+            if (sceneRight) sceneRight.innerHTML = '<i class="fa-solid fa-paw"></i>';
+        }
+
         // Header Title Badge
         const badgeTitle = document.getElementById('badge-category-title');
         const headerBadgeText = document.getElementById('header-badge-text');
