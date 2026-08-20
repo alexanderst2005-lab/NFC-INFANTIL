@@ -16,17 +16,21 @@ const NEUTRAL_AVATAR_SVG = "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http:
 
 class App {
     constructor() {
-        this.profiles = [];
+        const stored = localStorage.getItem('nfc_profiles_db');
+        this.profiles = stored ? JSON.parse(stored) : [];
         this.currentProfile = null;
         this.nfcSession = null;
         this.init();
     }
-
     async init() {
         const targetSlug = this.getSlugFromUrl();
         this.setupNfcListener();
         this.setupSimulatedScanner();
-
+        // 🚀 Carga Instantánea desde Caché Local (Elimina pantalla azul de espera al 100%)
+        if (this.profiles && this.profiles.length > 0) {
+            this.renderSingleProfile(targetSlug);
+            document.documentElement.classList.add('ready');
+        }
         // Firestore Realtime Single Source of Truth Listener
         onSnapshot(collection(db, "nfc_profiles"), async (snapshot) => {
             const loaded = [];
@@ -34,7 +38,6 @@ class App {
                 const data = docSnap.data();
                 if (data) loaded.push(data);
             });
-
             if (loaded.length === 0) {
                 // Initial Automatic Seed if Firestore collection is completely empty
                 console.log("Firestore empty: Seeding initial real profiles...");
@@ -47,8 +50,11 @@ class App {
                 }
                 return;
             }
-
             this.profiles = this.deduplicateProfiles(loaded);
+            
+            // Guardar en caché para la próxima vez que se recargue
+            localStorage.setItem('nfc_profiles_db', JSON.stringify(this.profiles));
+            
             this.renderSingleProfile(targetSlug);
             document.documentElement.classList.add('ready');
         }, (error) => {
