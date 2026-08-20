@@ -1,3 +1,6 @@
+// Forzar visualización de la interfaz (Bypass para el CSP de Vercel)
+document.documentElement.classList.add('ready');
+
 /* ==========================================================================
    NFC INFANTIL - ADMIN PANEL LOGIC (FIREBASE FIRESTORE REAL-TIME SINGLE SOURCE OF TRUTH)
    ========================================================================== */
