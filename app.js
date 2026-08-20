@@ -1,7 +1,6 @@
 /* ==========================================================================
-   NFC INFANTIL - PUBLIC CHILD PROFILE APP LOGIC (FIREBASE FIRESTORE SDK V10 SSOT)
+   NFC INFANTIL - PUBLIC PROFILE VIEWER LOGIC (FIREBASE FIRESTORE REAL-TIME SINGLE SOURCE OF TRUTH)
    ========================================================================== */
-
 import { 
     db, 
     collection, 
@@ -17,20 +16,22 @@ const NEUTRAL_AVATAR_SVG = "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http:
 class App {
     constructor() {
         const stored = localStorage.getItem('nfc_profiles_db');
-        this.profiles = stored ? JSON.parse(stored) : [];
+        const cached = stored ? JSON.parse(stored) : [];
+        this.profiles = this.deduplicateProfiles([...INITIAL_PROFILES_SEED, ...cached]);
         this.currentProfile = null;
         this.nfcSession = null;
         this.init();
     }
+
     async init() {
         const targetSlug = this.getSlugFromUrl();
         this.setupNfcListener();
         this.setupSimulatedScanner();
-        // 🚀 Carga Instantánea desde Caché Local (Elimina pantalla azul de espera al 100%)
-        if (this.profiles && this.profiles.length > 0) {
-            this.renderSingleProfile(targetSlug);
-            document.documentElement.classList.add('ready');
-        }
+
+        // 🚀 Instant local render so page is NEVER blank or empty
+        this.renderSingleProfile(targetSlug);
+        document.documentElement.classList.add('ready');
+
         // Firestore Realtime Single Source of Truth Listener
         onSnapshot(collection(db, "nfc_profiles"), async (snapshot) => {
             const loaded = [];
@@ -38,9 +39,10 @@ class App {
                 const data = docSnap.data();
                 if (data) loaded.push(data);
             });
+
             if (loaded.length === 0) {
-                // Initial Automatic Seed if Firestore collection is completely empty
                 console.log("Firestore empty: Seeding initial real profiles...");
+                this.profiles = this.deduplicateProfiles([...INITIAL_PROFILES_SEED, ...this.profiles]);
                 for (const seedProf of INITIAL_PROFILES_SEED) {
                     try {
                         await setDoc(doc(db, "nfc_profiles", seedProf.id), seedProf);
@@ -48,17 +50,20 @@ class App {
                         console.error("Error seeding initial profile:", e);
                     }
                 }
-                return;
+            } else {
+                this.profiles = this.deduplicateProfiles(loaded);
             }
-            this.profiles = this.deduplicateProfiles(loaded);
-            
-            // Guardar en caché para la próxima vez que se recargue
+
             localStorage.setItem('nfc_profiles_db', JSON.stringify(this.profiles));
-            
+
             this.renderSingleProfile(targetSlug);
             document.documentElement.classList.add('ready');
         }, (error) => {
             console.error("Firestore Realtime Listener Error:", error);
+            if (this.profiles.length === 0) {
+                this.profiles = this.deduplicateProfiles(INITIAL_PROFILES_SEED);
+            }
+            this.renderSingleProfile(targetSlug);
             document.documentElement.classList.add('ready');
         });
     }
@@ -87,18 +92,22 @@ class App {
             ? String(p.name).trim() 
             : 'Perfil';
         
-        let gender = (p.gender === 'girl' || p.gender === 'boy' || p.gender === 'pet' || p.gender === 'senior') ? p.gender : 'boy';
+        let gender = (p.gender === 'girl' || p.gender === 'pet' || p.gender === 'senior') ? p.gender : 'boy';
         if (p.id === 'prof-006-jose' || (p.slug && String(p.slug).toLowerCase().includes('jose-ramirez'))) {
             gender = 'senior';
         }
 
-        let slug = (p.slug && String(p.slug).trim() !== '' && String(p.slug).trim() !== 'undefined') 
-            ? String(p.slug).trim() 
-            : name.toLowerCase().replace(/[^a-z0-9]/g, '-');
+        const rawSlug = (p.slug && String(p.slug).trim() !== '') ? String(p.slug).trim() : name;
+        let slug = rawSlug.toLowerCase()
+            .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+            .replace(/[^a-z0-9]/g, '-')
+            .replace(/-+/g, '-')
+            .replace(/^-|-$/g, '');
+
+        if (!slug) slug = 'perfil';
 
         let locationMapsUrl = (p.locationMapsUrl !== undefined && p.locationMapsUrl !== null) ? String(p.locationMapsUrl).trim() : '';
-        if (locationMapsUrl.includes('maps.google.com/?q=4.6853') || 
-            locationMapsUrl.includes('maps.google.com/?q=6.2088') || 
+        if (locationMapsUrl.includes('maps.google.com/?q=6.2088') || 
             locationMapsUrl.includes('maps.google.com/?q=4.6581') || 
             locationMapsUrl.includes('maps.google.com/?q=3.4516')) {
             locationMapsUrl = '';
@@ -110,7 +119,7 @@ class App {
         let medicalConditions = (p.medicalConditions !== undefined && p.medicalConditions !== null) ? String(p.medicalConditions).trim() : '';
         let importantMedications = (p.importantMedications !== undefined && p.importantMedications !== null) ? String(p.importantMedications).trim() : '';
 
-        const defaultWaMsg = gender === 'pet' 
+        const defaultWaMsg = gender === 'pet'
             ? 'Hola, encontré a la mascota {nombre} y quiero comunicarme con su dueño.'
             : (gender === 'senior' ? 'Hola, encontré el perfil de seguridad del adulto mayor {nombre} y quiero comunicarme con sus familiares.' : 'Hola, encontré la información del perfil de {nombre}.');
 
@@ -140,24 +149,10 @@ class App {
             medicalConditions: medicalConditions,
             importantMedications: importantMedications,
             photoUrl: photoUrl,
-            active: p.active !== undefined ? p.active : true,
+            active: true,
             createdAt: p.createdAt || new Date().toISOString(),
             updatedAt: p.updatedAt || new Date().toISOString()
         };
-    }
-
-    areProfilesEqual(listA, listB) {
-        if (!Array.isArray(listA) || !Array.isArray(listB)) return false;
-        if (listA.length !== listB.length) return false;
-        for (let i = 0; i < listA.length; i++) {
-            const pA = listA[i];
-            const pB = listB[i];
-            if (!pA || !pB) return false;
-            if (JSON.stringify(pA) !== JSON.stringify(pB)) {
-                return false;
-            }
-        }
-        return true;
     }
 
     deduplicateProfiles(list) {
@@ -180,74 +175,35 @@ class App {
     }
 
     getSlugFromUrl() {
-        let rawPath = window.location.pathname;
-        try {
-            rawPath = decodeURIComponent(rawPath);
-        } catch (e) {}
-
-        const path = rawPath.toLowerCase().replace(/\/$/, '') || '/';
-        const urlParams = new URLSearchParams(window.location.search);
-
-        let slug = '';
-        if (urlParams.has('slug')) {
-            slug = urlParams.get('slug');
-        } else if (path !== '/' && path !== '/index.html') {
-            slug = path.substring(1);
+        const path = window.location.pathname.replace(/^\/|\/$/g, '');
+        if (path && path !== 'index.html' && path !== 'admin' && path !== 'admin.html') {
+            return path.toLowerCase();
         }
+        const urlParams = new URLSearchParams(window.location.search);
+        const slugParam = urlParams.get('slug') || urlParams.get('id');
+        if (slugParam) return slugParam.toLowerCase();
 
-        try {
-            slug = decodeURIComponent(slug);
-        } catch (e) {}
-
-        return slug;
+        return 'samuel';
     }
 
-    findProfileBySlug(rawSlug) {
-        if (!this.profiles || this.profiles.length === 0) {
-            return null;
-        }
+    findProfileBySlug(slug) {
+        if (!slug) return null;
+        const cleanSlug = slug.toLowerCase().trim();
 
-        let decoded = rawSlug || '';
-        try {
-            decoded = decodeURIComponent(decoded);
-        } catch(e) {}
+        let profile = this.profiles.find(p => p.slug === cleanSlug || p.id === cleanSlug);
 
-        const cleanSlug = decoded.toLowerCase().trim()
-            .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-            .replace(/^\/+|\/+$/g, '')
-            .replace(/\.html$/, '')
-            .replace(/[^a-z0-9]/g, '-');
-
-        if (!cleanSlug) {
-            return this.profiles[0];
-        }
-
-        // 1. Direct exact slug match
-        let profile = this.profiles.find(p => {
-            if (!p || !p.slug) return false;
-            const s = p.slug.toLowerCase().trim()
-                .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-                .replace(/[^a-z0-9]/g, '-');
-            return s === cleanSlug;
-        });
-
-        // 2. Match profile ID
         if (!profile) {
-            profile = this.profiles.find(p => p && p.id && p.id.toLowerCase() === cleanSlug);
+            profile = this.profiles.find(p => p.slug && p.slug.toLowerCase().includes(cleanSlug));
         }
 
-        // 3. Match normalized child name
         if (!profile) {
             profile = this.profiles.find(p => {
                 if (!p || !p.name) return false;
-                const normName = p.name.toLowerCase().trim()
-                    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-                    .replace(/[^a-z0-9]/g, '-');
+                const normName = p.name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]/g, '-');
                 return normName === cleanSlug || normName.includes(cleanSlug) || cleanSlug.includes(normName);
             });
         }
 
-        // 4. Fallback: match slug substring
         if (!profile) {
             profile = this.profiles.find(p => {
                 if (!p || !p.slug) return false;
@@ -434,30 +390,31 @@ class App {
                             }
                         }
                     });
-                }).catch(err => {
-                    console.log("Web NFC no disponible o permiso denegado:", err);
-                });
-            } catch (e) {}
+                }).catch(err => console.log("NFC scan info:", err));
+            } catch (e) {
+                console.log("NFC error:", e);
+            }
         }
     }
 
     setupSimulatedScanner() {
-        const btnScan = document.getElementById('btn-scan-nfc');
-        btnScan?.addEventListener('click', () => {
-            const promptSlug = prompt("Simulación NFC: Ingresa el slug o nombre del perfil (ej. samuel, zeus, jose-ramirez):", "samuel");
-            if (promptSlug) {
-                this.renderSingleProfile(promptSlug);
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.altKey && e.key.toLowerCase() === 'n') {
+                const slug = prompt("Simular lectura de Tag NFC (ingresa el slug):", "samuel");
+                if (slug) {
+                    this.renderSingleProfile(slug);
+                }
             }
         });
     }
 }
 
-function startApp() {
-    window.appInstance = new App();
+function startPublicApp() {
+    window.app = new App();
 }
 
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', startApp);
+    document.addEventListener('DOMContentLoaded', startPublicApp);
 } else {
-    startApp();
+    startPublicApp();
 }
