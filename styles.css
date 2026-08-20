@@ -379,6 +379,53 @@ body.theme-girl .arch-photo-container {
     animation: decoPulse 3s ease-in-out infinite alternate;
 }
 
+/* Interactive Share Floating Icon Button (Top Left of Arch Photo) */
+button.btn-share-icon {
+    position: absolute;
+    top: -4px;
+    left: -10px;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: #ffffff;
+    border: 2px solid rgba(255, 255, 255, 0.9);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    color: var(--accent-main, #0284c7);
+    cursor: pointer;
+    z-index: 10;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    outline: none;
+}
+
+button.btn-share-icon:hover {
+    transform: scale(1.12) rotate(8deg);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    background: #ffffff;
+}
+
+button.btn-share-icon:active {
+    transform: scale(0.95);
+}
+
+html.theme-girl button.btn-share-icon,
+body.theme-girl button.btn-share-icon {
+    color: #ec4899 !important;
+}
+
+html.theme-pet button.btn-share-icon,
+body.theme-pet button.btn-share-icon {
+    color: #2d5a27 !important;
+}
+
+html.theme-senior button.btn-share-icon,
+body.theme-senior button.btn-share-icon {
+    color: #f77f00 !important;
+}
+
 .deco-top-left {
     top: -4px; left: -10px;
     color: #0284c7;
