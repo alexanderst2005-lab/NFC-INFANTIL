@@ -1,7 +1,6 @@
 /* ==========================================================================
    NFC INFANTIL - ADMIN PANEL LOGIC (FIREBASE FIRESTORE REAL-TIME SINGLE SOURCE OF TRUTH)
    ========================================================================== */
-
 import { 
     db, 
     collection, 
@@ -9,36 +8,45 @@ import {
     setDoc, 
     deleteDoc, 
     onSnapshot, 
-    INITIAL_PROFILES_SEED 
+    INITIAL_PROFILES_SEED,
+    auth,
+    signInWithEmailAndPassword,
+    signOut,
+    onAuthStateChanged
 } from './firebase-config.js';
-
-const DEFAULT_USER = "admin";
-const DEFAULT_PASS = "1234";
-
 // Neutral SVG Silhouette for profiles without a custom photo
 const NEUTRAL_AVATAR_SVG = "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='%2364748b'%3E%3Ccircle cx='50' cy='35' r='22'/%3E%3Cpath d='M18 85c0-18 14-30 32-30s32 12 32 30Z'/%3E%3C/svg%3E";
-
 class AdminApp {
     constructor() {
         this.profiles = [];
-        this.isAuthenticated = (localStorage.getItem('nfc_admin_auth') === 'true' || sessionStorage.getItem('nfc_admin_auth') === 'true');
+        this.isAuthenticated = false;
         this.photoRemoved = false;
         this.pendingUploadedPhoto = null;
         this.currentCategoryTab = 'all';
         this.isSaving = false;
         this.init();
     }
-
     async init() {
         if ('scrollRestoration' in history) {
             history.scrollRestoration = 'manual';
         }
         window.scrollTo(0, 0);
         this.setupEventListeners();
-        this.renderState();
+        
+        // Listen to Firebase Auth State (Controla automáticamente la sesión y arregla el bug)
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                this.isAuthenticated = true;
+                this.renderState();
+                const currentSearch = document.getElementById('admin-search-input')?.value || '';
+                this.renderProfilesGrid(currentSearch);
+            } else {
+                this.isAuthenticated = false;
+                this.renderState();
+            }
+        });
         document.documentElement.classList.add('ready');
         window.scrollTo(0, 0);
-
         // Firestore Realtime Single Source of Truth Listener
         onSnapshot(collection(db, "nfc_profiles"), async (snapshot) => {
             const loaded = [];
@@ -46,9 +54,7 @@ class AdminApp {
                 const data = docSnap.data();
                 if (data) loaded.push(data);
             });
-
             if (loaded.length === 0) {
-                // Initial Automatic Seed if Firestore collection is completely empty
                 console.log("Firestore empty: Seeding initial real profiles...");
                 for (const seedProf of INITIAL_PROFILES_SEED) {
                     try {
@@ -59,7 +65,6 @@ class AdminApp {
                 }
                 return;
             }
-
             this.profiles = this.deduplicateProfiles(loaded);
             if (this.isAuthenticated) {
                 const currentSearch = document.getElementById('admin-search-input')?.value || '';
@@ -194,13 +199,11 @@ class AdminApp {
     }
 
     renderState() {
-        const loginView = document.getElementById('view-admin-login');
-        const dashboardView = document.getElementById('view-admin-dashboard');
-
+        const loginView = document.getElementById('admin-login-screen');
+        const dashboardView = document.getElementById('admin-dashboard-screen');
         if (this.isAuthenticated) {
             loginView?.classList.add('hidden');
             dashboardView?.classList.remove('hidden');
-            this.renderProfilesGrid();
         } else {
             loginView?.classList.remove('hidden');
             dashboardView?.classList.add('hidden');
@@ -626,28 +629,38 @@ class AdminApp {
         document.getElementById('input-birthdate')?.addEventListener('input', handleBirthDateChange);
         document.getElementById('input-birthdate')?.addEventListener('change', handleBirthDateChange);
 
-        document.getElementById('form-admin-login')?.addEventListener('submit', (e) => {
+        document.getElementById('form-admin-login')?.addEventListener('submit', async (e) => {
             e.preventDefault();
             const user = document.getElementById('input-admin-user')?.value.trim();
             const pass = document.getElementById('input-admin-pass')?.value.trim();
-
-            if (user === DEFAULT_USER && (pass === DEFAULT_PASS || pass === "admin" || pass === "admin123")) {
-                this.isAuthenticated = true;
-                localStorage.setItem('nfc_admin_auth', 'true');
-                sessionStorage.setItem('nfc_admin_auth', 'true');
-                this.renderState();
-                this.showToast("¡Sesión iniciada!");
-            } else {
-                alert("Usuario o contraseña incorrectos.");
+            
+            const btnSubmit = e.target.querySelector('button[type="submit"]');
+            const originalBtnHtml = btnSubmit ? btnSubmit.innerHTML : '';
+            if (btnSubmit) {
+                btnSubmit.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Conectando...';
+                btnSubmit.disabled = true;
+            }
+            try {
+                await signInWithEmailAndPassword(auth, user, pass);
+                this.showToast("¡Sesión iniciada correctamente!");
+            } catch (error) {
+                console.error("Login Error:", error);
+                alert("Usuario o contraseña incorrectos, o no tienes permisos.");
+            } finally {
+                if (btnSubmit) {
+                    btnSubmit.innerHTML = originalBtnHtml;
+                    btnSubmit.disabled = false;
+                }
             }
         });
 
-        document.getElementById('btn-admin-logout')?.addEventListener('click', () => {
-            this.isAuthenticated = false;
-            localStorage.removeItem('nfc_admin_auth');
-            sessionStorage.removeItem('nfc_admin_auth');
-            this.renderState();
-            this.showToast("Sesión cerrada.");
+        document.getElementById('btn-admin-logout')?.addEventListener('click', async () => {
+            try {
+                await signOut(auth);
+                this.showToast("Sesión cerrada correctamente.");
+            } catch (error) {
+                console.error("Logout Error:", error);
+            }
         });
 
         let searchRafTimer = null;

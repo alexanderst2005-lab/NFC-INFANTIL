@@ -2,7 +2,6 @@
    NFC INFANTIL - FIREBASE FIRESTORE CONFIGURATION & INITIALIZATION
    Firebase Modular SDK v10 (CDN Import for Vanilla JS)
    ========================================================================== */
-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { 
     getFirestore, 
@@ -14,9 +13,13 @@ import {
     onSnapshot, 
     serverTimestamp 
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
+import { 
+    getAuth, 
+    signInWithEmailAndPassword, 
+    signOut, 
+    onAuthStateChanged 
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 // Web App Firebase Credentials Config
-// Reemplazar con tus credenciales obtenidas de Firebase Console (https://console.firebase.google.com/)
 const firebaseConfig = {
     apiKey: "AIzaSyBH9ourohhLedBzMi4I6pO96QhpPVX_PJg",
     authDomain: "nfc-infantil.firebaseapp.com",
@@ -26,11 +29,10 @@ const firebaseConfig = {
     appId: "1:793705489788:web:732ca1bad2c458a210b0f9",
     measurementId: "G-HEJN88X5EX"
 };
-
-// Initialize Firebase App & Firestore
+// Initialize Firebase App, Firestore, and Auth
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
-
+export const auth = getAuth(app);
 export { 
     collection, 
     doc, 
@@ -38,7 +40,10 @@ export {
     setDoc, 
     deleteDoc, 
     onSnapshot, 
-    serverTimestamp 
+    serverTimestamp,
+    signInWithEmailAndPassword,
+    signOut,
+    onAuthStateChanged
 };
 
 // Real User Initial Seed (Used only if Firestore collection is completely empty)
