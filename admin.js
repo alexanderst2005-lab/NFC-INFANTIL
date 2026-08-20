@@ -232,12 +232,15 @@ class AdminApp {
     renderState() {
         const loginView = document.getElementById('admin-login-screen');
         const dashboardView = document.getElementById('admin-dashboard-screen');
+        const logoutBtn = document.getElementById('btn-admin-logout'); // <- Referencia al botón
         if (this.isAuthenticated) {
             loginView?.classList.add('hidden');
             dashboardView?.classList.remove('hidden');
+            logoutBtn?.classList.remove('hidden'); // <- Hace visible el botón
         } else {
             loginView?.classList.remove('hidden');
             dashboardView?.classList.add('hidden');
+            logoutBtn?.classList.add('hidden'); // <- Oculta el botón
         }
     }
 

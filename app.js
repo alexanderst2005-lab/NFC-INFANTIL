@@ -191,11 +191,15 @@ class App {
         const slugParam = urlParams.get('slug') || urlParams.get('id');
         if (slugParam) return slugParam.toLowerCase();
 
-        return 'samuel';
+        return '';
     }
 
     findProfileBySlug(slug) {
-        if (!slug) return null;
+        if (!slug) {
+            // Si entra a la página principal sin escanear pulsera, expulsarlo al Login
+            window.location.href = '/admin.html';
+            return null;
+        }
         const cleanSlug = slug.toLowerCase().trim();
 
         let profile = this.profiles.find(p => p.slug === cleanSlug || p.id === cleanSlug);
