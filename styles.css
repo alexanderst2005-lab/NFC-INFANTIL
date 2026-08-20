@@ -968,6 +968,19 @@ body.theme-senior .medications-box .special-care-body {
     transform: translateY(-2px);
 }
 
+/* Share Profile Action Button */
+.btn-share {
+    background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+    color: #ffffff !important;
+    box-shadow: 0 10px 25px rgba(139, 92, 246, 0.35);
+}
+
+.btn-share:hover {
+    background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);
+    box-shadow: 0 14px 30px rgba(139, 92, 246, 0.5);
+    transform: translateY(-2px);
+}
+
 html.theme-girl .btn-whatsapp,
 body.theme-girl .btn-whatsapp {
     background: linear-gradient(135deg, #ec4899 0%, #d946ef 100%);
