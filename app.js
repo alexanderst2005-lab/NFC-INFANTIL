@@ -266,8 +266,8 @@ class App {
             if (decoTl) decoTl.innerHTML = '<i class="fa-solid fa-rocket"></i>';
             if (decoTr) decoTr.innerHTML = '<i class="fa-solid fa-atom"></i>';
             if (decoBr) decoBr.innerHTML = '<i class="fa-solid fa-user-astronaut"></i>';
-            if (sceneLeft) sceneLeft.innerHTML = '<i class="fa-solid fa-tree"></i>';
-            if (sceneRight) sceneRight.innerHTML = '<i class="fa-solid fa-paw"></i>';
+            if (sceneLeft) sceneLeft.innerHTML = '<i class="fa-solid fa-futbol"></i>';
+            if (sceneRight) sceneRight.innerHTML = '<i class="fa-solid fa-shoe-prints"></i>';
         }
 
         // Header Title Badge
