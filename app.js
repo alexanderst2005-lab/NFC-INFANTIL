@@ -370,47 +370,6 @@ class App {
                 btnLocation.classList.add('hidden');
             }
         }
-
-        // Share Profile Action Button
-        const btnShare = document.getElementById('btn-share-action');
-        if (btnShare) {
-            btnShare.onclick = (e) => {
-                e.preventDefault();
-                const profileName = profile ? profile.name : 'Perfil de Seguridad';
-                const shareData = {
-                    title: `Perfil de Seguridad NFC - ${profileName}`,
-                    text: `Información y contacto de emergencia de ${profileName}:`,
-                    url: window.location.href
-                };
-
-                if (navigator.share) {
-                    navigator.share(shareData).catch((err) => {
-                        if (err.name !== 'AbortError') {
-                            this.copyUrlToClipboard();
-                        }
-                    });
-                } else {
-                    this.copyUrlToClipboard();
-                }
-            };
-        }
-    }
-
-    copyUrlToClipboard() {
-        const url = window.location.href;
-        navigator.clipboard.writeText(url).then(() => {
-            this.showToast(`📋 ¡Enlace del perfil copiado al portapapeles!`);
-        }).catch(() => {
-            prompt("Copia este enlace:", url);
-        });
-    }
-
-    showToast(msg) {
-        const toast = document.getElementById('toast');
-        if (!toast) return;
-        toast.textContent = msg;
-        toast.classList.remove('hidden');
-        setTimeout(() => toast.classList.add('hidden'), 3500);
     }
 
     setupNfcListener() {
