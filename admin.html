@@ -343,28 +343,36 @@
         </div>
     </div>
 
-    <!-- ===================================================================
-         MODAL CONFIRMACIÓN LOGOUT (DISEÑO PREMIUM)
-         =================================================================== -->
-    <div id="modal-logout" class="modal-overlay hidden" style="align-items: center; z-index: 9999999;">
-        <div class="modal-container" style="max-width: 380px; text-align: center; padding: 2.5rem 2rem; margin: auto;">
-            <div class="brand-icon" style="margin: 0 auto 1.2rem auto; width: 60px; height: 60px; font-size: 1.8rem; background: rgba(239, 68, 68, 0.1); color: #ef4444; box-shadow: 0 0 20px rgba(239, 68, 68, 0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                <i class="fa-solid fa-right-from-bracket"></i>
-            </div>
-            <h3 style="margin-bottom: 0.6rem; font-size: 1.4rem; color: var(--text-title);">¿Cerrar sesión?</h3>
-            <p style="color: var(--text-sub); margin-bottom: 2rem; font-size: 0.95rem; line-height: 1.5;">
-                Tendrás que volver a ingresar tus credenciales de seguridad la próxima vez que desees acceder al panel.
-            </p>
-            <div class="modal-footer" style="flex-direction: row; justify-content: center; border-top: none; padding: 0; gap: 1rem;">
-                <button type="button" class="btn btn-secondary" id="btn-cancel-logout" style="flex: 1; padding: 0.85rem;">
-                    Cancelar
-                </button>
-                <button type="button" class="btn btn-primary" id="btn-confirm-logout" style="flex: 1; padding: 0.85rem; background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%); border: none; box-shadow: 0 8px 20px rgba(239, 68, 68, 0.25);">
-                    Sí, salir
-                </button>
+        <!-- ===================================================================
+             MODAL CONFIRMACIÓN LOGOUT (DISEÑO PREMIUM AISLADO)
+             =================================================================== -->
+        <div id="modal-logout" class="modal-overlay hidden" style="align-items: center; z-index: 9999999;">
+            <div class="modal-container" style="max-width: 360px; text-align: center; padding: 2.5rem 1.5rem; margin: auto; background: #0f172a; border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7); border-radius: 24px;">
+                
+                <!-- Ícono de Advertencia -->
+                <div class="brand-icon" style="margin: 0 auto 1.5rem auto; width: 64px; height: 64px; font-size: 1.8rem; background: rgba(239, 68, 68, 0.1); color: #ef4444; box-shadow: 0 0 30px rgba(239, 68, 68, 0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(239, 68, 68, 0.2);">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                </div>
+                
+                <!-- Textos Nítidos Forzados (Blancos y Grises) -->
+                <h3 style="margin-bottom: 0.75rem; font-size: 1.5rem; color: #ffffff !important; font-weight: 600; letter-spacing: -0.025em;">¿Cerrar sesión?</h3>
+                <p style="color: #94a3b8 !important; margin-bottom: 2rem; font-size: 0.95rem; line-height: 1.5; padding: 0 10px;">
+                    Tendrás que volver a ingresar tus credenciales de seguridad la próxima vez que desees acceder.
+                </p>
+                
+                <!-- Contenedor de Botones (Layout Aislado) -->
+                <div style="display: flex; gap: 0.75rem; width: 100%;">
+                    <!-- Botón Cancelar (Estilo Cristal/Ghost) -->
+                    <button type="button" class="btn" id="btn-cancel-logout" style="flex: 1; padding: 0.85rem; background: rgba(255, 255, 255, 0.05); color: #e2e8f0; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; font-weight: 500; justify-content: center;">
+                        Cancelar
+                    </button>
+                    <!-- Botón Salir (Estilo Destructivo Premium) -->
+                    <button type="button" class="btn" id="btn-confirm-logout" style="flex: 1; padding: 0.85rem; background: #ef4444; color: #ffffff; border: none; box-shadow: 0 4px 14px 0 rgba(239, 68, 68, 0.39); border-radius: 12px; font-weight: 500; justify-content: center;">
+                        Sí, salir
+                    </button>
+                </div>
             </div>
         </div>
-    </div>
 
     <!-- TOAST NOTIFICATION -->
     <div id="toast" class="toast hidden">Notificación</div>
