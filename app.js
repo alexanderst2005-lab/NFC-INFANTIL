@@ -295,17 +295,21 @@ class App {
             if (sceneRight) sceneRight.innerHTML = '<i class="fa-solid fa-shoe-prints"></i>';
         }
 
-        // Header Title Badge
+        // Header & Card Top Bar Title Badge
+        const topBrandTitle = document.getElementById('p-top-brand-title');
         const badgeTitle = document.getElementById('badge-category-title');
         const headerBadgeText = document.getElementById('header-badge-text');
         
         if (isPet) {
+            if (topBrandTitle) topBrandTitle.textContent = 'Identificación de Mascotas';
             if (badgeTitle) badgeTitle.textContent = 'Mascota Perdida / Identificación';
             if (headerBadgeText) headerBadgeText.textContent = 'Perfil de Seguridad Mascota';
         } else if (isSenior) {
+            if (topBrandTitle) topBrandTitle.textContent = 'Identificación Ad Mayor';
             if (badgeTitle) badgeTitle.textContent = 'Adulto Mayor / Identificación';
             if (headerBadgeText) headerBadgeText.textContent = 'Perfil de Seguridad Adulto Mayor';
         } else {
+            if (topBrandTitle) topBrandTitle.textContent = 'Identificación Infantil';
             if (badgeTitle) badgeTitle.textContent = 'NFC - INFANTIL';
             if (headerBadgeText) headerBadgeText.textContent = 'Perfil Oficial de Seguridad';
         }
