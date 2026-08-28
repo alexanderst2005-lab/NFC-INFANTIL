@@ -158,6 +158,7 @@ class App {
         const birthDate = (p.birthDate !== undefined && p.birthDate !== null) ? String(p.birthDate).trim() : '';
         const computedAge = this.calculateAgeFromBirthDate(birthDate, (p.age !== undefined && p.age !== null) ? p.age : '');
         const bloodType = gender === 'pet' ? '' : ((p.bloodType !== undefined && p.bloodType !== null && String(p.bloodType).trim() !== 'undefined') ? String(p.bloodType).trim() : '');
+        const eps = (p.eps !== undefined && p.eps !== null) ? String(p.eps).trim() : '';
         const allergies = (p.allergies !== undefined && p.allergies !== null) ? String(p.allergies).trim() : '';
         const contactName1 = (p.contactName1 !== undefined && p.contactName1 !== null) ? String(p.contactName1).trim() : '';
         const contactRole1 = (p.contactRole1 !== undefined && p.contactRole1 !== null) ? String(p.contactRole1).trim() : '';
@@ -185,6 +186,7 @@ class App {
             birthDate: birthDate,
             age: computedAge,
             bloodType: bloodType,
+            eps: eps,
             allergies: allergies,
             contactName1: contactName1,
             contactRole1: contactRole1,
@@ -480,6 +482,18 @@ class App {
             if (allergiesEl) allergiesEl.textContent = profile.allergies;
         } else {
             allergiesCard?.classList.add('hidden');
+        }
+
+        // EPS / Entidad de Salud Card Visibility
+        const epsCard = document.getElementById('box-eps');
+        const epsEl = document.getElementById('p-eps-val');
+        const epsLabel = document.getElementById('p-eps-label');
+        if (profile.eps && profile.eps.trim() !== '') {
+            epsCard?.classList.remove('hidden');
+            if (epsEl) epsEl.textContent = profile.eps;
+            if (epsLabel) epsLabel.textContent = isPet ? 'Veterinaria / Salud' : 'EPS / Salud';
+        } else {
+            epsCard?.classList.add('hidden');
         }
 
         // School Card Visibility

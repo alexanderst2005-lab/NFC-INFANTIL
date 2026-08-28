@@ -2192,6 +2192,12 @@ html.theme-bike body {
     color: #dc2626 !important;
 }
 
+/* EPS CARD */
+.icon-eps {
+    background: rgba(16, 185, 129, 0.12) !important;
+    color: #059669 !important;
+}
+
 /* EMERGENCY CONTACTS SECTION */
 .emergency-contacts-section {
     margin-top: 1.25rem;
