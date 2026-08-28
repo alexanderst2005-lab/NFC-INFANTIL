@@ -800,14 +800,15 @@ body.theme-girl .security-ribbon {
     background: #ffffff;
     border: 1.5px solid rgba(226, 232, 240, 0.9);
     border-radius: 14px;
-    padding: 0.72rem 0.85rem;
+    padding: 0.55rem 0.65rem;
     display: flex;
     align-items: center;
-    gap: 0.65rem;
+    gap: 0.5rem;
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.04);
     transition: var(--transition);
     flex: 1 1 calc(50% - 0.35rem);
-    min-width: 130px;
+    min-width: 0;
+    overflow: hidden;
 }
 
 /* Guarantee that if an odd card is left on the bottom row (e.g. 3rd card), it expands to 100% full width */
@@ -821,13 +822,13 @@ body.theme-girl .security-ribbon {
 }
 
 .info-card-icon {
-    width: 46px;
-    height: 46px;
-    border-radius: 14px;
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.35rem;
+    font-size: 1.1rem;
     flex-shrink: 0;
 }
 
@@ -973,18 +974,29 @@ body.theme-senior .medications-box .special-care-body {
 .info-card-text {
     display: flex;
     flex-direction: column;
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
 }
 
 .info-card-text .label {
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     font-weight: 700;
     color: #64748b;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .info-card-text .val {
-    font-size: 1.15rem;
+    font-size: 0.92rem;
     font-weight: 800;
     color: #0f172a;
+    line-height: 1.22;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    margin-top: 0.05rem;
 }
 
 /* Action Buttons Stack (WhatsApp & Location) */
