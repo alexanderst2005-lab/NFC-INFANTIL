@@ -1953,3 +1953,104 @@ html.ready .container {
     transition: opacity 0.4s ease;
 }
 
+/* VEHICLE BADGE & SPECS CARD STYLES */
+.pill-vehicle {
+    background: rgba(239, 68, 68, 0.15);
+    color: #f87171;
+    border: 1px solid rgba(239, 68, 68, 0.35);
+}
+
+.vehicle-specs-card {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    padding: 1.25rem 1.1rem;
+    margin-top: 1.2rem;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+    position: relative;
+    overflow: hidden;
+}
+
+.vehicle-specs-header {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.88rem;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    color: var(--accent-main, #dc2626);
+    text-transform: uppercase;
+    margin-bottom: 0.85rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px dashed rgba(0, 0, 0, 0.08);
+}
+
+.vehicle-specs-header i {
+    font-size: 1.15rem;
+}
+
+.vehicle-spec-row {
+    margin-bottom: 0.75rem;
+}
+
+.vehicle-main-spec {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #1e293b;
+    display: block;
+    line-height: 1.35;
+}
+
+.vehicle-spec-details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 0.8rem;
+}
+
+.vehicle-badge-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    background: rgba(0, 0, 0, 0.04);
+    padding: 0.4rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    color: #475569;
+    font-weight: 500;
+}
+
+.vehicle-badge-item strong {
+    color: #0f172a;
+    font-weight: 700;
+}
+
+.vehicle-badge-item i {
+    color: var(--accent-main, #dc2626);
+    font-size: 0.85rem;
+}
+
+/* VEHICLE THEME ACCENTS */
+html.theme-moto {
+    --accent-main: #dc2626;
+    --accent-gradient: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
+}
+html.theme-moto body {
+    background: linear-gradient(135deg, #450a0a 0%, #0f172a 100%);
+}
+
+html.theme-car {
+    --accent-main: #2563eb;
+    --accent-gradient: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+}
+html.theme-car body {
+    background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+}
+
+html.theme-bike {
+    --accent-main: #16a34a;
+    --accent-gradient: linear-gradient(135deg, #22c55e 0%, #15803d 100%);
+}
+html.theme-bike body {
+    background: linear-gradient(135deg, #052e16 0%, #0f172a 100%);
+}
+

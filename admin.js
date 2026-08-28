@@ -146,7 +146,7 @@ class AdminApp {
             ? String(p.name).trim() 
             : 'Perfil';
         
-        let gender = (p.gender === 'girl' || p.gender === 'pet' || p.gender === 'senior') ? p.gender : 'boy';
+        let gender = (p.gender === 'girl' || p.gender === 'pet' || p.gender === 'senior' || p.gender === 'vehicle') ? p.gender : 'boy';
         if (p.id === 'prof-006-jose' || (p.slug && String(p.slug).toLowerCase().includes('jose-ramirez'))) {
             gender = 'senior';
         }
@@ -173,9 +173,23 @@ class AdminApp {
         let medicalConditions = (p.medicalConditions !== undefined && p.medicalConditions !== null) ? String(p.medicalConditions).trim() : '';
         let importantMedications = (p.importantMedications !== undefined && p.importantMedications !== null) ? String(p.importantMedications).trim() : '';
 
+        // Vehicle Fields
+        let vehicleType = (p.vehicleType === 'car' || p.vehicleType === 'moto' || p.vehicleType === 'bike') ? p.vehicleType : 'car';
+        let vehicleBrand = (p.vehicleBrand !== undefined && p.vehicleBrand !== null) ? String(p.vehicleBrand).trim() : '';
+        let vehicleModel = (p.vehicleModel !== undefined && p.vehicleModel !== null) ? String(p.vehicleModel).trim() : '';
+        let vehicleYear = (p.vehicleYear !== undefined && p.vehicleYear !== null) ? String(p.vehicleYear).trim() : '';
+        let vehicleColor = (p.vehicleColor !== undefined && p.vehicleColor !== null) ? String(p.vehicleColor).trim() : '';
+        let vehiclePlate = (p.vehiclePlate !== undefined && p.vehiclePlate !== null) ? String(p.vehiclePlate).trim() : '';
+        let vehicleOwner = (p.vehicleOwner !== undefined && p.vehicleOwner !== null) ? String(p.vehicleOwner).trim() : '';
+        let vehicleEngine = (p.vehicleEngine !== undefined && p.vehicleEngine !== null) ? String(p.vehicleEngine).trim() : '';
+
         const defaultWaMsg = gender === 'pet'
             ? 'Hola, encontré a la mascota {nombre} y quiero comunicarme con su dueño.'
-            : (gender === 'senior' ? 'Hola, encontré el perfil de seguridad del adulto mayor {nombre} y quiero comunicarme con sus familiares.' : 'Hola, encontré la información del perfil de {nombre}.');
+            : (gender === 'senior' 
+                ? 'Hola, encontré el perfil de seguridad del adulto mayor {nombre} y quiero comunicarme con sus familiares.' 
+                : (gender === 'vehicle'
+                    ? 'Hola, encontré la información del vehículo {nombre} y quiero comunicarme con el propietario o contacto de emergencia.'
+                    : 'Hola, encontré la información del perfil de {nombre}.'));
 
         const birthDate = (p.birthDate !== undefined && p.birthDate !== null) ? String(p.birthDate).trim() : '';
         const computedAge = this.calculateAgeFromBirthDate(birthDate, (p.age !== undefined && p.age !== null) ? p.age : '');
@@ -190,6 +204,14 @@ class AdminApp {
             slug: slug,
             name: name,
             gender: gender,
+            vehicleType: vehicleType,
+            vehicleBrand: vehicleBrand,
+            vehicleModel: vehicleModel,
+            vehicleYear: vehicleYear,
+            vehicleColor: vehicleColor,
+            vehiclePlate: vehiclePlate,
+            vehicleOwner: vehicleOwner,
+            vehicleEngine: vehicleEngine,
             birthDate: birthDate,
             age: computedAge,
             bloodType: bloodType,
@@ -283,6 +305,7 @@ class AdminApp {
         const girls = this.profiles.filter(p => p.gender === 'girl').length;
         const pets = this.profiles.filter(p => p.gender === 'pet').length;
         const seniors = this.profiles.filter(p => p.gender === 'senior').length;
+        const vehicles = this.profiles.filter(p => p.gender === 'vehicle').length;
 
         const statTotal = document.getElementById('stat-total-count');
         if (statTotal) statTotal.textContent = total;
@@ -301,6 +324,9 @@ class AdminApp {
 
         const countSenior = document.getElementById('tab-count-senior');
         if (countSenior) countSenior.textContent = seniors;
+
+        const countVehicle = document.getElementById('tab-count-vehicle');
+        if (countVehicle) countVehicle.textContent = vehicles;
     }
 
     onLogoClick() {
@@ -331,6 +357,8 @@ class AdminApp {
             filtered = filtered.filter(p => p.gender === 'pet');
         } else if (this.currentCategoryTab === 'senior') {
             filtered = filtered.filter(p => p.gender === 'senior');
+        } else if (this.currentCategoryTab === 'vehicle') {
+            filtered = filtered.filter(p => p.gender === 'vehicle');
         }
 
         // 2. Filter by Search Query
@@ -342,7 +370,11 @@ class AdminApp {
                 (p.school && p.school.toLowerCase().includes(query)) ||
                 (p.parentPhone && p.parentPhone.includes(query)) ||
                 (p.parentPhone2 && p.parentPhone2.includes(query)) ||
-                (p.bloodType && p.bloodType.toLowerCase().includes(query))
+                (p.bloodType && p.bloodType.toLowerCase().includes(query)) ||
+                (p.vehicleBrand && p.vehicleBrand.toLowerCase().includes(query)) ||
+                (p.vehicleModel && p.vehicleModel.toLowerCase().includes(query)) ||
+                (p.vehiclePlate && p.vehiclePlate.toLowerCase().includes(query)) ||
+                (p.vehicleOwner && p.vehicleOwner.toLowerCase().includes(query))
             );
         }
 
@@ -357,22 +389,42 @@ class AdminApp {
         grid.innerHTML = filtered.map(p => {
             const isPet = p.gender === 'pet';
             const isSenior = p.gender === 'senior';
+            const isVehicle = p.gender === 'vehicle';
             const photoSrc = p.photoUrl && p.photoUrl.trim() !== '' ? p.photoUrl : NEUTRAL_AVATAR_SVG;
-            const categoryLabel = isPet ? 'Mascota 🐾' : (isSenior ? 'Adulto Mayor 👵👴' : (p.gender === 'girl' ? 'Niña 👧' : 'Niño 🧒'));
-            const categoryClass = isPet ? 'pill-pet' : (isSenior ? 'pill-senior' : (p.gender === 'girl' ? 'pill-girl' : 'pill-boy'));
+            
+            let categoryLabel = isPet ? 'Mascota 🐾' : (isSenior ? 'Adulto Mayor 👵👴' : (p.gender === 'girl' ? 'Niña 👧' : 'Niño 🧒'));
+            let categoryClass = isPet ? 'pill-pet' : (isSenior ? 'pill-senior' : (p.gender === 'girl' ? 'pill-girl' : 'pill-boy'));
+
+            if (isVehicle) {
+                categoryClass = 'pill-vehicle';
+                if (p.vehicleType === 'moto') categoryLabel = 'Motocicleta 🏍️';
+                else if (p.vehicleType === 'bike') categoryLabel = 'Bicicleta 🚲';
+                else categoryLabel = 'Automóvil 🚗';
+            }
 
             // Ocultar iconos si el campo no está diligenciado
             let metaHtml = '';
             
-            if (p.age !== undefined && p.age !== null && String(p.age).trim() !== '') {
-                metaHtml += `<div class="meta-item"><i class="fa-solid fa-cake-candles"></i> ${p.age} años</div>`;
-            }
-            if (!isPet && p.bloodType && p.bloodType.trim() !== '') {
-                metaHtml += `<div class="meta-item"><i class="fa-solid fa-droplet"></i> ${p.bloodType}</div>`;
-            }
-            if (!isPet && !isSenior && p.school && p.school.trim() !== '') {
-                const gradeStr = p.grade ? ` (${p.grade})` : '';
-                metaHtml += `<div class="meta-item meta-item-full"><i class="fa-solid fa-school"></i> ${p.school}${gradeStr}</div>`;
+            if (isVehicle) {
+                if (p.vehicleBrand || p.vehicleModel || p.vehiclePlate) {
+                    const plateStr = p.vehiclePlate ? ` | Placa/Serial: ${p.vehiclePlate}` : '';
+                    const vIcon = p.vehicleType === 'moto' ? 'fa-motorcycle' : (p.vehicleType === 'bike' ? 'fa-bicycle' : 'fa-car');
+                    metaHtml += `<div class="meta-item meta-item-full"><i class="fa-solid ${vIcon}"></i> ${p.vehicleBrand || ''} ${p.vehicleModel || ''}${plateStr}</div>`;
+                }
+                if (p.vehicleOwner) {
+                    metaHtml += `<div class="meta-item meta-item-full"><i class="fa-solid fa-user-check"></i> ${p.vehicleOwner}</div>`;
+                }
+            } else {
+                if (p.age !== undefined && p.age !== null && String(p.age).trim() !== '') {
+                    metaHtml += `<div class="meta-item"><i class="fa-solid fa-cake-candles"></i> ${p.age} años</div>`;
+                }
+                if (!isPet && p.bloodType && p.bloodType.trim() !== '') {
+                    metaHtml += `<div class="meta-item"><i class="fa-solid fa-droplet"></i> ${p.bloodType}</div>`;
+                }
+                if (!isPet && !isSenior && p.school && p.school.trim() !== '') {
+                    const gradeStr = p.grade ? ` (${p.grade})` : '';
+                    metaHtml += `<div class="meta-item meta-item-full"><i class="fa-solid fa-school"></i> ${p.school}${gradeStr}</div>`;
+                }
             }
             if (p.parentPhone && String(p.parentPhone).trim() !== '') {
                 const phone2Str = p.parentPhone2 ? ` | +${p.parentPhone2}` : '';
@@ -418,7 +470,8 @@ class AdminApp {
         this.photoRemoved = false;
         this.pendingUploadedPhoto = null;
         document.getElementById('modal-title').textContent = 'Crear Nuevo Perfil';
-        document.getElementById('input-profile-id').value = '';
+        const newId = `prof-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`;
+        document.getElementById('input-profile-id').value = newId;
         document.getElementById('input-name').value = '';
         document.getElementById('input-slug').value = '';
         
@@ -440,6 +493,16 @@ class AdminApp {
         document.getElementById('input-medications').value = '';
         document.getElementById('input-photo-url').value = '';
         
+        // Clear Vehicle Fields
+        if (document.getElementById('input-vehicle-type')) document.getElementById('input-vehicle-type').value = 'car';
+        if (document.getElementById('input-vehicle-brand')) document.getElementById('input-vehicle-brand').value = '';
+        if (document.getElementById('input-vehicle-model')) document.getElementById('input-vehicle-model').value = '';
+        if (document.getElementById('input-vehicle-year')) document.getElementById('input-vehicle-year').value = '';
+        if (document.getElementById('input-vehicle-color')) document.getElementById('input-vehicle-color').value = '';
+        if (document.getElementById('input-vehicle-plate')) document.getElementById('input-vehicle-plate').value = '';
+        if (document.getElementById('input-vehicle-owner')) document.getElementById('input-vehicle-owner').value = '';
+        if (document.getElementById('input-vehicle-engine')) document.getElementById('input-vehicle-engine').value = '';
+
         const previewImg = document.getElementById('photo-preview');
         if (previewImg) previewImg.src = NEUTRAL_AVATAR_SVG;
 
@@ -478,6 +541,16 @@ class AdminApp {
         document.getElementById('input-medications').value = profile.importantMedications || '';
         document.getElementById('input-photo-url').value = profile.photoUrl || '';
         
+        // Populate Vehicle Fields
+        if (document.getElementById('input-vehicle-type')) document.getElementById('input-vehicle-type').value = profile.vehicleType || 'car';
+        if (document.getElementById('input-vehicle-brand')) document.getElementById('input-vehicle-brand').value = profile.vehicleBrand || '';
+        if (document.getElementById('input-vehicle-model')) document.getElementById('input-vehicle-model').value = profile.vehicleModel || '';
+        if (document.getElementById('input-vehicle-year')) document.getElementById('input-vehicle-year').value = profile.vehicleYear || '';
+        if (document.getElementById('input-vehicle-color')) document.getElementById('input-vehicle-color').value = profile.vehicleColor || '';
+        if (document.getElementById('input-vehicle-plate')) document.getElementById('input-vehicle-plate').value = profile.vehiclePlate || '';
+        if (document.getElementById('input-vehicle-owner')) document.getElementById('input-vehicle-owner').value = profile.vehicleOwner || '';
+        if (document.getElementById('input-vehicle-engine')) document.getElementById('input-vehicle-engine').value = profile.vehicleEngine || '';
+
         const previewImg = document.getElementById('photo-preview');
         if (previewImg) {
             previewImg.src = (profile.photoUrl && profile.photoUrl.trim() !== '') ? profile.photoUrl : NEUTRAL_AVATAR_SVG;
@@ -489,6 +562,21 @@ class AdminApp {
         document.body.classList.add('modal-open');
     }
 
+    updateVehicleTypeLabels(vType) {
+        const lblPlate = document.getElementById('lbl-vehicle-plate');
+        const inputPlate = document.getElementById('input-vehicle-plate');
+        if (vType === 'bike') {
+            if (lblPlate) lblPlate.textContent = "Número de Serial / Marco (Sin Placa)";
+            if (inputPlate) inputPlate.placeholder = "Ej: SN-987654321";
+        } else if (vType === 'moto') {
+            if (lblPlate) lblPlate.textContent = "Placa de la Motocicleta";
+            if (inputPlate) inputPlate.placeholder = "Ej: ABC12D";
+        } else {
+            if (lblPlate) lblPlate.textContent = "Placa del Automóvil";
+            if (inputPlate) inputPlate.placeholder = "Ej: ABC123";
+        }
+    }
+
     updateModalFormForCategory(gender) {
         const schoolGroup = document.getElementById('group-school');
         const gradeGroup = document.getElementById('group-grade');
@@ -496,8 +584,22 @@ class AdminApp {
         const bloodGroup = document.getElementById('group-blood');
         const mapsLabel = document.getElementById('label-maps-url');
         const waMsgInput = document.getElementById('input-whatsapp-msg');
+        const vehicleSection = document.getElementById('section-vehicle');
+        const vehicleTypeInput = document.getElementById('input-vehicle-type');
 
-        if (gender === 'pet') {
+        if (gender === 'vehicle') {
+            schoolGroup?.classList.add('hidden');
+            gradeGroup?.classList.add('hidden');
+            schoolUrlGroup?.classList.add('hidden');
+            bloodGroup?.classList.remove('hidden');
+            vehicleSection?.classList.remove('hidden');
+            if (mapsLabel) mapsLabel.textContent = "Ubicación del Vehículo / Garaje (Google Maps)";
+            if (waMsgInput && !waMsgInput.value) {
+                waMsgInput.value = "Hola, encontré la información del vehículo {nombre} y quiero comunicarme con el propietario o contacto de emergencia.";
+            }
+            this.updateVehicleTypeLabels(vehicleTypeInput ? vehicleTypeInput.value : 'car');
+        } else if (gender === 'pet') {
+            vehicleSection?.classList.add('hidden');
             schoolGroup?.classList.add('hidden');
             gradeGroup?.classList.add('hidden');
             schoolUrlGroup?.classList.add('hidden');
@@ -507,6 +609,7 @@ class AdminApp {
                 waMsgInput.value = "Hola, encontré a la mascota {nombre} y quiero comunicarme con su dueño.";
             }
         } else if (gender === 'senior') {
+            vehicleSection?.classList.add('hidden');
             schoolGroup?.classList.add('hidden');
             gradeGroup?.classList.add('hidden');
             schoolUrlGroup?.classList.add('hidden');
@@ -516,6 +619,7 @@ class AdminApp {
                 waMsgInput.value = "Hola, encontré el perfil de seguridad del adulto mayor {nombre} y quiero comunicarme con sus familiares.";
             }
         } else {
+            vehicleSection?.classList.add('hidden');
             schoolGroup?.classList.remove('hidden');
             gradeGroup?.classList.remove('hidden');
             schoolUrlGroup?.classList.remove('hidden');
@@ -587,6 +691,7 @@ class AdminApp {
     }
 
     async saveProfileFromForm() {
+        if (this.isSaving) return;
         this.isSaving = true;
         try {
             const id = document.getElementById('input-profile-id').value;
@@ -602,7 +707,16 @@ class AdminApp {
             }
 
             const genderInput = document.getElementById('input-gender')?.value;
-            const gender = (genderInput === 'girl' || genderInput === 'pet' || genderInput === 'senior') ? genderInput : 'boy';
+            const gender = (genderInput === 'girl' || genderInput === 'pet' || genderInput === 'senior' || genderInput === 'vehicle') ? genderInput : 'boy';
+
+            const vehicleTypeVal = document.getElementById('input-vehicle-type')?.value || 'car';
+            const vehicleBrandVal = document.getElementById('input-vehicle-brand')?.value.trim() || '';
+            const vehicleModelVal = document.getElementById('input-vehicle-model')?.value.trim() || '';
+            const vehicleYearVal = document.getElementById('input-vehicle-year')?.value.trim() || '';
+            const vehicleColorVal = document.getElementById('input-vehicle-color')?.value.trim() || '';
+            const vehiclePlateVal = document.getElementById('input-vehicle-plate')?.value.trim() || '';
+            const vehicleOwnerVal = document.getElementById('input-vehicle-owner')?.value.trim() || '';
+            const vehicleEngineVal = document.getElementById('input-vehicle-engine')?.value.trim() || '';
 
             const photoUrlInput = document.getElementById('input-photo-url').value.trim();
             const previewSrc = document.getElementById('photo-preview').src;
@@ -639,10 +753,18 @@ class AdminApp {
             const parentPhone2Val = document.getElementById('input-phone2')?.value.trim() || '';
 
             const rawProfile = {
-                id: id || `prof-${Date.now()}`,
+                id: id || `prof-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
                 slug: slug,
                 name: name,
                 gender: gender,
+                vehicleType: vehicleTypeVal,
+                vehicleBrand: vehicleBrandVal,
+                vehicleModel: vehicleModelVal,
+                vehicleYear: vehicleYearVal,
+                vehicleColor: vehicleColorVal,
+                vehiclePlate: vehiclePlateVal,
+                vehicleOwner: vehicleOwnerVal,
+                vehicleEngine: vehicleEngineVal,
                 birthDate: birthDateVal,
                 age: computedAge,
                 bloodType: gender === 'pet' ? '' : (document.getElementById('input-blood').value ? document.getElementById('input-blood').value.trim() : ''),
@@ -665,12 +787,13 @@ class AdminApp {
 
             await setDoc(doc(db, "nfc_profiles", profileData.id), profileData);
 
-            if (id) {
-                const idx = this.profiles.findIndex(p => p.id === id);
-                if (idx !== -1) this.profiles[idx] = profileData;
+            const existingIdx = this.profiles.findIndex(p => p.id === profileData.id || p.slug === profileData.slug);
+            if (existingIdx !== -1) {
+                this.profiles[existingIdx] = profileData;
             } else {
                 this.profiles.unshift(profileData);
             }
+            this.profiles = this.deduplicateProfiles(this.profiles);
             localStorage.setItem('nfc_profiles_db', JSON.stringify(this.profiles));
 
             this.closeModal();
@@ -700,6 +823,11 @@ class AdminApp {
         // Dynamic gender selector change helper for default WhatsApp & Blood type
         document.getElementById('input-gender')?.addEventListener('change', (e) => {
             this.updateModalFormForCategory(e.target.value);
+        });
+
+        // Dynamic vehicle type selector change helper
+        document.getElementById('input-vehicle-type')?.addEventListener('change', (e) => {
+            this.updateVehicleTypeLabels(e.target.value);
         });
 
         // Auto calculate age when birthdate is selected

@@ -144,6 +144,9 @@
                 <button type="button" class="category-tab" data-tab="senior" id="tab-senior">
                     <i class="fa-solid fa-user-tie"></i> Adultos Mayores <span class="tab-badge" id="tab-count-senior">0</span>
                 </button>
+                <button type="button" class="category-tab" data-tab="vehicle" id="tab-vehicle">
+                    <i class="fa-solid fa-car"></i> Vehículos <span class="tab-badge" id="tab-count-vehicle">0</span>
+                </button>
             </div>
 
             <!-- Toolbar / Search Bar -->
@@ -228,6 +231,7 @@
                                 <option value="girl">👧 Niña</option>
                                 <option value="pet">🐾 Mascota</option>
                                 <option value="senior">👴 Adulto Mayor</option>
+                                <option value="vehicle">🚗🏍️🚲 Vehículo (Carro / Moto / Bici)</option>
                             </select>
                         </div>
 
@@ -256,6 +260,65 @@
                                 <option value="AB-">AB-</option>
                                 <option value="N/A">N/A (Mascotas)</option>
                             </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2.5 INFORMACIÓN DEL VEHÍCULO -->
+                <div id="section-vehicle" class="modal-form-section hidden">
+                    <div class="modal-section-title">
+                        <i class="fa-solid fa-car-side"></i> Detalles del Vehículo
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="input-vehicle-type">Tipo de Vehículo</label>
+                            <select id="input-vehicle-type" class="form-select">
+                                <option value="car" selected>🚗 Carro / Automóvil</option>
+                                <option value="moto">🏍️ Motocicleta</option>
+                                <option value="bike">🚲 Bicicleta</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="input-vehicle-brand">Marca</label>
+                            <input type="text" id="input-vehicle-brand" class="form-input" placeholder="Ej: Yamaha, Chevrolet, Trek, GW">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="input-vehicle-model">Modelo / Referencia</label>
+                            <input type="text" id="input-vehicle-model" class="form-input" placeholder="Ej: FZ 2.0, Spark GT, Marlin 7">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="input-vehicle-year">Año</label>
+                            <input type="number" id="input-vehicle-year" class="form-input" placeholder="Ej: 2024">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="input-vehicle-color">Color</label>
+                            <input type="text" id="input-vehicle-color" class="form-input" placeholder="Ej: Negro Mate, Rojo Metalizado">
+                        </div>
+
+                        <div class="form-group" id="group-vehicle-plate">
+                            <label class="form-label" for="input-vehicle-plate" id="lbl-vehicle-plate">Placa o Identificación</label>
+                            <input type="text" id="input-vehicle-plate" class="form-input" placeholder="Ej: ABC12D o Serial de Marco">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="input-vehicle-owner">Propietario / Conductor / Ciclista</label>
+                            <input type="text" id="input-vehicle-owner" class="form-input" placeholder="Ej: Marco Arias">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="input-vehicle-engine">Cilindraje / Detalles Extra (Opcional)</label>
+                            <input type="text" id="input-vehicle-engine" class="form-input" placeholder="Ej: 150cc, Rin 29, 4x4">
                         </div>
                     </div>
                 </div>

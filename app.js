@@ -110,7 +110,7 @@ class App {
             ? String(p.name).trim() 
             : 'Perfil';
         
-        let gender = (p.gender === 'girl' || p.gender === 'pet' || p.gender === 'senior') ? p.gender : 'boy';
+        let gender = (p.gender === 'girl' || p.gender === 'pet' || p.gender === 'senior' || p.gender === 'vehicle') ? p.gender : 'boy';
         if (p.id === 'prof-006-jose' || (p.slug && String(p.slug).toLowerCase().includes('jose-ramirez'))) {
             gender = 'senior';
         }
@@ -137,9 +137,23 @@ class App {
         let medicalConditions = (p.medicalConditions !== undefined && p.medicalConditions !== null) ? String(p.medicalConditions).trim() : '';
         let importantMedications = (p.importantMedications !== undefined && p.importantMedications !== null) ? String(p.importantMedications).trim() : '';
 
+        // Vehicle Fields
+        let vehicleType = (p.vehicleType === 'car' || p.vehicleType === 'moto' || p.vehicleType === 'bike') ? p.vehicleType : 'car';
+        let vehicleBrand = (p.vehicleBrand !== undefined && p.vehicleBrand !== null) ? String(p.vehicleBrand).trim() : '';
+        let vehicleModel = (p.vehicleModel !== undefined && p.vehicleModel !== null) ? String(p.vehicleModel).trim() : '';
+        let vehicleYear = (p.vehicleYear !== undefined && p.vehicleYear !== null) ? String(p.vehicleYear).trim() : '';
+        let vehicleColor = (p.vehicleColor !== undefined && p.vehicleColor !== null) ? String(p.vehicleColor).trim() : '';
+        let vehiclePlate = (p.vehiclePlate !== undefined && p.vehiclePlate !== null) ? String(p.vehiclePlate).trim() : '';
+        let vehicleOwner = (p.vehicleOwner !== undefined && p.vehicleOwner !== null) ? String(p.vehicleOwner).trim() : '';
+        let vehicleEngine = (p.vehicleEngine !== undefined && p.vehicleEngine !== null) ? String(p.vehicleEngine).trim() : '';
+
         const defaultWaMsg = gender === 'pet'
             ? 'Hola, encontré a la mascota {nombre} y quiero comunicarme con su dueño.'
-            : (gender === 'senior' ? 'Hola, encontré el perfil de seguridad del adulto mayor {nombre} y quiero comunicarme con sus familiares.' : 'Hola, encontré la información del perfil de {nombre}.');
+            : (gender === 'senior' 
+                ? 'Hola, encontré el perfil de seguridad del adulto mayor {nombre} y quiero comunicarme con sus familiares.' 
+                : (gender === 'vehicle'
+                    ? 'Hola, encontré la información del vehículo {nombre} y quiero comunicarme con el propietario o contacto de emergencia.'
+                    : 'Hola, encontré la información del perfil de {nombre}.'));
 
         const birthDate = (p.birthDate !== undefined && p.birthDate !== null) ? String(p.birthDate).trim() : '';
         const computedAge = this.calculateAgeFromBirthDate(birthDate, (p.age !== undefined && p.age !== null) ? p.age : '');
@@ -154,6 +168,14 @@ class App {
             slug: slug,
             name: name,
             gender: gender,
+            vehicleType: vehicleType,
+            vehicleBrand: vehicleBrand,
+            vehicleModel: vehicleModel,
+            vehicleYear: vehicleYear,
+            vehicleColor: vehicleColor,
+            vehiclePlate: vehiclePlate,
+            vehicleOwner: vehicleOwner,
+            vehicleEngine: vehicleEngine,
             birthDate: birthDate,
             age: computedAge,
             bloodType: bloodType,
@@ -256,19 +278,45 @@ class App {
         const isPet = profile.gender === 'pet';
         const isSenior = profile.gender === 'senior';
         const isGirl = profile.gender === 'girl';
-        const themeClass = isPet ? 'theme-pet' : (isSenior ? 'theme-senior' : (isGirl ? 'theme-girl' : 'theme-boy'));
+        const isVehicle = profile.gender === 'vehicle';
+        const vehicleType = profile.vehicleType || 'car'; // 'car', 'moto', 'bike'
         
-        document.documentElement.classList.remove('theme-boy', 'theme-girl', 'theme-pet', 'theme-senior');
-        document.documentElement.classList.add(themeClass);
+        let themeClass = isPet ? 'theme-pet' : (isSenior ? 'theme-senior' : (isGirl ? 'theme-girl' : 'theme-boy'));
+        if (isVehicle) {
+            themeClass = `theme-vehicle theme-${vehicleType}`;
+        }
+        
+        document.documentElement.classList.remove('theme-boy', 'theme-girl', 'theme-pet', 'theme-senior', 'theme-vehicle', 'theme-car', 'theme-moto', 'theme-bike');
+        document.documentElement.classList.add(...themeClass.split(' '));
 
-        // Update Category-Specific Decorator Icons (Niñas: Pluma, Arcoíris, Varita Mágica, Brote, Torre)
+        // Update Category-Specific Decorator Icons
         const decoTl = document.getElementById('p-deco-tl');
         const decoTr = document.getElementById('p-deco-tr');
         const decoBr = document.getElementById('p-deco-br');
         const sceneLeft = document.getElementById('scene-left');
         const sceneRight = document.getElementById('scene-right');
 
-        if (isGirl) {
+        if (isVehicle) {
+            if (vehicleType === 'moto') {
+                if (decoTl) decoTl.innerHTML = '<i class="fa-solid fa-motorcycle"></i>';
+                if (decoTr) decoTr.innerHTML = '<i class="fa-solid fa-helmet-safety"></i>';
+                if (decoBr) decoBr.innerHTML = '<i class="fa-solid fa-shield-halved"></i>';
+                if (sceneLeft) sceneLeft.innerHTML = '<i class="fa-solid fa-motorcycle"></i>';
+                if (sceneRight) sceneRight.innerHTML = '<i class="fa-solid fa-shield-heart"></i>';
+            } else if (vehicleType === 'bike') {
+                if (decoTl) decoTl.innerHTML = '<i class="fa-solid fa-bicycle"></i>';
+                if (decoTr) decoTr.innerHTML = '<i class="fa-solid fa-route"></i>';
+                if (decoBr) decoBr.innerHTML = '<i class="fa-solid fa-heart-pulse"></i>';
+                if (sceneLeft) sceneLeft.innerHTML = '<i class="fa-solid fa-bicycle"></i>';
+                if (sceneRight) sceneRight.innerHTML = '<i class="fa-solid fa-shield-heart"></i>';
+            } else {
+                if (decoTl) decoTl.innerHTML = '<i class="fa-solid fa-car"></i>';
+                if (decoTr) decoTr.innerHTML = '<i class="fa-solid fa-gauge-high"></i>';
+                if (decoBr) decoBr.innerHTML = '<i class="fa-solid fa-road"></i>';
+                if (sceneLeft) sceneLeft.innerHTML = '<i class="fa-solid fa-car-side"></i>';
+                if (sceneRight) sceneRight.innerHTML = '<i class="fa-solid fa-shield-heart"></i>';
+            }
+        } else if (isGirl) {
             if (decoTl) decoTl.innerHTML = '<i class="fa-solid fa-feather"></i>';
             if (decoTr) decoTr.innerHTML = '<i class="fa-solid fa-rainbow"></i>';
             if (decoBr) decoBr.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i>';
@@ -299,20 +347,30 @@ class App {
         const topBrandTitle = document.getElementById('p-top-brand-title');
         const badgeTitle = document.getElementById('badge-category-title');
         const headerBadgeText = document.getElementById('header-badge-text');
-        
-        if (isPet) {
+        const secRibbon = document.getElementById('p-security-ribbon');
+
+        if (isVehicle) {
+            if (topBrandTitle) topBrandTitle.textContent = vehicleType === 'moto' ? 'Perfil de Emergencia - Motocicleta' : (vehicleType === 'bike' ? 'Identificación de Bicicleta' : 'Identificación de Vehículo');
+            if (badgeTitle) badgeTitle.textContent = vehicleType === 'moto' ? 'NFC - COL / Motocicleta' : (vehicleType === 'bike' ? 'NFC - COL / Bicicleta' : 'NFC - COL / Vehículo');
+            if (headerBadgeText) headerBadgeText.textContent = 'Perfil Oficial de Seguridad';
+            if (secRibbon) secRibbon.textContent = vehicleType === 'moto' ? 'MOTOCICLISTA' : (vehicleType === 'bike' ? 'CICLISTA' : 'CONDUCTOR / VEHÍCULO');
+        } else if (isPet) {
             if (topBrandTitle) topBrandTitle.textContent = 'Identificación de Mascotas';
             if (badgeTitle) badgeTitle.textContent = 'Mascota Perdida / Identificación';
             if (headerBadgeText) headerBadgeText.textContent = 'Perfil de Seguridad Mascota';
+            if (secRibbon) secRibbon.textContent = 'Mi perfil de seguridad';
         } else if (isSenior) {
             if (topBrandTitle) topBrandTitle.textContent = 'Identificación Ad Mayor';
             if (badgeTitle) badgeTitle.textContent = 'Adulto Mayor / Identificación';
             if (headerBadgeText) headerBadgeText.textContent = 'Perfil de Seguridad Adulto Mayor';
+            if (secRibbon) secRibbon.textContent = 'Mi perfil de seguridad';
         } else {
             if (topBrandTitle) topBrandTitle.textContent = 'Identificación Infantil';
             if (badgeTitle) badgeTitle.textContent = 'NFC - INFANTIL';
             if (headerBadgeText) headerBadgeText.textContent = 'Perfil Oficial de Seguridad';
+            if (secRibbon) secRibbon.textContent = 'Mi perfil de seguridad';
         }
+
         // Avatar Image
         const avatarImg = document.getElementById('p-avatar');
         if (avatarImg) {
@@ -328,16 +386,20 @@ class App {
         // Category Badge Pill
         const genderText = document.getElementById('p-gender-text');
         if (genderText) {
-            genderText.textContent = isPet ? 'Mascota Protegida' : (isSenior ? 'Adulto Mayor Protegido' : 'Perfil Verificado');
+            if (isVehicle) {
+                genderText.textContent = vehicleType === 'moto' ? 'Motocicleta Registrada' : (vehicleType === 'bike' ? 'Bicicleta Registrada' : 'Vehículo Registrado');
+            } else {
+                genderText.textContent = isPet ? 'Mascota Protegida' : (isSenior ? 'Adulto Mayor Protegido' : 'Perfil Verificado');
+            }
         }
         // Age
         const ageCard = document.getElementById('box-age');
         const ageEl = document.getElementById('p-age-val');
-        if (profile.age !== undefined && profile.age !== null && String(profile.age).trim() !== '') {
+        if (!isVehicle && profile.age !== undefined && profile.age !== null && String(profile.age).trim() !== '') {
             ageCard?.classList.remove('hidden');
             if (ageEl) ageEl.textContent = `${profile.age} años`;
         } else {
-            ageCard?.classList.add('hidden'); // Ocultar si no hay edad
+            ageCard?.classList.add('hidden'); // Ocultar si no hay edad o es vehículo
         }
         
         // Blood Type Card Visibility
@@ -349,12 +411,13 @@ class App {
             bloodCard?.classList.remove('hidden');
             if (bloodEl) bloodEl.textContent = profile.bloodType;
         }
+
         // School Card Visibility
         const schoolCard = document.getElementById('box-school');
         const schoolEl = document.getElementById('p-school');
         const gradeCard = document.getElementById('box-grade');
         const gradeEl = document.getElementById('p-grade');
-        if (isPet || isSenior) {
+        if (isPet || isSenior || isVehicle) {
             schoolCard?.classList.add('hidden');
             gradeCard?.classList.add('hidden');
         } else {
@@ -393,6 +456,80 @@ class App {
             } else {
                 medsCard.classList.add('hidden');
             }
+        }
+
+        // Vehicle Specs Card Rendering
+        const vehicleBox = document.getElementById('box-vehicle-specs');
+        if (isVehicle) {
+            const vIcon = document.getElementById('p-vehicle-icon');
+            const vTitle = document.getElementById('p-vehicle-title');
+            const vMainSpec = document.getElementById('p-vehicle-main-spec');
+            const vColorItem = document.getElementById('p-vehicle-color-item');
+            const vColorVal = document.getElementById('p-vehicle-color');
+            const vYearItem = document.getElementById('p-vehicle-year-item');
+            const vYearVal = document.getElementById('p-vehicle-year');
+            const vEngineItem = document.getElementById('p-vehicle-engine-item');
+            const vEngineVal = document.getElementById('p-vehicle-engine');
+            const vOwnerItem = document.getElementById('p-vehicle-owner-item');
+            const vOwnerVal = document.getElementById('p-vehicle-owner');
+
+            let vTypeName = 'DEL VEHÍCULO';
+            let iconClass = 'fa-car-side';
+            if (vehicleType === 'moto') { vTypeName = 'DE LA MOTOCICLETA'; iconClass = 'fa-motorcycle'; }
+            else if (vehicleType === 'bike') { vTypeName = 'DE LA BICICLETA'; iconClass = 'fa-bicycle'; }
+            else { vTypeName = 'DEL AUTOMÓVIL'; iconClass = 'fa-car'; }
+
+            if (vIcon) vIcon.className = `fa-solid ${iconClass}`;
+            if (vTitle) vTitle.textContent = `INFORMACIÓN ${vTypeName}`;
+
+            const brandStr = profile.vehicleBrand || '';
+            const modelStr = profile.vehicleModel || '';
+            let plateLabel = vehicleType === 'bike' ? 'Serial' : 'Placa';
+            const plateStr = profile.vehiclePlate ? ` | ${plateLabel}: ${profile.vehiclePlate}` : '';
+            const mainText = `${brandStr} ${modelStr}${plateStr}`.trim();
+
+            const mainRow = document.getElementById('p-vehicle-row-main');
+            if (mainText && mainText !== '|' && mainText !== 'Serial:' && mainText !== 'Placa:') {
+                mainRow?.classList.remove('hidden');
+                if (vMainSpec) vMainSpec.textContent = mainText;
+            } else {
+                mainRow?.classList.add('hidden');
+            }
+
+            if (profile.vehicleColor && profile.vehicleColor.trim() !== '') {
+                vColorItem?.classList.remove('hidden');
+                if (vColorVal) vColorVal.textContent = profile.vehicleColor;
+            } else { vColorItem?.classList.add('hidden'); }
+
+            if (profile.vehicleYear && profile.vehicleYear.trim() !== '') {
+                vYearItem?.classList.remove('hidden');
+                if (vYearVal) vYearVal.textContent = profile.vehicleYear;
+            } else { vYearItem?.classList.add('hidden'); }
+
+            if (profile.vehicleEngine && profile.vehicleEngine.trim() !== '') {
+                vEngineItem?.classList.remove('hidden');
+                if (vEngineVal) vEngineVal.textContent = profile.vehicleEngine;
+            } else { vEngineItem?.classList.add('hidden'); }
+
+            if (profile.vehicleOwner && profile.vehicleOwner.trim() !== '') {
+                vOwnerItem?.classList.remove('hidden');
+                if (vOwnerVal) vOwnerVal.textContent = profile.vehicleOwner;
+            } else { vOwnerItem?.classList.add('hidden'); }
+
+            vehicleBox?.classList.remove('hidden');
+        } else {
+            vehicleBox?.classList.add('hidden');
+        }
+
+        // WhatsApp Buttons Titles
+        const wa1Title = document.getElementById('p-wa1-title');
+        const wa2Title = document.getElementById('p-wa2-title');
+        if (isVehicle) {
+            if (wa1Title) wa1Title.textContent = 'Contactar al Propietario';
+            if (wa2Title) wa2Title.textContent = 'Contacto de Emergencia 2';
+        } else {
+            if (wa1Title) wa1Title.textContent = 'Contacto Principal';
+            if (wa2Title) wa2Title.textContent = 'Contacto Alterno';
         }
         // Helper to open WhatsApp with optional live location of the scanner
         const openWhatsAppWithLocation = (phone, baseMessage) => {
