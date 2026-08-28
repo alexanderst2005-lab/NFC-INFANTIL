@@ -344,12 +344,32 @@ class App {
         const footerTag = document.getElementById('p-footer-tag');
 
         if (isVehicle) {
-            if (decoTl) decoTl.innerHTML = '';
-            if (decoTr) decoTr.innerHTML = '';
-            if (decoBr) decoBr.innerHTML = '';
-            if (sceneLeft) sceneLeft.innerHTML = '';
-            if (sceneRight) sceneRight.innerHTML = '';
-            if (footerTag) footerTag.innerHTML = '<i class="fa-solid fa-shield-halved"></i> NFC - COL • Perfil Oficial de Seguridad';
+            let stickerColor = '#dc2626'; // Default Moto Red
+            if (vehicleType === 'car') stickerColor = '#ef4444'; // Red Car
+            else if (vehicleType === 'bike') stickerColor = '#ef4444'; // Red Bike
+
+            if (vehicleType === 'moto') {
+                if (decoTl) decoTl.innerHTML = `<i class="fa-solid fa-motorcycle" style="color: ${stickerColor}; text-shadow: 0 4px 10px rgba(220,38,38,0.3);"></i>`;
+                if (decoTr) decoTr.innerHTML = `<i class="fa-solid fa-helmet-safety" style="color: ${stickerColor}; text-shadow: 0 4px 10px rgba(220,38,38,0.3);"></i>`;
+                if (decoBr) decoBr.innerHTML = `<i class="fa-solid fa-shield-halved" style="color: ${stickerColor}; text-shadow: 0 4px 10px rgba(220,38,38,0.3);"></i>`;
+                if (sceneLeft) sceneLeft.innerHTML = `<i class="fa-solid fa-motorcycle" style="color: ${stickerColor};"></i>`;
+                if (sceneRight) sceneRight.innerHTML = `<i class="fa-solid fa-shield-heart" style="color: ${stickerColor};"></i>`;
+                if (footerTag) footerTag.innerHTML = `<i class="fa-solid fa-motorcycle" style="color: ${stickerColor};"></i> NFC - COL • Perfil Oficial de Seguridad <i class="fa-solid fa-shield-halved" style="color: ${stickerColor};"></i>`;
+            } else if (vehicleType === 'bike') {
+                if (decoTl) decoTl.innerHTML = `<i class="fa-solid fa-bicycle" style="color: ${stickerColor}; text-shadow: 0 4px 10px rgba(220,38,38,0.3);"></i>`;
+                if (decoTr) decoTr.innerHTML = `<i class="fa-solid fa-route" style="color: ${stickerColor}; text-shadow: 0 4px 10px rgba(220,38,38,0.3);"></i>`;
+                if (decoBr) decoBr.innerHTML = `<i class="fa-solid fa-heart-pulse" style="color: ${stickerColor}; text-shadow: 0 4px 10px rgba(220,38,38,0.3);"></i>`;
+                if (sceneLeft) sceneLeft.innerHTML = `<i class="fa-solid fa-bicycle" style="color: ${stickerColor};"></i>`;
+                if (sceneRight) sceneRight.innerHTML = `<i class="fa-solid fa-shield-heart" style="color: ${stickerColor};"></i>`;
+                if (footerTag) footerTag.innerHTML = `<i class="fa-solid fa-bicycle" style="color: ${stickerColor};"></i> NFC - COL • Perfil Oficial de Seguridad <i class="fa-solid fa-shield-halved" style="color: ${stickerColor};"></i>`;
+            } else {
+                if (decoTl) decoTl.innerHTML = `<i class="fa-solid fa-car" style="color: ${stickerColor}; text-shadow: 0 4px 10px rgba(220,38,38,0.3);"></i>`;
+                if (decoTr) decoTr.innerHTML = `<i class="fa-solid fa-gauge-high" style="color: ${stickerColor}; text-shadow: 0 4px 10px rgba(220,38,38,0.3);"></i>`;
+                if (decoBr) decoBr.innerHTML = `<i class="fa-solid fa-road" style="color: ${stickerColor}; text-shadow: 0 4px 10px rgba(220,38,38,0.3);"></i>`;
+                if (sceneLeft) sceneLeft.innerHTML = `<i class="fa-solid fa-car-side" style="color: ${stickerColor};"></i>`;
+                if (sceneRight) sceneRight.innerHTML = `<i class="fa-solid fa-shield-heart" style="color: ${stickerColor};"></i>`;
+                if (footerTag) footerTag.innerHTML = `<i class="fa-solid fa-car-side" style="color: ${stickerColor};"></i> NFC - COL • Perfil Oficial de Seguridad <i class="fa-solid fa-shield-halved" style="color: ${stickerColor};"></i>`;
+            }
         } else if (isGirl) {
             if (footerTag) footerTag.innerHTML = '<i class="fa-solid fa-shield-heart"></i> Protegido con amor <i class="fa-solid fa-heart" style="color: #ec4899;"></i>';
             if (decoTl) decoTl.innerHTML = '<i class="fa-solid fa-feather"></i>';

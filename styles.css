@@ -2338,9 +2338,18 @@ html.theme-bike body {
    STRICT CLEANUP & COMPACT SINGLE-SCREEN VIEW FOR VEHICLE PROFILES
    =================================================================== */
 html.theme-vehicle .arch-deco,
-html.theme-vehicle .scene-item,
+html.theme-vehicle .scene-item {
+    display: flex !important;
+}
+
 html.theme-vehicle .name-spark {
     display: none !important;
+}
+
+html.theme-vehicle .arch-deco {
+    background: #ffffff !important;
+    border: 1px solid rgba(220, 38, 38, 0.25) !important;
+    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.2) !important;
 }
 
 html.theme-vehicle .arch-photo-container {
@@ -2382,17 +2391,17 @@ html.theme-moto .security-ribbon {
 }
 
 html.theme-car .security-ribbon {
-    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%) !important;
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
     color: #ffffff !important;
-    box-shadow: 0 4px 15px rgba(37, 99, 235, 0.35) !important;
+    box-shadow: 0 4px 15px rgba(220, 38, 38, 0.35) !important;
     font-weight: 900 !important;
     letter-spacing: 0.08em !important;
 }
 
 html.theme-bike .security-ribbon {
-    background: linear-gradient(135deg, #22c55e 0%, #15803d 100%) !important;
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
     color: #ffffff !important;
-    box-shadow: 0 4px 15px rgba(22, 163, 74, 0.35) !important;
+    box-shadow: 0 4px 15px rgba(220, 38, 38, 0.35) !important;
     font-weight: 900 !important;
     letter-spacing: 0.08em !important;
 }
@@ -2400,11 +2409,17 @@ html.theme-bike .security-ribbon {
 /* Streamlined Compact Heights & Padding for Single-Screen View */
 html.theme-vehicle .profile-card {
     padding: 0 1rem 1rem 1rem !important;
+    overflow: hidden !important;
 }
 
 html.theme-vehicle .vehicle-hero-banner {
-    height: 135px !important;
+    height: 145px !important;
     margin-bottom: -45px !important;
+    margin-left: -1rem !important;
+    margin-right: -1rem !important;
+    width: calc(100% + 2rem) !important;
+    border-top-left-radius: 32px !important;
+    border-top-right-radius: 32px !important;
 }
 
 html.theme-vehicle .emergency-instruction-banner {
