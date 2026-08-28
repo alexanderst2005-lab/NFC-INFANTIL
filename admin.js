@@ -204,6 +204,7 @@ class AdminApp {
         let contactRole1 = (p.contactRole1 !== undefined && p.contactRole1 !== null) ? String(p.contactRole1).trim() : '';
         let contactName2 = (p.contactName2 !== undefined && p.contactName2 !== null) ? String(p.contactName2).trim() : '';
         let contactRole2 = (p.contactRole2 !== undefined && p.contactRole2 !== null) ? String(p.contactRole2).trim() : '';
+        let emergencyPhone = (p.emergencyPhone !== undefined && p.emergencyPhone !== null && String(p.emergencyPhone).trim() !== '') ? String(p.emergencyPhone).trim() : '123';
 
         return {
             id: p.id || `prof-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
@@ -228,6 +229,7 @@ class AdminApp {
             contactRole2: contactRole2,
             parentPhone: parentPhone,
             parentPhone2: parentPhone2,
+            emergencyPhone: emergencyPhone,
             whatsappMessage: whatsappMessage,
             locationMapsUrl: locationMapsUrl,
             schoolMapsUrl: schoolMapsUrl,
@@ -497,6 +499,7 @@ class AdminApp {
         if (document.getElementById('input-contact-role1')) document.getElementById('input-contact-role1').value = '';
         if (document.getElementById('input-contact-name2')) document.getElementById('input-contact-name2').value = '';
         if (document.getElementById('input-contact-role2')) document.getElementById('input-contact-role2').value = '';
+        if (document.getElementById('input-emergency-phone')) document.getElementById('input-emergency-phone').value = '123';
         document.getElementById('input-phone').value = '';
         document.getElementById('input-phone2').value = '';
         document.getElementById('input-whatsapp-msg').value = '';
@@ -550,6 +553,7 @@ class AdminApp {
         if (document.getElementById('input-contact-role1')) document.getElementById('input-contact-role1').value = profile.contactRole1 || '';
         if (document.getElementById('input-contact-name2')) document.getElementById('input-contact-name2').value = profile.contactName2 || '';
         if (document.getElementById('input-contact-role2')) document.getElementById('input-contact-role2').value = profile.contactRole2 || '';
+        if (document.getElementById('input-emergency-phone')) document.getElementById('input-emergency-phone').value = profile.emergencyPhone || '123';
         document.getElementById('input-phone').value = profile.parentPhone || '';
         document.getElementById('input-phone2').value = profile.parentPhone2 || '';
         document.getElementById('input-whatsapp-msg').value = profile.whatsappMessage || '';
@@ -778,6 +782,7 @@ class AdminApp {
 
             const parentPhone1Val = document.getElementById('input-phone').value.trim();
             const parentPhone2Val = document.getElementById('input-phone2')?.value.trim() || '';
+            const emergencyPhoneVal = document.getElementById('input-emergency-phone')?.value.trim() || '123';
 
             const rawProfile = {
                 id: id || `prof-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
@@ -802,6 +807,7 @@ class AdminApp {
                 contactRole2: contactRole2Val,
                 parentPhone: parentPhone1Val,
                 parentPhone2: parentPhone2Val,
+                emergencyPhone: emergencyPhoneVal,
                 whatsappMessage: document.getElementById('input-whatsapp-msg').value.trim(),
                 locationMapsUrl: document.getElementById('input-maps-url').value.trim(),
                 schoolMapsUrl: (document.getElementById('input-school-url')?.value || '').trim(),
