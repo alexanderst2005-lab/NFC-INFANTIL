@@ -2133,18 +2133,24 @@ html.theme-bike body {
 }
 
 .vehicle-emergency-pill {
-    background: #dc2626;
+    background: rgba(220, 38, 38, 0.95);
+    backdrop-filter: blur(4px);
     color: #ffffff;
-    padding: 0.45rem 0.85rem;
-    border-radius: 20px;
-    font-size: 0.72rem;
-    font-weight: 900;
-    letter-spacing: 0.05em;
-    display: flex;
+    padding: 0.22rem 0.55rem;
+    border-radius: 12px;
+    font-size: 0.6rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    display: inline-flex;
     align-items: center;
-    gap: 0.4rem;
-    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.5);
+    gap: 0.25rem;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.35);
     text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.vehicle-emergency-pill i {
+    font-size: 0.6rem;
 }
 
 /* EMERGENCY INSTRUCTION BANNER */
@@ -2347,9 +2353,14 @@ html.theme-vehicle .name-spark {
 }
 
 html.theme-vehicle .arch-deco {
-    background: #ffffff !important;
-    border: 1px solid rgba(220, 38, 38, 0.25) !important;
-    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.2) !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    width: auto !important;
+    height: auto !important;
+    padding: 0 !important;
+    font-size: 1.6rem !important;
+    filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.4)) !important;
 }
 
 html.theme-vehicle .arch-photo-container {
