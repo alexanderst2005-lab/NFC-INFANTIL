@@ -112,8 +112,29 @@
                 <!-- MAIN CARD WRAPPER (MATCHING MOCKUP IMAGE 100%) -->
                 <div class="profile-card">
                     
-                    <!-- TOP BAR HEADER -->
-                    <div class="profile-top-bar">
+                <!-- MAIN CARD WRAPPER (MATCHING MOCKUP IMAGE 100%) -->
+                <div class="profile-card">
+                    
+                    <!-- VEHICLE HERO COVER BANNER (VISIBLE ONLY FOR VEHICLES) -->
+                    <div class="vehicle-hero-banner hidden" id="vehicle-hero-banner">
+                        <img src="https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=1200&auto=format&fit=crop&q=80" alt="Vehicle Cover" id="vehicle-cover-img" class="vehicle-cover-img">
+                        <div class="vehicle-banner-overlay"></div>
+                        <div class="vehicle-banner-header-bar">
+                            <div class="vehicle-top-badge" id="vehicle-top-badge">
+                                <div class="v-badge-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                                <div class="v-badge-text-group">
+                                    <span class="v-brand-title">NFC - COL</span>
+                                    <span class="v-sub-title" id="p-v-badge-sub">Perfil de Emergencia</span>
+                                </div>
+                            </div>
+                            <div class="vehicle-emergency-pill" id="vehicle-emergency-pill">
+                                <i class="fa-solid fa-triangle-exclamation"></i> EN CASO DE EMERGENCIA
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TOP BAR HEADER (STANDARD FOR OTHER CATEGORIES) -->
+                    <div class="profile-top-bar" id="standard-top-bar">
                         <div class="top-bar-brand">
                             <div class="brand-shield-icon"><i class="fa-solid fa-shield-halved"></i></div>
                             <span id="p-top-brand-title">Identificación Infantil</span>
@@ -154,7 +175,15 @@
                         </div>
                     </div>
 
-                    <!-- INFORMATION VISUAL CARDS GRID (EDAD & TIPO DE SANGRE) -->
+                    <!-- EMERGENCY INSTRUCTION BANNER (MOCKUP ACCURACY) -->
+                    <div class="emergency-instruction-banner hidden" id="box-emergency-instruction">
+                        <div class="instruction-icon"><i class="fa-solid fa-phone-volume"></i></div>
+                        <div class="instruction-text">
+                            Si esta persona está herida o inconsciente, comunícate inmediatamente con sus contactos de emergencia.
+                        </div>
+                    </div>
+
+                    <!-- INFORMATION VISUAL CARDS GRID (EDAD, TIPO DE SANGRE, ALERGIAS) -->
                     <div class="info-cards-grid">
                         <div class="info-cards-row">
                             <!-- Edad -->
@@ -175,6 +204,16 @@
                                 <div class="info-card-text">
                                     <span class="label">Tipo de sangre</span>
                                     <span class="val" id="p-blood-val"></span>
+                                </div>
+                            </div>
+                            <!-- Alergias -->
+                            <div class="info-card-box box-allergies hidden" id="box-allergies">
+                                <div class="info-card-icon icon-allergies">
+                                    <i class="fa-solid fa-heart-pulse"></i>
+                                </div>
+                                <div class="info-card-text">
+                                    <span class="label">Alergias</span>
+                                    <span class="val" id="p-allergies-val">Ninguna conocida</span>
                                 </div>
                             </div>
                         </div>
@@ -204,7 +243,7 @@
                     <!-- Special Medical Notes / Conditions -->
                     <div class="special-care-box hidden" id="box-medical">
                         <div class="special-care-header">
-                            <i class="fa-solid fa-heart-pulse"></i> Enfermedad o Condición
+                            <i class="fa-solid fa-suitcase-medical"></i> <span id="p-medical-header-title">Condiciones Médicas</span>
                         </div>
                         <div class="special-care-body" id="p-medical-notes"></div>
                     </div>
@@ -215,6 +254,36 @@
                             <i class="fa-solid fa-pills"></i> Medicamentos Importantes
                         </div>
                         <div class="special-care-body" id="p-medications-notes"></div>
+                    </div>
+
+                    <!-- EMERGENCY CONTACTS LIST SECTION (MOCKUP STYLE) -->
+                    <div class="emergency-contacts-section hidden" id="box-emergency-contacts">
+                        <h3 class="contacts-section-title"><i class="fa-solid fa-users"></i> CONTACTOS DE EMERGENCIA</h3>
+                        <div class="emergency-contacts-list">
+                            <!-- Contact Item 1 -->
+                            <div class="emergency-contact-card hidden" id="card-contact-1">
+                                <div class="contact-avatar-icon"><i class="fa-solid fa-user-shield"></i></div>
+                                <div class="contact-info-group">
+                                    <span class="contact-role-label" id="p-contact-role1">CONTACTO PRINCIPAL</span>
+                                    <span class="contact-name-val" id="p-contact-name1">Marisol Contreras</span>
+                                </div>
+                                <a href="#" id="btn-contact-wa1" class="contact-wa-btn">
+                                    <i class="fa-brands fa-whatsapp"></i> <span id="p-contact-phone1">300 123 4567</span>
+                                </a>
+                            </div>
+
+                            <!-- Contact Item 2 -->
+                            <div class="emergency-contact-card hidden" id="card-contact-2">
+                                <div class="contact-avatar-icon"><i class="fa-solid fa-user-shield"></i></div>
+                                <div class="contact-info-group">
+                                    <span class="contact-role-label" id="p-contact-role2">CONTACTO ALTERNO</span>
+                                    <span class="contact-name-val" id="p-contact-name2">José Arias</span>
+                                </div>
+                                <a href="#" id="btn-contact-wa2" class="contact-wa-btn">
+                                    <i class="fa-brands fa-whatsapp"></i> <span id="p-contact-phone2">310 765 4321</span>
+                                </a>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- VEHICLE SPECS CARD (CARRO / MOTO / BICICLETA) -->
@@ -235,8 +304,22 @@
                         </div>
                     </div>
 
-                    <!-- ACTION BUTTONS STACK (WHATSAPP 1, WHATSAPP 2 & LOCATION) -->
-                    <div class="profile-actions-stack">
+                    <!-- PROMINENT EMERGENCY CALL BAR (MATCHING MOCKUP RED CALL BUTTON) -->
+                    <div class="emergency-call-bar-wrapper hidden" id="box-emergency-call">
+                        <a href="tel:123" id="btn-emergency-call-link" class="btn-emergency-call-bar">
+                            <div class="call-bar-left">
+                                <i class="fa-solid fa-phone"></i>
+                                <div class="call-bar-text">
+                                    <span class="call-bar-title">LLAMAR A EMERGENCIAS</span>
+                                    <span class="call-bar-num" id="p-emergency-num">123</span>
+                                </div>
+                            </div>
+                            <div class="call-bar-plus-icon"><i class="fa-solid fa-circle-plus"></i></div>
+                        </a>
+                    </div>
+
+                    <!-- ACTION BUTTONS STACK (STANDARD WHATSAPP 1, WHATSAPP 2 & LOCATION) -->
+                    <div class="profile-actions-stack" id="standard-actions-stack">
                         <a href="#" id="btn-whatsapp-action" target="_blank" class="btn btn-whatsapp btn-block hidden">
                             <div class="btn-icon-circle"><i class="fa-brands fa-whatsapp"></i></div>
                             <div class="btn-text-stack">

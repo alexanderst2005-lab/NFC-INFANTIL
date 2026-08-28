@@ -199,6 +199,12 @@ class AdminApp {
         const whatsappMessage = (p.whatsappMessage && String(p.whatsappMessage).trim() !== '') ? String(p.whatsappMessage).trim() : defaultWaMsg;
         const photoUrl = (p.photoUrl !== undefined && p.photoUrl !== null && String(p.photoUrl).trim() !== 'undefined') ? String(p.photoUrl).trim() : '';
 
+        let allergies = (p.allergies !== undefined && p.allergies !== null) ? String(p.allergies).trim() : '';
+        let contactName1 = (p.contactName1 !== undefined && p.contactName1 !== null) ? String(p.contactName1).trim() : '';
+        let contactRole1 = (p.contactRole1 !== undefined && p.contactRole1 !== null) ? String(p.contactRole1).trim() : '';
+        let contactName2 = (p.contactName2 !== undefined && p.contactName2 !== null) ? String(p.contactName2).trim() : '';
+        let contactRole2 = (p.contactRole2 !== undefined && p.contactRole2 !== null) ? String(p.contactRole2).trim() : '';
+
         return {
             id: p.id || `prof-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
             slug: slug,
@@ -215,6 +221,11 @@ class AdminApp {
             birthDate: birthDate,
             age: computedAge,
             bloodType: bloodType,
+            allergies: allergies,
+            contactName1: contactName1,
+            contactRole1: contactRole1,
+            contactName2: contactName2,
+            contactRole2: contactRole2,
             parentPhone: parentPhone,
             parentPhone2: parentPhone2,
             whatsappMessage: whatsappMessage,
@@ -481,6 +492,11 @@ class AdminApp {
         document.getElementById('input-birthdate').value = '';
         document.getElementById('input-age').value = '';
         document.getElementById('input-blood').value = '';
+        if (document.getElementById('input-allergies')) document.getElementById('input-allergies').value = '';
+        if (document.getElementById('input-contact-name1')) document.getElementById('input-contact-name1').value = '';
+        if (document.getElementById('input-contact-role1')) document.getElementById('input-contact-role1').value = '';
+        if (document.getElementById('input-contact-name2')) document.getElementById('input-contact-name2').value = '';
+        if (document.getElementById('input-contact-role2')) document.getElementById('input-contact-role2').value = '';
         document.getElementById('input-phone').value = '';
         document.getElementById('input-phone2').value = '';
         document.getElementById('input-whatsapp-msg').value = '';
@@ -529,6 +545,11 @@ class AdminApp {
         document.getElementById('input-birthdate').value = profile.birthDate || '';
         document.getElementById('input-age').value = (profile.age !== undefined && profile.age !== null) ? profile.age : '';
         document.getElementById('input-blood').value = profile.bloodType || '';
+        if (document.getElementById('input-allergies')) document.getElementById('input-allergies').value = profile.allergies || '';
+        if (document.getElementById('input-contact-name1')) document.getElementById('input-contact-name1').value = profile.contactName1 || '';
+        if (document.getElementById('input-contact-role1')) document.getElementById('input-contact-role1').value = profile.contactRole1 || '';
+        if (document.getElementById('input-contact-name2')) document.getElementById('input-contact-name2').value = profile.contactName2 || '';
+        if (document.getElementById('input-contact-role2')) document.getElementById('input-contact-role2').value = profile.contactRole2 || '';
         document.getElementById('input-phone').value = profile.parentPhone || '';
         document.getElementById('input-phone2').value = profile.parentPhone2 || '';
         document.getElementById('input-whatsapp-msg').value = profile.whatsappMessage || '';
@@ -744,6 +765,12 @@ class AdminApp {
             const gradeVal = document.getElementById('input-grade')?.value.trim() || '';
             const medicalVal = document.getElementById('input-medical')?.value.trim() || '';
             const medicationsVal = document.getElementById('input-medications')?.value.trim() || '';
+            const allergiesVal = document.getElementById('input-allergies')?.value.trim() || '';
+
+            const contactName1Val = document.getElementById('input-contact-name1')?.value.trim() || '';
+            const contactRole1Val = document.getElementById('input-contact-role1')?.value.trim() || '';
+            const contactName2Val = document.getElementById('input-contact-name2')?.value.trim() || '';
+            const contactRole2Val = document.getElementById('input-contact-role2')?.value.trim() || '';
 
             const birthDateVal = document.getElementById('input-birthdate')?.value || '';
             const ageInputVal = document.getElementById('input-age')?.value;
@@ -768,6 +795,11 @@ class AdminApp {
                 birthDate: birthDateVal,
                 age: computedAge,
                 bloodType: gender === 'pet' ? '' : (document.getElementById('input-blood').value ? document.getElementById('input-blood').value.trim() : ''),
+                allergies: allergiesVal,
+                contactName1: contactName1Val,
+                contactRole1: contactRole1Val,
+                contactName2: contactName2Val,
+                contactRole2: contactRole2Val,
                 parentPhone: parentPhone1Val,
                 parentPhone2: parentPhone2Val,
                 whatsappMessage: document.getElementById('input-whatsapp-msg').value.trim(),

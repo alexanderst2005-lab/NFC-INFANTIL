@@ -158,6 +158,11 @@ class App {
         const birthDate = (p.birthDate !== undefined && p.birthDate !== null) ? String(p.birthDate).trim() : '';
         const computedAge = this.calculateAgeFromBirthDate(birthDate, (p.age !== undefined && p.age !== null) ? p.age : '');
         const bloodType = gender === 'pet' ? '' : ((p.bloodType !== undefined && p.bloodType !== null && String(p.bloodType).trim() !== 'undefined') ? String(p.bloodType).trim() : '');
+        const allergies = (p.allergies !== undefined && p.allergies !== null) ? String(p.allergies).trim() : '';
+        const contactName1 = (p.contactName1 !== undefined && p.contactName1 !== null) ? String(p.contactName1).trim() : '';
+        const contactRole1 = (p.contactRole1 !== undefined && p.contactRole1 !== null) ? String(p.contactRole1).trim() : '';
+        const contactName2 = (p.contactName2 !== undefined && p.contactName2 !== null) ? String(p.contactName2).trim() : '';
+        const contactRole2 = (p.contactRole2 !== undefined && p.contactRole2 !== null) ? String(p.contactRole2).trim() : '';
         const parentPhone = (p.parentPhone !== undefined && p.parentPhone !== null && String(p.parentPhone).trim() !== 'undefined') ? String(p.parentPhone).trim() : '';
         const parentPhone2 = (p.parentPhone2 !== undefined && p.parentPhone2 !== null && String(p.parentPhone2).trim() !== 'undefined') ? String(p.parentPhone2).trim() : '';
         const whatsappMessage = (p.whatsappMessage && String(p.whatsappMessage).trim() !== '') ? String(p.whatsappMessage).trim() : defaultWaMsg;
@@ -179,6 +184,11 @@ class App {
             birthDate: birthDate,
             age: computedAge,
             bloodType: bloodType,
+            allergies: allergies,
+            contactName1: contactName1,
+            contactRole1: contactRole1,
+            contactName2: contactName2,
+            contactRole2: contactRole2,
             parentPhone: parentPhone,
             parentPhone2: parentPhone2,
             whatsappMessage: whatsappMessage,
@@ -288,6 +298,42 @@ class App {
         
         document.documentElement.classList.remove('theme-boy', 'theme-girl', 'theme-pet', 'theme-senior', 'theme-vehicle', 'theme-car', 'theme-moto', 'theme-bike');
         document.documentElement.classList.add(...themeClass.split(' '));
+
+        // Vehicle Hero Cover Banner Visibility
+        const vehicleBanner = document.getElementById('vehicle-hero-banner');
+        const standardTopBar = document.getElementById('standard-top-bar');
+        const coverImg = document.getElementById('vehicle-cover-img');
+        const vBadgeSub = document.getElementById('p-v-badge-sub');
+
+        if (isVehicle) {
+            vehicleBanner?.classList.remove('hidden');
+            standardTopBar?.classList.add('hidden');
+
+            let coverUrl = 'https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=1200&auto=format&fit=crop&q=80'; // Moto
+            let subTitleText = 'Perfil de Emergencia Motociclista';
+
+            if (vehicleType === 'car') {
+                coverUrl = 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=1200&auto=format&fit=crop&q=80'; // Car
+                subTitleText = 'Perfil de Emergencia Conductor';
+            } else if (vehicleType === 'bike') {
+                coverUrl = 'https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=1200&auto=format&fit=crop&q=80'; // Bike
+                subTitleText = 'Perfil de Identificación Ciclista';
+            }
+
+            if (coverImg) coverImg.src = coverUrl;
+            if (vBadgeSub) vBadgeSub.textContent = subTitleText;
+        } else {
+            vehicleBanner?.classList.add('hidden');
+            standardTopBar?.classList.remove('hidden');
+        }
+
+        // Emergency Instruction Banner
+        const instructionBox = document.getElementById('box-emergency-instruction');
+        if (isVehicle || profile.medicalConditions || profile.importantMedications || profile.allergies) {
+            instructionBox?.classList.remove('hidden');
+        } else {
+            instructionBox?.classList.add('hidden');
+        }
 
         // Update Category-Specific Decorator Icons
         const decoTl = document.getElementById('p-deco-tl');
@@ -412,6 +458,16 @@ class App {
             if (bloodEl) bloodEl.textContent = profile.bloodType;
         }
 
+        // Allergies Card Visibility
+        const allergiesCard = document.getElementById('box-allergies');
+        const allergiesEl = document.getElementById('p-allergies-val');
+        if (profile.allergies && profile.allergies.trim() !== '') {
+            allergiesCard?.classList.remove('hidden');
+            if (allergiesEl) allergiesEl.textContent = profile.allergies;
+        } else {
+            allergiesCard?.classList.add('hidden');
+        }
+
         // School Card Visibility
         const schoolCard = document.getElementById('box-school');
         const schoolEl = document.getElementById('p-school');
@@ -437,10 +493,12 @@ class App {
         // Medical Conditions
         const medicalCard = document.getElementById('box-medical');
         const medicalEl = document.getElementById('p-medical-notes');
+        const medicalTitle = document.getElementById('p-medical-header-title');
         if (medicalCard) {
             if (profile.medicalConditions && profile.medicalConditions.trim() !== '') {
                 medicalCard.classList.remove('hidden');
                 if (medicalEl) medicalEl.textContent = profile.medicalConditions;
+                if (medicalTitle) medicalTitle.textContent = isVehicle ? 'Condiciones Médicas' : 'Enfermedad o Condición';
             } else {
                 medicalCard.classList.add('hidden');
             }
@@ -456,6 +514,81 @@ class App {
             } else {
                 medsCard.classList.add('hidden');
             }
+        }
+
+        // EMERGENCY CONTACTS SECTION (MATCHING MOCKUP DESIGN)
+        const contactsSection = document.getElementById('box-emergency-contacts');
+        const cardContact1 = document.getElementById('card-contact-1');
+        const role1El = document.getElementById('p-contact-role1');
+        const name1El = document.getElementById('p-contact-name1');
+        const phone1El = document.getElementById('p-contact-phone1');
+        const btnContactWa1 = document.getElementById('btn-contact-wa1');
+
+        const cardContact2 = document.getElementById('card-contact-2');
+        const role2El = document.getElementById('p-contact-role2');
+        const name2El = document.getElementById('p-contact-name2');
+        const phone2El = document.getElementById('p-contact-phone2');
+        const btnContactWa2 = document.getElementById('btn-contact-wa2');
+
+        const standardActions = document.getElementById('standard-actions-stack');
+
+        let hasContact1 = profile.parentPhone && profile.parentPhone.trim() !== '';
+        let hasContact2 = profile.parentPhone2 && profile.parentPhone2.trim() !== '';
+
+        if (isVehicle && (hasContact1 || hasContact2)) {
+            contactsSection?.classList.remove('hidden');
+            standardActions?.classList.add('hidden'); // Use dedicated contact cards for vehicles
+
+            // Contact 1
+            if (hasContact1) {
+                cardContact1?.classList.remove('hidden');
+                if (role1El) role1El.textContent = (profile.contactRole1 && profile.contactRole1.trim() !== '') ? profile.contactRole1.toUpperCase() : (profile.vehicleOwner ? 'PROPIETARIO / FAMILIAR' : 'CONTACTO PRINCIPAL');
+                if (name1El) name1El.textContent = (profile.contactName1 && profile.contactName1.trim() !== '') ? profile.contactName1 : (profile.vehicleOwner || profile.name);
+                if (phone1El) phone1El.textContent = profile.parentPhone;
+                if (btnContactWa1) {
+                    btnContactWa1.onclick = (e) => {
+                        e.preventDefault();
+                        const waText = profile.whatsappMessage || `Hola, encontré el perfil de emergencia del conductor ${profile.name} y me quiero comunicar con sus contactos.`;
+                        openWhatsAppWithLocation(profile.parentPhone, waText);
+                    };
+                }
+            } else {
+                cardContact1?.classList.add('hidden');
+            }
+
+            // Contact 2
+            if (hasContact2) {
+                cardContact2?.classList.remove('hidden');
+                if (role2El) role2El.textContent = (profile.contactRole2 && profile.contactRole2.trim() !== '') ? profile.contactRole2.toUpperCase() : 'CONTACTO DE EMERGENCIA 2';
+                if (name2El) name2El.textContent = (profile.contactName2 && profile.contactName2.trim() !== '') ? profile.contactName2 : 'Contacto Secundario';
+                if (phone2El) phone2El.textContent = profile.parentPhone2;
+                if (btnContactWa2) {
+                    btnContactWa2.onclick = (e) => {
+                        e.preventDefault();
+                        const waText = profile.whatsappMessage || `Hola, encontré el perfil de emergencia del conductor ${profile.name} y me quiero comunicar con sus contactos.`;
+                        openWhatsAppWithLocation(profile.parentPhone2, waText);
+                    };
+                }
+            } else {
+                cardContact2?.classList.add('hidden');
+            }
+        } else {
+            contactsSection?.classList.add('hidden');
+            standardActions?.classList.remove('hidden');
+        }
+
+        // PROMINENT EMERGENCY CALL BAR
+        const emergencyCallBox = document.getElementById('box-emergency-call');
+        const emergencyCallLink = document.getElementById('btn-emergency-call-link');
+        const emergencyNum = document.getElementById('p-emergency-num');
+
+        if (isVehicle && (hasContact1 || hasContact2)) {
+            emergencyCallBox?.classList.remove('hidden');
+            const targetPhone = hasContact1 ? profile.parentPhone : profile.parentPhone2;
+            if (emergencyCallLink) emergencyCallLink.href = `tel:${targetPhone}`;
+            if (emergencyNum) emergencyNum.textContent = `+${targetPhone}`;
+        } else {
+            emergencyCallBox?.classList.add('hidden');
         }
 
         // Vehicle Specs Card Rendering
@@ -475,7 +608,7 @@ class App {
 
             let vTypeName = 'DEL VEHÍCULO';
             let iconClass = 'fa-car-side';
-            if (vehicleType === 'moto') { vTypeName = 'DE LA MOTOCICLETA'; iconClass = 'fa-motorcycle'; }
+            if (vehicleType === 'moto') { vTypeName = 'DE LA MOTO'; iconClass = 'fa-motorcycle'; }
             else if (vehicleType === 'bike') { vTypeName = 'DE LA BICICLETA'; iconClass = 'fa-bicycle'; }
             else { vTypeName = 'DEL AUTOMÓVIL'; iconClass = 'fa-car'; }
 
