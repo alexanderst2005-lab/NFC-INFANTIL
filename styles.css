@@ -875,6 +875,16 @@ body.theme-girl .icon-grade {
     color: #c026d3;
 }
 
+.icon-medical {
+    background: rgba(245, 158, 11, 0.14);
+    color: #d97706;
+}
+
+.icon-medications {
+    background: rgba(16, 185, 129, 0.14);
+    color: #059669;
+}
+
 /* Medical Special Care Box (Enfermedad o Condición) */
 .special-care-box {
     background: #fff8f8;
@@ -2677,20 +2687,21 @@ html.theme-vehicle .profile-card {
 }
 
 html.theme-vehicle .vehicle-hero-banner {
-    height: 105px !important;
-    margin-bottom: -32px !important;
+    height: 145px !important;
+    margin-bottom: -45px !important;
     margin-left: -0.75rem !important;
     margin-right: -0.75rem !important;
     width: calc(100% + 1.5rem) !important;
-    border-top-left-radius: 20px !important;
-    border-top-right-radius: 20px !important;
+    border-top-left-radius: 24px !important;
+    border-top-right-radius: 24px !important;
 }
 
 html.theme-vehicle .arch-photo-container {
-    width: 80px !important;
-    height: 80px !important;
-    border: 3px solid #ffffff !important;
-    box-shadow: 0 5px 18px rgba(0, 0, 0, 0.2) !important;
+    width: 105px !important;
+    height: 105px !important;
+    border: 4px solid #ffffff !important;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25) !important;
+    background: #ffffff !important;
 }
 
 html.theme-vehicle .profile-hero-name {

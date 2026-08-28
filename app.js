@@ -465,11 +465,11 @@ class App {
         // Age
         const ageCard = document.getElementById('box-age');
         const ageEl = document.getElementById('p-age-val');
-        if (!isVehicle && profile.age !== undefined && profile.age !== null && String(profile.age).trim() !== '') {
+        if (profile.age !== undefined && profile.age !== null && String(profile.age).trim() !== '') {
             ageCard?.classList.remove('hidden');
             if (ageEl) ageEl.textContent = `${profile.age} años`;
         } else {
-            ageCard?.classList.add('hidden'); // Ocultar si no hay edad o es vehículo
+            ageCard?.classList.add('hidden'); // Ocultar si no hay edad
         }
 
         // Blood Type Card Visibility

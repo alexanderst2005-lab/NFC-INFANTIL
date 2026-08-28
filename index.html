@@ -75,7 +75,7 @@
             } catch(e) {}
         })();
     </script>
-    <link rel="stylesheet" href="styles.css?v=3.3">
+    <link rel="stylesheet" href="styles.css?v=3.4">
 </head>
 <body>
 
@@ -230,6 +230,26 @@
                                     <span class="val" id="p-eps-val"></span>
                                 </div>
                             </div>
+                            <!-- Condiciones Médicas -->
+                            <div class="info-card-box box-medical hidden" id="box-medical">
+                                <div class="info-card-icon icon-medical">
+                                    <i class="fa-solid fa-suitcase-medical"></i>
+                                </div>
+                                <div class="info-card-text">
+                                    <span class="label" id="p-medical-header-title">Condiciones Médicas</span>
+                                    <span class="val" id="p-medical-notes"></span>
+                                </div>
+                            </div>
+                            <!-- Medicamentos Importantes -->
+                            <div class="info-card-box box-medications hidden" id="box-medications">
+                                <div class="info-card-icon icon-medications">
+                                    <i class="fa-solid fa-pills"></i>
+                                </div>
+                                <div class="info-card-text">
+                                    <span class="label">Medicamentos</span>
+                                    <span class="val" id="p-medications-notes"></span>
+                                </div>
+                            </div>
                         </div>
 
                         <!-- Optional Extra Cards (School, Grade, Parent) -->
@@ -252,22 +272,6 @@
                                 <span class="val" id="p-grade">Cargando...</span>
                             </div>
                         </div>
-                    </div>
-
-                    <!-- Special Medical Notes / Conditions -->
-                    <div class="special-care-box hidden" id="box-medical">
-                        <div class="special-care-header">
-                            <i class="fa-solid fa-suitcase-medical"></i> <span id="p-medical-header-title">Condiciones Médicas</span>
-                        </div>
-                        <div class="special-care-body" id="p-medical-notes"></div>
-                    </div>
-
-                    <!-- Important Medications Box -->
-                    <div class="special-care-box medications-box hidden" id="box-medications">
-                        <div class="special-care-header">
-                            <i class="fa-solid fa-pills"></i> Medicamentos Importantes
-                        </div>
-                        <div class="special-care-body" id="p-medications-notes"></div>
                     </div>
 
                     <!-- EMERGENCY CONTACTS LIST SECTION (MOCKUP STYLE) -->
@@ -409,6 +413,6 @@
         </section>
     </main>
 
-    <script type="module" src="app.js?v=5.3"></script>
+    <script type="module" src="app.js?v=5.4"></script>
 </body>
 </html>

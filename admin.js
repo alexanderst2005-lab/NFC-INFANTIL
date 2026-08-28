@@ -37,6 +37,8 @@ class AdminApp {
         this.isAuthenticated = (localStorage.getItem('nfc_admin_auth') === 'true' || sessionStorage.getItem('nfc_admin_auth') === 'true');
         this.photoRemoved = false;
         this.pendingUploadedPhoto = null;
+        this.clubLogoRemoved = false;
+        this.pendingUploadedClubLogo = null;
         this.currentCategoryTab = 'all';
         this.isSaving = false;
         this.init();
@@ -492,7 +494,11 @@ class AdminApp {
     openCreateModal() {
         this.photoRemoved = false;
         this.pendingUploadedPhoto = null;
-        document.getElementById('modal-title').textContent = 'Crear Nuevo Perfil';
+        this.clubLogoRemoved = false;
+        this.pendingUploadedClubLogo = null;
+
+        const idInput = document.getElementById('input-profile-id');
+        const titleEl = document.getElementById('modal-title');
         const newId = `prof-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`;
         document.getElementById('input-profile-id').value = newId;
         document.getElementById('input-name').value = '';
@@ -591,6 +597,16 @@ class AdminApp {
         if (document.getElementById('input-vehicle-club-desc')) document.getElementById('input-vehicle-club-desc').value = profile.vehicleClubDesc || '';
         if (document.getElementById('input-vehicle-club-city')) document.getElementById('input-vehicle-club-city').value = profile.vehicleClubCity || '';
         if (document.getElementById('input-vehicle-club-logo')) document.getElementById('input-vehicle-club-logo').value = profile.vehicleClubLogo || '';
+
+        const clubLogoPreviewWrapper = document.getElementById('club-logo-preview-wrapper');
+        const clubLogoPreview = document.getElementById('club-logo-preview');
+        if (profile.vehicleClubLogo && profile.vehicleClubLogo.trim() !== '') {
+            if (clubLogoPreview) clubLogoPreview.src = profile.vehicleClubLogo;
+            if (clubLogoPreviewWrapper) clubLogoPreviewWrapper.style.display = 'block';
+        } else {
+            if (clubLogoPreview) clubLogoPreview.src = '';
+            if (clubLogoPreviewWrapper) clubLogoPreviewWrapper.style.display = 'none';
+        }
 
         const previewImg = document.getElementById('photo-preview');
         if (previewImg) {
@@ -761,7 +777,18 @@ class AdminApp {
             const vehicleClubVal = document.getElementById('input-vehicle-club')?.value.trim() || '';
             const vehicleClubDescVal = document.getElementById('input-vehicle-club-desc')?.value.trim() || '';
             const vehicleClubCityVal = document.getElementById('input-vehicle-club-city')?.value.trim() || '';
-            const vehicleClubLogoVal = document.getElementById('input-vehicle-club-logo')?.value.trim() || '';
+            const vehicleClubLogoInput = document.getElementById('input-vehicle-club-logo')?.value.trim() || '';
+
+            let finalClubLogo = '';
+            if (this.clubLogoRemoved) {
+                finalClubLogo = '';
+            } else if (this.pendingUploadedClubLogo && this.pendingUploadedClubLogo.trim() !== '') {
+                finalClubLogo = this.pendingUploadedClubLogo.trim();
+            } else if (vehicleClubLogoInput && vehicleClubLogoInput.trim() !== '') {
+                finalClubLogo = vehicleClubLogoInput.trim();
+            } else if (existingProf && existingProf.vehicleClubLogo && !this.clubLogoRemoved) {
+                finalClubLogo = existingProf.vehicleClubLogo;
+            }
 
             const photoUrlInput = document.getElementById('input-photo-url').value.trim();
             const previewSrc = document.getElementById('photo-preview').src;
@@ -821,7 +848,7 @@ class AdminApp {
                 vehicleClub: vehicleClubVal,
                 vehicleClubDesc: vehicleClubDescVal,
                 vehicleClubCity: vehicleClubCityVal,
-                vehicleClubLogo: vehicleClubLogoVal,
+                vehicleClubLogo: finalClubLogo,
                 birthDate: birthDateVal,
                 age: computedAge,
                 bloodType: gender === 'pet' ? '' : (document.getElementById('input-blood').value ? document.getElementById('input-blood').value.trim() : ''),
@@ -1090,6 +1117,54 @@ class AdminApp {
             }
 
             this.showToast("¡Fotografía eliminada por completo!");
+        });
+
+        // Club Logo File Uploader with instant Canvas compression
+        const dropzoneClubLogo = document.getElementById('dropzone-club-logo');
+        const fileInputClubLogo = document.getElementById('file-club-logo-input');
+        const previewImgClubLogo = document.getElementById('club-logo-preview');
+        const wrapperClubLogo = document.getElementById('club-logo-preview-wrapper');
+
+        dropzoneClubLogo?.addEventListener('click', (e) => {
+            if (e.target.tagName !== 'INPUT') { fileInputClubLogo.click(); }
+        });
+
+        fileInputClubLogo?.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                this.clubLogoRemoved = false;
+                const reader = new FileReader();
+                reader.onload = async (evt) => {
+                    const compressedBase64 = await this.compressImage(evt.target.result, 250, 250, 0.7);
+                    this.pendingUploadedClubLogo = compressedBase64;
+                    if (previewImgClubLogo) previewImgClubLogo.src = compressedBase64;
+                    if (wrapperClubLogo) wrapperClubLogo.style.display = 'block';
+                    const urlInput = document.getElementById('input-vehicle-club-logo');
+                    if (urlInput) urlInput.value = '';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        document.getElementById('input-vehicle-club-logo')?.addEventListener('input', () => {
+            this.clubLogoRemoved = false;
+            const url = document.getElementById('input-vehicle-club-logo').value.trim();
+            if (url) {
+                if (previewImgClubLogo) previewImgClubLogo.src = url;
+                if (wrapperClubLogo) wrapperClubLogo.style.display = 'block';
+            } else if (!this.pendingUploadedClubLogo) {
+                if (wrapperClubLogo) wrapperClubLogo.style.display = 'none';
+            }
+        });
+
+        document.getElementById('btn-remove-club-logo')?.addEventListener('click', () => {
+            this.clubLogoRemoved = true;
+            this.pendingUploadedClubLogo = null;
+            if (previewImgClubLogo) previewImgClubLogo.src = '';
+            if (wrapperClubLogo) wrapperClubLogo.style.display = 'none';
+            const urlInput = document.getElementById('input-vehicle-club-logo');
+            if (urlInput) urlInput.value = '';
+            if (fileInputClubLogo) fileInputClubLogo.value = '';
         });
     }
 

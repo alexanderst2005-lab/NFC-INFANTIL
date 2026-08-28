@@ -364,15 +364,26 @@
                     </div>
 
                     <div class="form-row">
-                        <div class="form-group" style="flex: 1.5;">
+                        <div class="form-group" style="flex: 1;">
                             <label class="form-label" for="input-vehicle-club-desc">Descripción del Club</label>
                             <input type="text" id="input-vehicle-club-desc" class="form-input"
                                 placeholder="Ej: Comunidad de motociclistas">
                         </div>
-                        <div class="form-group" style="flex: 1.5;">
-                            <label class="form-label" for="input-vehicle-club-logo">Logo / Imagen Club (URL)</label>
-                            <input type="url" id="input-vehicle-club-logo" class="form-input"
-                                placeholder="Ej: https://.../logo.png">
+                        <div class="form-group" style="flex: 1;">
+                            <label class="form-label">Logo / Foto del Club</label>
+                            <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+                                <div id="dropzone-club-logo" class="photo-dropzone" style="padding: 0.4rem 0.6rem; flex: 1; min-width: 140px; cursor: pointer;">
+                                    <i class="fa-solid fa-cloud-arrow-up" style="font-size: 1rem;"></i>
+                                    <span style="font-size: 0.78rem; font-weight: 600;">Subir Foto del Club</span>
+                                    <input type="file" id="file-club-logo-input" accept="image/*" style="display: none;">
+                                </div>
+                                <div id="club-logo-preview-wrapper" style="position: relative; display: none;">
+                                    <img src="" id="club-logo-preview" class="photo-preview-img" style="width: 44px; height: 44px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary);" alt="Logo Club">
+                                    <button type="button" id="btn-remove-club-logo" class="btn-remove-photo-badge" style="top: -4px; right: -4px; width: 18px; height: 18px; font-size: 10px;" title="Quitar logo">&times;</button>
+                                </div>
+                            </div>
+                            <input type="url" id="input-vehicle-club-logo" class="form-input" style="margin-top: 0.4rem; font-size: 0.78rem;"
+                                placeholder="O pega URL de imagen (https://...)">
                         </div>
                     </div>
                 </div>
