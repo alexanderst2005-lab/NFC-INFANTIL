@@ -2334,3 +2334,171 @@ html.theme-bike body {
     opacity: 0.9;
 }
 
+/* ===================================================================
+   STRICT CLEANUP & COMPACT SINGLE-SCREEN VIEW FOR VEHICLE PROFILES
+   =================================================================== */
+html.theme-vehicle .arch-deco,
+html.theme-vehicle .scene-item,
+html.theme-vehicle .name-spark {
+    display: none !important;
+}
+
+html.theme-vehicle .arch-photo-container {
+    width: 105px !important;
+    height: 105px !important;
+    border-radius: 50% !important;
+    border: 4px solid #ffffff !important;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25) !important;
+    background: #ffffff !important;
+}
+
+html.theme-vehicle .arch-photo-img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    border-radius: 50% !important;
+}
+
+html.theme-vehicle .hero-arch-wrapper {
+    margin-top: 0 !important;
+    margin-bottom: 0.2rem !important;
+}
+
+html.theme-vehicle .profile-hero-name {
+    font-size: 1.35rem !important;
+    margin-top: 0.15rem !important;
+    color: #0f172a !important;
+    font-weight: 900 !important;
+    letter-spacing: 0.02em !important;
+}
+
+/* Category Pill Badges */
+html.theme-moto .security-ribbon {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 15px rgba(220, 38, 38, 0.35) !important;
+    font-weight: 900 !important;
+    letter-spacing: 0.08em !important;
+}
+
+html.theme-car .security-ribbon {
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%) !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 15px rgba(37, 99, 235, 0.35) !important;
+    font-weight: 900 !important;
+    letter-spacing: 0.08em !important;
+}
+
+html.theme-bike .security-ribbon {
+    background: linear-gradient(135deg, #22c55e 0%, #15803d 100%) !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 15px rgba(22, 163, 74, 0.35) !important;
+    font-weight: 900 !important;
+    letter-spacing: 0.08em !important;
+}
+
+/* Streamlined Compact Heights & Padding for Single-Screen View */
+html.theme-vehicle .profile-card {
+    padding: 0 1rem 1rem 1rem !important;
+}
+
+html.theme-vehicle .vehicle-hero-banner {
+    height: 135px !important;
+    margin-bottom: -45px !important;
+}
+
+html.theme-vehicle .emergency-instruction-banner {
+    margin: 0.65rem 0 !important;
+    padding: 0.6rem 0.85rem !important;
+    border-radius: 12px !important;
+}
+
+html.theme-vehicle .instruction-icon {
+    width: 32px !important;
+    height: 32px !important;
+    font-size: 0.95rem !important;
+}
+
+html.theme-vehicle .instruction-text {
+    font-size: 0.78rem !important;
+    line-height: 1.3 !important;
+}
+
+html.theme-vehicle .emergency-contacts-section {
+    margin-top: 0.75rem !important;
+}
+
+html.theme-vehicle .contacts-section-title {
+    font-size: 0.78rem !important;
+    margin-bottom: 0.45rem !important;
+}
+
+html.theme-vehicle .emergency-contact-card {
+    padding: 0.55rem 0.85rem !important;
+    border-radius: 12px !important;
+}
+
+html.theme-vehicle .contact-avatar-icon {
+    width: 32px !important;
+    height: 32px !important;
+    font-size: 0.9rem !important;
+}
+
+html.theme-vehicle .contact-name-val {
+    font-size: 0.88rem !important;
+}
+
+html.theme-vehicle .contact-wa-btn {
+    padding: 0.35rem 0.75rem !important;
+    font-size: 0.82rem !important;
+}
+
+html.theme-vehicle .vehicle-specs-card {
+    margin-top: 0.75rem !important;
+    padding: 0.85rem !important;
+    border-radius: 14px !important;
+}
+
+html.theme-vehicle .vehicle-specs-header {
+    font-size: 0.8rem !important;
+    margin-bottom: 0.55rem !important;
+    padding-bottom: 0.35rem !important;
+}
+
+html.theme-vehicle .vehicle-main-spec {
+    font-size: 1.02rem !important;
+}
+
+html.theme-vehicle .emergency-call-bar-wrapper {
+    margin-top: 0.75rem !important;
+}
+
+html.theme-vehicle .btn-emergency-call-bar {
+    padding: 0.65rem 1rem !important;
+    border-radius: 16px !important;
+}
+
+html.theme-vehicle .call-bar-title {
+    font-size: 0.78rem !important;
+}
+
+html.theme-vehicle .call-bar-num {
+    font-size: 1.1rem !important;
+}
+
+html.theme-vehicle .call-bar-plus-icon {
+    font-size: 1.4rem !important;
+}
+
+html.theme-vehicle .bottom-scene-wrapper {
+    margin-top: 0.75rem !important;
+}
+
+html.theme-vehicle .footer-love-pill {
+    background: rgba(0, 0, 0, 0.04) !important;
+    color: #64748b !important;
+    border: 1px solid rgba(0, 0, 0, 0.06) !important;
+    font-size: 0.76rem !important;
+    padding: 0.4rem 0.85rem !important;
+}
+

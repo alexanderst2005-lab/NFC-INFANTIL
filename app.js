@@ -341,40 +341,31 @@ class App {
         const decoBr = document.getElementById('p-deco-br');
         const sceneLeft = document.getElementById('scene-left');
         const sceneRight = document.getElementById('scene-right');
+        const footerTag = document.getElementById('p-footer-tag');
 
         if (isVehicle) {
-            if (vehicleType === 'moto') {
-                if (decoTl) decoTl.innerHTML = '<i class="fa-solid fa-motorcycle"></i>';
-                if (decoTr) decoTr.innerHTML = '<i class="fa-solid fa-helmet-safety"></i>';
-                if (decoBr) decoBr.innerHTML = '<i class="fa-solid fa-shield-halved"></i>';
-                if (sceneLeft) sceneLeft.innerHTML = '<i class="fa-solid fa-motorcycle"></i>';
-                if (sceneRight) sceneRight.innerHTML = '<i class="fa-solid fa-shield-heart"></i>';
-            } else if (vehicleType === 'bike') {
-                if (decoTl) decoTl.innerHTML = '<i class="fa-solid fa-bicycle"></i>';
-                if (decoTr) decoTr.innerHTML = '<i class="fa-solid fa-route"></i>';
-                if (decoBr) decoBr.innerHTML = '<i class="fa-solid fa-heart-pulse"></i>';
-                if (sceneLeft) sceneLeft.innerHTML = '<i class="fa-solid fa-bicycle"></i>';
-                if (sceneRight) sceneRight.innerHTML = '<i class="fa-solid fa-shield-heart"></i>';
-            } else {
-                if (decoTl) decoTl.innerHTML = '<i class="fa-solid fa-car"></i>';
-                if (decoTr) decoTr.innerHTML = '<i class="fa-solid fa-gauge-high"></i>';
-                if (decoBr) decoBr.innerHTML = '<i class="fa-solid fa-road"></i>';
-                if (sceneLeft) sceneLeft.innerHTML = '<i class="fa-solid fa-car-side"></i>';
-                if (sceneRight) sceneRight.innerHTML = '<i class="fa-solid fa-shield-heart"></i>';
-            }
+            if (decoTl) decoTl.innerHTML = '';
+            if (decoTr) decoTr.innerHTML = '';
+            if (decoBr) decoBr.innerHTML = '';
+            if (sceneLeft) sceneLeft.innerHTML = '';
+            if (sceneRight) sceneRight.innerHTML = '';
+            if (footerTag) footerTag.innerHTML = '<i class="fa-solid fa-shield-halved"></i> NFC - COL • Perfil Oficial de Seguridad';
         } else if (isGirl) {
+            if (footerTag) footerTag.innerHTML = '<i class="fa-solid fa-shield-heart"></i> Protegido con amor <i class="fa-solid fa-heart" style="color: #ec4899;"></i>';
             if (decoTl) decoTl.innerHTML = '<i class="fa-solid fa-feather"></i>';
             if (decoTr) decoTr.innerHTML = '<i class="fa-solid fa-rainbow"></i>';
             if (decoBr) decoBr.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i>';
             if (sceneLeft) sceneLeft.innerHTML = '<i class="fa-solid fa-seedling"></i>';
             if (sceneRight) sceneRight.innerHTML = '<i class="fa-solid fa-chess-rook"></i>';
         } else if (isPet) {
+            if (footerTag) footerTag.innerHTML = '<i class="fa-solid fa-shield-heart"></i> Protegido con amor <i class="fa-solid fa-heart" style="color: #ec4899;"></i>';
             if (decoTl) decoTl.innerHTML = '<i class="fa-solid fa-paw"></i>';
             if (decoTr) decoTr.innerHTML = '<i class="fa-solid fa-bone"></i>';
             if (decoBr) decoBr.innerHTML = '<i class="fa-solid fa-heart"></i>';
             if (sceneLeft) sceneLeft.innerHTML = '<i class="fa-solid fa-tree"></i>';
             if (sceneRight) sceneRight.innerHTML = '<i class="fa-solid fa-paw"></i>';
         } else if (isSenior) {
+            if (footerTag) footerTag.innerHTML = '<i class="fa-solid fa-shield-heart"></i> Protegido con amor <i class="fa-solid fa-heart" style="color: #ec4899;"></i>';
             if (decoTl) decoTl.innerHTML = '<i class="fa-solid fa-heart-pulse"></i>';
             if (decoTr) decoTr.innerHTML = '<i class="fa-solid fa-user-shield"></i>';
             if (decoBr) decoBr.innerHTML = '<i class="fa-solid fa-hand-holding-heart"></i>';
@@ -382,6 +373,7 @@ class App {
             if (sceneRight) sceneRight.innerHTML = '<i class="fa-solid fa-shield-heart"></i>';
         } else {
             // Default Boy Theme
+            if (footerTag) footerTag.innerHTML = '<i class="fa-solid fa-shield-heart"></i> Protegido con amor <i class="fa-solid fa-heart" style="color: #ec4899;"></i>';
             if (decoTl) decoTl.innerHTML = '<i class="fa-solid fa-rocket"></i>';
             if (decoTr) decoTr.innerHTML = '<i class="fa-solid fa-atom"></i>';
             if (decoBr) decoBr.innerHTML = '<i class="fa-solid fa-user-astronaut"></i>';
