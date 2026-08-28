@@ -321,14 +321,14 @@ class App {
             vehicleBanner?.classList.remove('hidden');
             standardTopBar?.classList.add('hidden');
 
-            let coverUrl = 'https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=1200&auto=format&fit=crop&q=80'; // Moto
+            let coverUrl = 'assets/cover-moto.png'; // Moto (Foto 3)
             let subTitleText = 'Perfil de Emergencia Motociclista';
 
             if (vehicleType === 'car') {
-                coverUrl = 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=1200&auto=format&fit=crop&q=80'; // Car
+                coverUrl = 'assets/cover-car.jpg'; // Carro (Foto 1)
                 subTitleText = 'Perfil de Emergencia Conductor';
             } else if (vehicleType === 'bike') {
-                coverUrl = 'https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=1200&auto=format&fit=crop&q=80'; // Bike
+                coverUrl = 'assets/cover-bike.png'; // Bicicleta (Foto 2)
                 subTitleText = 'Perfil de Identificación Ciclista';
             }
 
