@@ -400,7 +400,9 @@ class App {
             
             const launchWhatsApp = (finalText) => {
                 const encodedWa = encodeURIComponent(finalText);
-                window.open(`https://wa.me/${phone}?text=${encodedWa}`, '_blank');
+                const waUrl = `https://wa.me/${phone}?text=${encodedWa}`;
+                // Use window.location.href so iOS Safari (Apple iPhone) does not block as an async pop-up
+                window.location.href = waUrl;
             };
 
             if ('geolocation' in navigator) {
