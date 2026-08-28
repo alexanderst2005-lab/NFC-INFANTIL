@@ -339,9 +339,9 @@ class App {
             standardTopBar?.classList.remove('hidden');
         }
 
-        // Emergency Instruction Banner
+        // Emergency Instruction Banner (ONLY for Vehicles)
         const instructionBox = document.getElementById('box-emergency-instruction');
-        if (isVehicle || profile.medicalConditions || profile.importantMedications || profile.allergies) {
+        if (isVehicle) {
             instructionBox?.classList.remove('hidden');
         } else {
             instructionBox?.classList.add('hidden');
