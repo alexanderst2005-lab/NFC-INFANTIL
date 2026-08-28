@@ -4,13 +4,13 @@ document.documentElement.classList.add('ready');
 /* ==========================================================================
    NFC INFANTIL - ADMIN PANEL LOGIC (FIREBASE FIRESTORE REAL-TIME SINGLE SOURCE OF TRUTH)
    ========================================================================== */
-import { 
-    db, 
-    collection, 
-    doc, 
-    setDoc, 
-    deleteDoc, 
-    onSnapshot, 
+import {
+    db,
+    collection,
+    doc,
+    setDoc,
+    deleteDoc,
+    onSnapshot,
     INITIAL_PROFILES_SEED,
     auth,
     signInWithEmailAndPassword,
@@ -31,7 +31,7 @@ class AdminApp {
                 if (Array.isArray(parsed) && parsed.length > 0) {
                     initialList = parsed;
                 }
-            } catch (e) {}
+            } catch (e) { }
         }
         this.profiles = this.deduplicateProfiles(initialList);
         this.isAuthenticated = (localStorage.getItem('nfc_admin_auth') === 'true' || sessionStorage.getItem('nfc_admin_auth') === 'true');
@@ -48,7 +48,7 @@ class AdminApp {
         }
         window.scrollTo(0, 0);
         this.setupEventListeners();
-        
+
         // Listen to Firebase Auth State with fallback to local admin session
         onAuthStateChanged(auth, (user) => {
             if (user) {
@@ -142,10 +142,10 @@ class AdminApp {
     sanitizeProfile(p) {
         if (!p) return null;
 
-        const name = (p.name && String(p.name).trim() !== '' && String(p.name).trim() !== 'undefined') 
-            ? String(p.name).trim() 
+        const name = (p.name && String(p.name).trim() !== '' && String(p.name).trim() !== 'undefined')
+            ? String(p.name).trim()
             : 'Perfil';
-        
+
         let gender = (p.gender === 'girl' || p.gender === 'pet' || p.gender === 'senior' || p.gender === 'vehicle') ? p.gender : 'boy';
         if (p.id === 'prof-006-jose' || (p.slug && String(p.slug).toLowerCase().includes('jose-ramirez'))) {
             gender = 'senior';
@@ -161,8 +161,8 @@ class AdminApp {
         if (!slug) slug = 'perfil';
 
         let locationMapsUrl = (p.locationMapsUrl !== undefined && p.locationMapsUrl !== null) ? String(p.locationMapsUrl).trim() : '';
-        if (locationMapsUrl.includes('maps.google.com/?q=6.2088') || 
-            locationMapsUrl.includes('maps.google.com/?q=4.6581') || 
+        if (locationMapsUrl.includes('maps.google.com/?q=6.2088') ||
+            locationMapsUrl.includes('maps.google.com/?q=4.6581') ||
             locationMapsUrl.includes('maps.google.com/?q=3.4516')) {
             locationMapsUrl = '';
         }
@@ -185,8 +185,8 @@ class AdminApp {
 
         const defaultWaMsg = gender === 'pet'
             ? 'Hola, encontré a la mascota {nombre} y quiero comunicarme con su dueño.'
-            : (gender === 'senior' 
-                ? 'Hola, encontré el perfil de seguridad del adulto mayor {nombre} y quiero comunicarme con sus familiares.' 
+            : (gender === 'senior'
+                ? 'Hola, encontré el perfil de seguridad del adulto mayor {nombre} y quiero comunicarme con sus familiares.'
                 : (gender === 'vehicle'
                     ? 'Hola, encontré la información del vehículo {nombre} y quiero comunicarme con el propietario o contacto de emergencia.'
                     : 'Hola, encontré la información del perfil de {nombre}.'));
@@ -269,7 +269,7 @@ class AdminApp {
         for (const p of list) {
             const sanitized = this.sanitizeProfile(p);
             if (!sanitized) continue;
-            
+
             if (!seenIds.has(sanitized.id) && !seenSlugs.has(sanitized.slug)) {
                 seenIds.add(sanitized.id);
                 seenSlugs.add(sanitized.slug);
@@ -297,7 +297,7 @@ class AdminApp {
                 dashboardView.style.setProperty('display', 'block', 'important'); // <- Fuerza bruta
             }
             if (logoutBtn) logoutBtn.classList.remove('hidden');
-            
+
         } else {
             // SI NO ESTÁ LOGUEADO: Mostrar login y Ocultar dashboard
             if (loginView) {
@@ -379,7 +379,7 @@ class AdminApp {
         // 2. Filter by Search Query
         if (filterQuery.trim() !== '') {
             const query = filterQuery.toLowerCase().trim();
-            filtered = filtered.filter(p => 
+            filtered = filtered.filter(p =>
                 (p.name && p.name.toLowerCase().includes(query)) ||
                 (p.slug && p.slug.toLowerCase().includes(query)) ||
                 (p.school && p.school.toLowerCase().includes(query)) ||
@@ -406,7 +406,7 @@ class AdminApp {
             const isSenior = p.gender === 'senior';
             const isVehicle = p.gender === 'vehicle';
             const photoSrc = p.photoUrl && p.photoUrl.trim() !== '' ? p.photoUrl : NEUTRAL_AVATAR_SVG;
-            
+
             let categoryLabel = isPet ? 'Mascota 🐾' : (isSenior ? 'Adulto Mayor 👵👴' : (p.gender === 'girl' ? 'Niña 👧' : 'Niño 🧒'));
             let categoryClass = isPet ? 'pill-pet' : (isSenior ? 'pill-senior' : (p.gender === 'girl' ? 'pill-girl' : 'pill-boy'));
 
@@ -419,7 +419,7 @@ class AdminApp {
 
             // Ocultar iconos si el campo no está diligenciado
             let metaHtml = '';
-            
+
             if (isVehicle) {
                 if (p.vehicleBrand || p.vehicleModel || p.vehiclePlate) {
                     const plateStr = p.vehiclePlate ? ` | Placa/Serial: ${p.vehiclePlate}` : '';
@@ -445,7 +445,7 @@ class AdminApp {
                 const phone2Str = p.parentPhone2 ? ` | +${p.parentPhone2}` : '';
                 metaHtml += `<div class="meta-item meta-item-full"><i class="fa-solid fa-phone"></i> +${p.parentPhone}${phone2Str}</div>`;
             }
-            
+
             // Solo renderizar el contenedor si hay al menos un campo lleno
             const metaContainer = metaHtml ? `<div class="card-meta-grid">${metaHtml}</div>` : '';
             return `
@@ -489,10 +489,10 @@ class AdminApp {
         document.getElementById('input-profile-id').value = newId;
         document.getElementById('input-name').value = '';
         document.getElementById('input-slug').value = '';
-        
+
         const genderSelect = document.getElementById('input-gender');
         if (genderSelect) genderSelect.value = (this.currentCategoryTab !== 'all' ? this.currentCategoryTab : 'boy');
-        
+
         document.getElementById('input-birthdate').value = '';
         document.getElementById('input-age').value = '';
         document.getElementById('input-blood').value = '';
@@ -514,7 +514,7 @@ class AdminApp {
         document.getElementById('input-medical').value = '';
         document.getElementById('input-medications').value = '';
         document.getElementById('input-photo-url').value = '';
-        
+
         // Clear Vehicle Fields
         if (document.getElementById('input-vehicle-type')) document.getElementById('input-vehicle-type').value = 'car';
         if (document.getElementById('input-vehicle-brand')) document.getElementById('input-vehicle-brand').value = '';
@@ -544,10 +544,10 @@ class AdminApp {
         document.getElementById('input-profile-id').value = profile.id;
         document.getElementById('input-name').value = profile.name || '';
         document.getElementById('input-slug').value = profile.slug || '';
-        
+
         const genderSelect = document.getElementById('input-gender');
         if (genderSelect) genderSelect.value = profile.gender || 'boy';
-        
+
         document.getElementById('input-birthdate').value = profile.birthDate || '';
         document.getElementById('input-age').value = (profile.age !== undefined && profile.age !== null) ? profile.age : '';
         document.getElementById('input-blood').value = profile.bloodType || '';
@@ -569,7 +569,7 @@ class AdminApp {
         document.getElementById('input-medical').value = profile.medicalConditions || '';
         document.getElementById('input-medications').value = profile.importantMedications || '';
         document.getElementById('input-photo-url').value = profile.photoUrl || '';
-        
+
         // Populate Vehicle Fields
         if (document.getElementById('input-vehicle-type')) document.getElementById('input-vehicle-type').value = profile.vehicleType || 'car';
         if (document.getElementById('input-vehicle-brand')) document.getElementById('input-vehicle-brand').value = profile.vehicleBrand || '';
@@ -891,7 +891,7 @@ class AdminApp {
             e.preventDefault();
             const user = document.getElementById('input-admin-user')?.value.trim();
             const pass = document.getElementById('input-admin-pass')?.value.trim();
-            
+
             const btnSubmit = e.target.querySelector('button[type="submit"]');
             const originalBtnHtml = btnSubmit ? btnSubmit.innerHTML : '';
             if (btnSubmit) {
@@ -940,7 +940,7 @@ class AdminApp {
         // ==========================================
         // SISTEMA DE LOGOUT PROFESIONAL (MODAL + SPINNER)
         // ==========================================
-        
+
         // 1. Mostrar modal al hacer clic en salir (Búsqueda Dinámica Inmune)
         document.getElementById('btn-admin-logout')?.addEventListener('click', () => {
             const modal = document.getElementById('modal-logout');
@@ -950,7 +950,7 @@ class AdminApp {
                 alert("Error técnico: Asegúrate de que el modal de logout esté en el HTML.");
             }
         });
-        
+
         // 2. Ocultar modal si se cancela (Usando delegación de eventos)
         document.body.addEventListener('click', (e) => {
             if (e.target.id === 'btn-cancel-logout') {
@@ -963,7 +963,7 @@ class AdminApp {
             if (e.target.id === 'btn-confirm-logout') {
                 const btnConfirmLogout = e.target;
                 const originalHtml = btnConfirmLogout.innerHTML;
-                
+
                 // Estado visual de carga (Spinner animado)
                 btnConfirmLogout.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Cerrando...';
                 btnConfirmLogout.disabled = true;
@@ -973,14 +973,14 @@ class AdminApp {
                     localStorage.removeItem('nfc_profiles_db'); // Limpieza de caché local
                     localStorage.removeItem('nfc_admin_auth');
                     sessionStorage.removeItem('nfc_admin_auth');
-                    
+
                     // Redirección forzada e instantánea a la pantalla de Login
-                    window.location.reload(); 
-                    
+                    window.location.reload();
+
                 } catch (error) {
                     console.error("Logout Error:", error);
                     alert("Hubo un error de conexión al intentar cerrar sesión.");
-                    
+
                     // Restaurar botón solo si falla
                     btnConfirmLogout.innerHTML = originalHtml;
                     btnConfirmLogout.disabled = false;
@@ -1049,7 +1049,7 @@ class AdminApp {
         document.getElementById('btn-remove-photo')?.addEventListener('click', async () => {
             this.photoRemoved = true;
             this.pendingUploadedPhoto = null;
-            
+
             if (previewImg) previewImg.src = NEUTRAL_AVATAR_SVG;
             document.getElementById('input-photo-url').value = '';
             if (fileInput) fileInput.value = '';

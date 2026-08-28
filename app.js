@@ -1,13 +1,13 @@
 /* ==========================================================================
    NFC INFANTIL - PUBLIC PROFILE VIEWER LOGIC (FIREBASE FIRESTORE REAL-TIME SINGLE SOURCE OF TRUTH)
    ========================================================================== */
-import { 
-    db, 
-    collection, 
-    doc, 
-    setDoc, 
-    onSnapshot, 
-    INITIAL_PROFILES_SEED 
+import {
+    db,
+    collection,
+    doc,
+    setDoc,
+    onSnapshot,
+    INITIAL_PROFILES_SEED
 } from './firebase-config.js';
 
 // Neutral SVG Silhouette for profiles without a custom photo
@@ -23,7 +23,7 @@ class App {
                 if (Array.isArray(parsed) && parsed.length > 0) {
                     initialList = parsed;
                 }
-            } catch (e) {}
+            } catch (e) { }
         }
         this.profiles = this.deduplicateProfiles(initialList);
         this.currentProfile = null;
@@ -106,10 +106,10 @@ class App {
     sanitizeProfile(p) {
         if (!p) return null;
 
-        const name = (p.name && String(p.name).trim() !== '' && String(p.name).trim() !== 'undefined') 
-            ? String(p.name).trim() 
+        const name = (p.name && String(p.name).trim() !== '' && String(p.name).trim() !== 'undefined')
+            ? String(p.name).trim()
             : 'Perfil';
-        
+
         let gender = (p.gender === 'girl' || p.gender === 'pet' || p.gender === 'senior' || p.gender === 'vehicle') ? p.gender : 'boy';
         if (p.id === 'prof-006-jose' || (p.slug && String(p.slug).toLowerCase().includes('jose-ramirez'))) {
             gender = 'senior';
@@ -125,8 +125,8 @@ class App {
         if (!slug) slug = 'perfil';
 
         let locationMapsUrl = (p.locationMapsUrl !== undefined && p.locationMapsUrl !== null) ? String(p.locationMapsUrl).trim() : '';
-        if (locationMapsUrl.includes('maps.google.com/?q=6.2088') || 
-            locationMapsUrl.includes('maps.google.com/?q=4.6581') || 
+        if (locationMapsUrl.includes('maps.google.com/?q=6.2088') ||
+            locationMapsUrl.includes('maps.google.com/?q=4.6581') ||
             locationMapsUrl.includes('maps.google.com/?q=3.4516')) {
             locationMapsUrl = '';
         }
@@ -149,8 +149,8 @@ class App {
 
         const defaultWaMsg = gender === 'pet'
             ? 'Hola, encontré a la mascota {nombre} y quiero comunicarme con su dueño.'
-            : (gender === 'senior' 
-                ? 'Hola, encontré el perfil de seguridad del adulto mayor {nombre} y quiero comunicarme con sus familiares.' 
+            : (gender === 'senior'
+                ? 'Hola, encontré el perfil de seguridad del adulto mayor {nombre} y quiero comunicarme con sus familiares.'
                 : (gender === 'vehicle'
                     ? 'Hola, encontré la información del vehículo {nombre} y quiero comunicarme con el propietario o contacto de emergencia.'
                     : 'Hola, encontré la información del perfil de {nombre}.'));
@@ -218,7 +218,7 @@ class App {
         for (const p of list) {
             const sanitized = this.sanitizeProfile(p);
             if (!sanitized) continue;
-            
+
             if (!seenIds.has(sanitized.id) && !seenSlugs.has(sanitized.slug)) {
                 seenIds.add(sanitized.id);
                 seenSlugs.add(sanitized.slug);
@@ -294,12 +294,12 @@ class App {
         const isGirl = profile.gender === 'girl';
         const isVehicle = profile.gender === 'vehicle';
         const vehicleType = profile.vehicleType || 'car'; // 'car', 'moto', 'bike'
-        
+
         let themeClass = isPet ? 'theme-pet' : (isSenior ? 'theme-senior' : (isGirl ? 'theme-girl' : 'theme-boy'));
         if (isVehicle) {
             themeClass = `theme-vehicle theme-${vehicleType}`;
         }
-        
+
         document.documentElement.classList.remove('theme-boy', 'theme-girl', 'theme-pet', 'theme-senior', 'theme-vehicle', 'theme-car', 'theme-moto', 'theme-bike');
         document.documentElement.classList.add(...themeClass.split(' '));
 
@@ -437,7 +437,7 @@ class App {
         const avatarImg = document.getElementById('p-avatar');
         if (avatarImg) {
             avatarImg.src = (profile.photoUrl && profile.photoUrl.trim() !== '') ? profile.photoUrl : NEUTRAL_AVATAR_SVG;
-            avatarImg.onerror = function() {
+            avatarImg.onerror = function () {
                 this.onerror = null;
                 this.src = NEUTRAL_AVATAR_SVG;
             };
@@ -463,7 +463,7 @@ class App {
         } else {
             ageCard?.classList.add('hidden'); // Ocultar si no hay edad o es vehículo
         }
-        
+
         // Blood Type Card Visibility
         const bloodCard = document.getElementById('box-blood');
         const bloodEl = document.getElementById('p-blood-val');
@@ -531,7 +531,7 @@ class App {
                 medicalCard.classList.add('hidden');
             }
         }
-        
+
         // Medications
         const medsCard = document.getElementById('box-medications');
         const medsEl = document.getElementById('p-medications-notes');
@@ -695,7 +695,7 @@ class App {
         // Helper to open WhatsApp with optional live location of the scanner
         const openWhatsAppWithLocation = (phone, baseMessage) => {
             let messageText = baseMessage.replace('{nombre}', profile.name);
-            
+
             const launchWhatsApp = (finalText) => {
                 const encodedWa = encodeURIComponent(finalText);
                 const waUrl = `https://wa.me/${phone}?text=${encodedWa}`;
@@ -732,28 +732,28 @@ class App {
         if (btnWa1) {
             if (profile.parentPhone && profile.parentPhone.trim() !== '') {
                 btnWa1.classList.remove('hidden');
-                let waText = profile.whatsappMessage || (isPet 
+                let waText = profile.whatsappMessage || (isPet
                     ? `Hola, encontré a la mascota ${profile.name} y me quiero comunicar con su dueño.`
                     : (isSenior ? `Hola, encontré el perfil de seguridad del adulto mayor ${profile.name} y me quiero comunicar con sus familiares.` : `Hola, encontré la información del perfil de ${profile.name}.`));
-                btnWa1.onclick = (e) => { 
-                    e.preventDefault(); 
+                btnWa1.onclick = (e) => {
+                    e.preventDefault();
                     openWhatsAppWithLocation(profile.parentPhone, waText);
                 };
             } else {
                 btnWa1.classList.add('hidden');
             }
         }
-        
+
         // WhatsApp Action Button 2
         const btnWa2 = document.getElementById('btn-whatsapp-action2');
         if (btnWa2) {
             if (profile.parentPhone2 && profile.parentPhone2.trim() !== '') {
                 btnWa2.classList.remove('hidden');
-                let waText = profile.whatsappMessage || (isPet 
+                let waText = profile.whatsappMessage || (isPet
                     ? `Hola, encontré a la mascota ${profile.name} y me quiero comunicar con su dueño.`
                     : (isSenior ? `Hola, encontré el perfil de seguridad del adulto mayor ${profile.name} y me quiero comunicar con sus familiares.` : `Hola, encontré la información del perfil de ${profile.name}.`));
-                btnWa2.onclick = (e) => { 
-                    e.preventDefault(); 
+                btnWa2.onclick = (e) => {
+                    e.preventDefault();
                     openWhatsAppWithLocation(profile.parentPhone2, waText);
                 };
             } else {

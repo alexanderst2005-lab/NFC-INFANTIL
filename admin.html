@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -8,17 +9,21 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <!-- FontAwesome icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="styles.css?v=12.0">
     <style>
-        #admin-login-screen, #admin-dashboard-screen {
+        #admin-login-screen,
+        #admin-dashboard-screen {
             display: none !important;
         }
+
         html.is-auth #admin-dashboard-screen {
             display: block !important;
         }
+
         html.is-no-auth #admin-login-screen {
             display: block !important;
         }
@@ -28,15 +33,16 @@
             history.scrollRestoration = 'manual';
         }
         window.scrollTo(0, 0);
-        (function() {
+        (function () {
             var isAuth = (localStorage.getItem('nfc_admin_auth') === 'true' || sessionStorage.getItem('nfc_admin_auth') === 'true');
             document.documentElement.className += isAuth ? ' is-auth' : ' is-no-auth';
-            setTimeout(function() {
+            setTimeout(function () {
                 document.documentElement.classList.add('ready');
             }, 200);
         })();
     </script>
 </head>
+
 <body class="theme-default admin-page-active">
 
     <!-- Background Decorator Bubbles -->
@@ -68,7 +74,8 @@
              =================================================================== -->
         <section id="admin-login-screen" class="view-section">
             <div class="admin-login-card">
-                <div class="brand-icon" style="margin: 0 auto 1.2rem auto; width: 64px; height: 64px; font-size: 2.2rem;">
+                <div class="brand-icon"
+                    style="margin: 0 auto 1.2rem auto; width: 64px; height: 64px; font-size: 2.2rem;">
                     <i class="fa-solid fa-lock"></i>
                 </div>
                 <h2>Acceso Administrativo</h2>
@@ -79,11 +86,13 @@
                 <form id="form-admin-login">
                     <div class="form-group" style="text-align: left;">
                         <label class="form-label" for="input-admin-user">Usuario</label>
-                        <input type="text" id="input-admin-user" class="form-input" placeholder="Ingresa tu usuario" required autocomplete="username">
+                        <input type="text" id="input-admin-user" class="form-input" placeholder="Ingresa tu usuario"
+                            required autocomplete="username">
                     </div>
                     <div class="form-group" style="text-align: left; margin-top: 1rem;">
                         <label class="form-label" for="input-admin-pass">Contraseña</label>
-                        <input type="password" id="input-admin-pass" class="form-input" placeholder="Ingresa tu contraseña" required autocomplete="current-password">
+                        <input type="password" id="input-admin-pass" class="form-input"
+                            placeholder="Ingresa tu contraseña" required autocomplete="current-password">
                     </div>
                     <button type="submit" class="btn btn-primary btn-block btn-lg" style="margin-top: 1.5rem;">
                         <i class="fa-solid fa-right-to-bracket"></i> Entrar al Panel
@@ -96,7 +105,7 @@
              PANTALLA DE PANEL DASHBOARD ADMINISTRATIVO
              =================================================================== -->
         <section id="admin-dashboard-screen" class="view-section">
-            
+
             <!-- Dashboard Header Banner -->
             <div class="dashboard-banner">
                 <div class="dashboard-header-text">
@@ -105,7 +114,8 @@
                     </div>
                     <h2 class="dashboard-title">Gestión de Perfiles Infantiles</h2>
                     <p class="dashboard-subtitle">
-                        Crea, edita y administra los perfiles únicos. Cada niño tiene su propio enlace URL independiente.
+                        Crea, edita y administra los perfiles únicos. Cada niño tiene su propio enlace URL
+                        independiente.
                     </p>
                 </div>
 
@@ -142,7 +152,8 @@
                     <i class="fa-solid fa-paw"></i> Mascotas <span class="tab-badge" id="tab-count-pet">0</span>
                 </button>
                 <button type="button" class="category-tab" data-tab="senior" id="tab-senior">
-                    <i class="fa-solid fa-user-tie"></i> Adultos Mayores <span class="tab-badge" id="tab-count-senior">0</span>
+                    <i class="fa-solid fa-user-tie"></i> Adultos Mayores <span class="tab-badge"
+                        id="tab-count-senior">0</span>
                 </button>
                 <button type="button" class="category-tab" data-tab="vehicle" id="tab-vehicle">
                     <i class="fa-solid fa-car"></i> Vehículos <span class="tab-badge" id="tab-count-vehicle">0</span>
@@ -153,7 +164,8 @@
             <div class="admin-toolbar">
                 <div class="search-box">
                     <i class="fa-solid fa-magnifying-glass search-icon"></i>
-                    <input type="text" id="admin-search-input" class="search-input" placeholder="Buscar por nombre, URL, colegio, grado, edad, teléfono, tipo de sangre...">
+                    <input type="text" id="admin-search-input" class="search-input"
+                        placeholder="Buscar por nombre, URL, colegio, grado, edad, teléfono, tipo de sangre...">
                 </div>
             </div>
 
@@ -172,11 +184,13 @@
             <div class="modal-header">
                 <div>
                     <h3 id="modal-title"><i class="fa-solid fa-child-reaching"></i> Perfil Infantil</h3>
-                    <div class="modal-info-banner"><i class="fa-solid fa-circle-info"></i> Todos los campos son opcionales y se muestran automáticamente en el perfil al llenarse.</div>
+                    <div class="modal-info-banner"><i class="fa-solid fa-circle-info"></i> Todos los campos son
+                        opcionales y se muestran automáticamente en el perfil al llenarse.</div>
                 </div>
-                <button id="modal-close-btn" class="modal-close" type="button"><i class="fa-solid fa-xmark"></i></button>
+                <button id="modal-close-btn" class="modal-close" type="button"><i
+                        class="fa-solid fa-xmark"></i></button>
             </div>
-            
+
             <form id="form-save-profile" class="modal-body">
                 <input type="hidden" id="input-profile-id">
 
@@ -190,17 +204,20 @@
                         <div class="photo-upload-container">
                             <div class="photo-avatar-wrapper">
                                 <img src="" id="photo-preview" class="photo-preview-img" alt="Vista previa foto">
-                                <button type="button" id="btn-remove-photo" class="btn-remove-photo-badge" title="Eliminar Fotografía">
+                                <button type="button" id="btn-remove-photo" class="btn-remove-photo-badge"
+                                    title="Eliminar Fotografía">
                                     <i class="fa-solid fa-xmark"></i>
                                 </button>
                             </div>
                             <div class="photo-dropzone" id="dropzone-photo">
                                 <i class="fa-solid fa-cloud-arrow-up"></i>
-                                <div style="font-size: 0.85rem; font-weight: 600; margin-top: 0.3rem;">Subir foto desde PC o Celular</div>
+                                <div style="font-size: 0.85rem; font-weight: 600; margin-top: 0.3rem;">Subir foto desde
+                                    PC o Celular</div>
                                 <input type="file" id="file-photo-input" accept="image/*" style="display: none;">
                             </div>
                         </div>
-                        <input type="url" id="input-photo-url" class="form-input" style="margin-top: 0.8rem;" placeholder="O pega una URL de imagen (https://...)">
+                        <input type="url" id="input-photo-url" class="form-input" style="margin-top: 0.8rem;"
+                            placeholder="O pega una URL de imagen (https://...)">
                     </div>
                 </div>
 
@@ -213,7 +230,8 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label class="form-label" for="input-name" id="lbl-input-name">Nombre Completo</label>
-                            <input type="text" id="input-name" class="form-input" placeholder="Ej: Samuel Arias Rodríguez o Firulais">
+                            <input type="text" id="input-name" class="form-input"
+                                placeholder="Ej: Samuel Arias Rodríguez o Firulais">
                         </div>
 
                         <div class="form-group">
@@ -282,14 +300,16 @@
 
                         <div class="form-group">
                             <label class="form-label" for="input-vehicle-brand">Marca</label>
-                            <input type="text" id="input-vehicle-brand" class="form-input" placeholder="Ej: Yamaha, Chevrolet, Trek, GW">
+                            <input type="text" id="input-vehicle-brand" class="form-input"
+                                placeholder="Ej: Yamaha, Chevrolet, Trek, GW">
                         </div>
                     </div>
 
                     <div class="form-row">
                         <div class="form-group">
                             <label class="form-label" for="input-vehicle-model">Modelo / Referencia</label>
-                            <input type="text" id="input-vehicle-model" class="form-input" placeholder="Ej: FZ 2.0, Spark GT, Marlin 7">
+                            <input type="text" id="input-vehicle-model" class="form-input"
+                                placeholder="Ej: FZ 2.0, Spark GT, Marlin 7">
                         </div>
 
                         <div class="form-group">
@@ -301,24 +321,31 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label class="form-label" for="input-vehicle-color">Color</label>
-                            <input type="text" id="input-vehicle-color" class="form-input" placeholder="Ej: Negro Mate, Rojo Metalizado">
+                            <input type="text" id="input-vehicle-color" class="form-input"
+                                placeholder="Ej: Negro Mate, Rojo Metalizado">
                         </div>
 
                         <div class="form-group" id="group-vehicle-plate">
-                            <label class="form-label" for="input-vehicle-plate" id="lbl-vehicle-plate">Placa o Identificación</label>
-                            <input type="text" id="input-vehicle-plate" class="form-input" placeholder="Ej: ABC12D o Serial de Marco">
+                            <label class="form-label" for="input-vehicle-plate" id="lbl-vehicle-plate">Placa o
+                                Identificación</label>
+                            <input type="text" id="input-vehicle-plate" class="form-input"
+                                placeholder="Ej: ABC12D o Serial de Marco">
                         </div>
                     </div>
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label class="form-label" for="input-vehicle-owner">Propietario / Conductor / Ciclista</label>
-                            <input type="text" id="input-vehicle-owner" class="form-input" placeholder="Ej: Marco Arias">
+                            <label class="form-label" for="input-vehicle-owner">Propietario / Conductor /
+                                Ciclista</label>
+                            <input type="text" id="input-vehicle-owner" class="form-input"
+                                placeholder="Ej: Marco Arias">
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label" for="input-vehicle-engine">Cilindraje / Detalles Extra (Opcional)</label>
-                            <input type="text" id="input-vehicle-engine" class="form-input" placeholder="Ej: 150cc, Rin 29, 4x4">
+                            <label class="form-label" for="input-vehicle-engine">Cilindraje / Detalles Extra
+                                (Opcional)</label>
+                            <input type="text" id="input-vehicle-engine" class="form-input"
+                                placeholder="Ej: 150cc, Rin 29, 4x4">
                         </div>
                     </div>
                 </div>
@@ -349,24 +376,32 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label" for="input-eps" id="lbl-input-eps">EPS / Entidad de Salud / Aseguradora</label>
-                        <input type="text" id="input-eps" class="form-input" placeholder="Ej: EPS Sura, Sanitas, Colsánitas, Nueva EPS...">
+                        <label class="form-label" for="input-eps" id="lbl-input-eps">EPS / Entidad de Salud /
+                            Aseguradora</label>
+                        <input type="text" id="input-eps" class="form-input"
+                            placeholder="Ej: EPS Sura, Sanitas, Colsánitas, Nueva EPS...">
                         <span class="field-hint">Entidad de salud o aseguradora para atención de emergencias</span>
                     </div>
 
                     <div class="form-group">
                         <label class="form-label" for="input-allergies">Alergias</label>
-                        <input type="text" id="input-allergies" class="form-input" placeholder="Ej: Ninguna conocida, Alérgico a la Penicilina, Acaros, Polen">
+                        <input type="text" id="input-allergies" class="form-input"
+                            placeholder="Ej: Ninguna conocida, Alérgico a la Penicilina, Acaros, Polen">
                     </div>
 
                     <div class="form-group">
                         <label class="form-label" for="input-medical">Enfermedades / Condiciones / Cuidados</label>
-                        <textarea id="input-medical" class="form-textarea" rows="2" placeholder="Ej: Alérgico a la Penicilina, Asma leve, Hipertensión..." style="resize: vertical; min-height: 70px; width: 100%;"></textarea>
+                        <textarea id="input-medical" class="form-textarea" rows="2"
+                            placeholder="Ej: Alérgico a la Penicilina, Asma leve, Hipertensión..."
+                            style="resize: vertical; min-height: 70px; width: 100%;"></textarea>
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label" for="input-medications">Medicamentos Importantes / Notas Especiales</label>
-                        <textarea id="input-medications" class="form-textarea" rows="2" placeholder="Ej: Insulina 10 UI mañana y noche, Losartán 50mg, Inhalador Salbutamol..." style="resize: vertical; min-height: 70px; width: 100%;"></textarea>
+                        <label class="form-label" for="input-medications">Medicamentos Importantes / Notas
+                            Especiales</label>
+                        <textarea id="input-medications" class="form-textarea" rows="2"
+                            placeholder="Ej: Insulina 10 UI mañana y noche, Losartán 50mg, Inhalador Salbutamol..."
+                            style="resize: vertical; min-height: 70px; width: 100%;"></textarea>
                     </div>
                 </div>
 
@@ -380,18 +415,21 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label class="form-label" for="input-contact-name1">Nombre Contacto 1</label>
-                            <input type="text" id="input-contact-name1" class="form-input" placeholder="Ej: Marisol Contreras">
+                            <input type="text" id="input-contact-name1" class="form-input"
+                                placeholder="Ej: Marisol Contreras">
                         </div>
 
                         <div class="form-group">
                             <label class="form-label" for="input-contact-role1">Parentesco / Relación 1</label>
-                            <input type="text" id="input-contact-role1" class="form-input" placeholder="Ej: Esposa, Padre, Madre, Propietario">
+                            <input type="text" id="input-contact-role1" class="form-input"
+                                placeholder="Ej: Esposa, Padre, Madre, Propietario">
                         </div>
                     </div>
 
                     <div class="form-row" style="margin-bottom: 1rem;">
                         <div class="form-group" style="grid-column: span 2;">
-                            <label class="form-label" for="input-phone" id="lbl-input-phone">Teléfono WhatsApp Contacto 1</label>
+                            <label class="form-label" for="input-phone" id="lbl-input-phone">Teléfono WhatsApp Contacto
+                                1</label>
                             <input type="tel" id="input-phone" class="form-input" placeholder="Ej: 573001234567">
                             <span class="field-hint">Sin + ni espacios (Ej: 573001234567)</span>
                         </div>
@@ -406,13 +444,15 @@
 
                         <div class="form-group">
                             <label class="form-label" for="input-contact-role2">Parentesco / Relación 2</label>
-                            <input type="text" id="input-contact-role2" class="form-input" placeholder="Ej: Hermano, Familiar, Amigo">
+                            <input type="text" id="input-contact-role2" class="form-input"
+                                placeholder="Ej: Hermano, Familiar, Amigo">
                         </div>
                     </div>
 
                     <div class="form-row">
                         <div class="form-group" style="grid-column: span 2;">
-                            <label class="form-label" for="input-phone2" id="lbl-input-phone2">Teléfono WhatsApp Contacto 2</label>
+                            <label class="form-label" for="input-phone2" id="lbl-input-phone2">Teléfono WhatsApp
+                                Contacto 2</label>
                             <input type="tel" id="input-phone2" class="form-input" placeholder="Ej: 573109876543">
                             <span class="field-hint">Segundo contacto de emergencia</span>
                         </div>
@@ -420,14 +460,19 @@
 
                     <!-- Direct Official Emergency Line (Independent) -->
                     <div class="form-group" style="margin-top: 1rem;">
-                        <label class="form-label" for="input-emergency-phone">Línea de Emergencia Directa (Ej: 123 o Entidad Oficial)</label>
-                        <input type="text" id="input-emergency-phone" class="form-input" placeholder="Ej: 123 o 573009998877">
-                        <span class="field-hint">Número oficial para llamadas de urgencia/socorro (Independiente del número del propietario)</span>
+                        <label class="form-label" for="input-emergency-phone">Línea de Emergencia Directa (Ej: 123 o
+                            Entidad Oficial)</label>
+                        <input type="text" id="input-emergency-phone" class="form-input"
+                            placeholder="Ej: 123 o 573009998877">
+                        <span class="field-hint">Número oficial para llamadas de urgencia/socorro (Independiente del
+                            número del propietario)</span>
                     </div>
 
                     <div class="form-group" style="margin-top: 1rem;">
                         <label class="form-label" for="input-whatsapp-msg">Mensaje Predeterminado de WhatsApp</label>
-                        <textarea id="input-whatsapp-msg" class="form-textarea" rows="2" placeholder="Ej: Hola, encontré la información del perfil de {nombre}..." style="resize: vertical; min-height: 70px; width: 100%;"></textarea>
+                        <textarea id="input-whatsapp-msg" class="form-textarea" rows="2"
+                            placeholder="Ej: Hola, encontré la información del perfil de {nombre}..."
+                            style="resize: vertical; min-height: 70px; width: 100%;"></textarea>
                         <span class="field-hint">Usa {nombre} para insertar el nombre automáticamente</span>
                     </div>
                 </div>
@@ -440,52 +485,62 @@
 
                     <div class="form-group">
                         <label class="form-label" for="input-maps-url">Enlace de Ubicación en Google Maps</label>
-                        <input type="text" id="input-maps-url" class="form-input" placeholder="Ej: https://maps.google.com/?q=... o Dirección">
+                        <input type="text" id="input-maps-url" class="form-input"
+                            placeholder="Ej: https://maps.google.com/?q=... o Dirección">
                     </div>
                 </div>
 
                 <div class="modal-footer">
                     <button type="button" id="modal-cancel-btn" class="btn btn-secondary">Cancelar</button>
-                    <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> Guardar Perfil</button>
+                    <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> Guardar
+                        Perfil</button>
                 </div>
             </form>
         </div>
     </div>
 
-        <!-- ===================================================================
+    <!-- ===================================================================
              MODAL CONFIRMACIÓN LOGOUT (DISEÑO PREMIUM AISLADO)
              =================================================================== -->
-        <div id="modal-logout" class="modal-overlay hidden" style="align-items: center; z-index: 9999999;">
-            <div class="modal-container" style="max-width: 360px; text-align: center; padding: 2.5rem 1.5rem; margin: auto; background: #0f172a; border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7); border-radius: 24px;">
-                
-                <!-- Ícono de Advertencia -->
-                <div class="brand-icon" style="margin: 0 auto 1.5rem auto; width: 64px; height: 64px; font-size: 1.8rem; background: rgba(239, 68, 68, 0.1); color: #ef4444; box-shadow: 0 0 30px rgba(239, 68, 68, 0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(239, 68, 68, 0.2);">
-                    <i class="fa-solid fa-right-from-bracket"></i>
-                </div>
-                
-                <!-- Textos Nítidos Forzados (Blancos y Grises) -->
-                <h3 style="margin-bottom: 0.75rem; font-size: 1.5rem; color: #ffffff !important; font-weight: 600; letter-spacing: -0.025em;">¿Cerrar sesión?</h3>
-                <p style="color: #94a3b8 !important; margin-bottom: 2rem; font-size: 0.95rem; line-height: 1.5; padding: 0 10px;">
-                    Tendrás que volver a ingresar tus credenciales de seguridad la próxima vez que desees acceder.
-                </p>
-                
-                <!-- Contenedor de Botones (Layout Aislado) -->
-                <div style="display: flex; gap: 0.75rem; width: 100%;">
-                    <!-- Botón Cancelar (Estilo Cristal/Ghost) -->
-                    <button type="button" class="btn" id="btn-cancel-logout" style="flex: 1; padding: 0.85rem; background: rgba(255, 255, 255, 0.05); color: #e2e8f0; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; font-weight: 500; justify-content: center;">
-                        Cancelar
-                    </button>
-                    <!-- Botón Salir (Estilo Destructivo Premium) -->
-                    <button type="button" class="btn" id="btn-confirm-logout" style="flex: 1; padding: 0.85rem; background: #ef4444; color: #ffffff; border: none; box-shadow: 0 4px 14px 0 rgba(239, 68, 68, 0.39); border-radius: 12px; font-weight: 500; justify-content: center;">
-                        Sí, salir
-                    </button>
-                </div>
+    <div id="modal-logout" class="modal-overlay hidden" style="align-items: center; z-index: 9999999;">
+        <div class="modal-container"
+            style="max-width: 360px; text-align: center; padding: 2.5rem 1.5rem; margin: auto; background: #0f172a; border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7); border-radius: 24px;">
+
+            <!-- Ícono de Advertencia -->
+            <div class="brand-icon"
+                style="margin: 0 auto 1.5rem auto; width: 64px; height: 64px; font-size: 1.8rem; background: rgba(239, 68, 68, 0.1); color: #ef4444; box-shadow: 0 0 30px rgba(239, 68, 68, 0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(239, 68, 68, 0.2);">
+                <i class="fa-solid fa-right-from-bracket"></i>
+            </div>
+
+            <!-- Textos Nítidos Forzados (Blancos y Grises) -->
+            <h3
+                style="margin-bottom: 0.75rem; font-size: 1.5rem; color: #ffffff !important; font-weight: 600; letter-spacing: -0.025em;">
+                ¿Cerrar sesión?</h3>
+            <p
+                style="color: #94a3b8 !important; margin-bottom: 2rem; font-size: 0.95rem; line-height: 1.5; padding: 0 10px;">
+                Tendrás que volver a ingresar tus credenciales de seguridad la próxima vez que desees acceder.
+            </p>
+
+            <!-- Contenedor de Botones (Layout Aislado) -->
+            <div style="display: flex; gap: 0.75rem; width: 100%;">
+                <!-- Botón Cancelar (Estilo Cristal/Ghost) -->
+                <button type="button" class="btn" id="btn-cancel-logout"
+                    style="flex: 1; padding: 0.85rem; background: rgba(255, 255, 255, 0.05); color: #e2e8f0; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; font-weight: 500; justify-content: center;">
+                    Cancelar
+                </button>
+                <!-- Botón Salir (Estilo Destructivo Premium) -->
+                <button type="button" class="btn" id="btn-confirm-logout"
+                    style="flex: 1; padding: 0.85rem; background: #ef4444; color: #ffffff; border: none; box-shadow: 0 4px 14px 0 rgba(239, 68, 68, 0.39); border-radius: 12px; font-weight: 500; justify-content: center;">
+                    Sí, salir
+                </button>
             </div>
         </div>
+    </div>
 
     <!-- TOAST NOTIFICATION -->
     <div id="toast" class="toast hidden">Notificación</div>
 
     <script type="module" src="admin.js?v=13.0"></script>
 </body>
+
 </html>
