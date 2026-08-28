@@ -75,7 +75,7 @@
             } catch(e) {}
         })();
     </script>
-    <link rel="stylesheet" href="styles.css?v=3.1">
+    <link rel="stylesheet" href="styles.css?v=3.2">
 </head>
 <body>
 
@@ -275,28 +275,28 @@
                         <h3 class="contacts-section-title"><i class="fa-solid fa-users"></i> CONTACTOS DE EMERGENCIA</h3>
                         <div class="emergency-contacts-list">
                             <!-- Contact Item 1 -->
-                            <div class="emergency-contact-card hidden" id="card-contact-1">
-                                <div class="contact-avatar-icon"><i class="fa-solid fa-user-shield"></i></div>
-                                <div class="contact-info-group">
-                                    <span class="contact-role-label" id="p-contact-role1">CONTACTO PRINCIPAL</span>
-                                    <span class="contact-name-val" id="p-contact-name1">Marisol Contreras</span>
+                            <a href="#" id="btn-contact-wa1" class="emergency-contact-btn hidden">
+                                <div class="contact-btn-left">
+                                    <div class="contact-btn-icon"><i class="fa-brands fa-whatsapp"></i></div>
+                                    <div class="contact-btn-text">
+                                        <span class="contact-btn-title" id="p-contact-title1">Contacto Principal</span>
+                                        <span class="contact-btn-sub">Escríbenos por WhatsApp</span>
+                                    </div>
                                 </div>
-                                <a href="#" id="btn-contact-wa1" class="contact-wa-btn">
-                                    <i class="fa-brands fa-whatsapp"></i> <span id="p-contact-phone1">300 123 4567</span>
-                                </a>
-                            </div>
+                                <div class="contact-btn-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+                            </a>
 
                             <!-- Contact Item 2 -->
-                            <div class="emergency-contact-card hidden" id="card-contact-2">
-                                <div class="contact-avatar-icon"><i class="fa-solid fa-user-shield"></i></div>
-                                <div class="contact-info-group">
-                                    <span class="contact-role-label" id="p-contact-role2">CONTACTO ALTERNO</span>
-                                    <span class="contact-name-val" id="p-contact-name2">José Arias</span>
+                            <a href="#" id="btn-contact-wa2" class="emergency-contact-btn hidden">
+                                <div class="contact-btn-left">
+                                    <div class="contact-btn-icon"><i class="fa-brands fa-whatsapp"></i></div>
+                                    <div class="contact-btn-text">
+                                        <span class="contact-btn-title" id="p-contact-title2">Contacto Alterno</span>
+                                        <span class="contact-btn-sub">Escríbenos por WhatsApp</span>
+                                    </div>
                                 </div>
-                                <a href="#" id="btn-contact-wa2" class="contact-wa-btn">
-                                    <i class="fa-brands fa-whatsapp"></i> <span id="p-contact-phone2">310 765 4321</span>
-                                </a>
-                            </div>
+                                <div class="contact-btn-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+                            </a>
                         </div>
                     </div>
 
@@ -393,6 +393,6 @@
         </section>
     </main>
 
-    <script type="module" src="app.js?v=5.1"></script>
+    <script type="module" src="app.js?v=5.2"></script>
 </body>
 </html>

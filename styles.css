@@ -2239,32 +2239,20 @@ html.ready .container {
     font-size: 0.85rem;
 }
 
-/* VEHICLE THEME ACCENTS */
-html.theme-moto {
+/* VEHICLE THEME ACCENTS - ALL VEHICLES (CARRO, MOTO, BICICLETA) IN UNIFIED EMERGENCY RED */
+html.theme-vehicle,
+html.theme-moto,
+html.theme-car,
+html.theme-bike {
     --accent-main: #dc2626;
     --accent-gradient: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
 }
 
-html.theme-moto body {
-    background: linear-gradient(135deg, #450a0a 0%, #0f172a 100%);
-}
-
-html.theme-car {
-    --accent-main: #2563eb;
-    --accent-gradient: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-}
-
-html.theme-car body {
-    background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
-}
-
-html.theme-bike {
-    --accent-main: #16a34a;
-    --accent-gradient: linear-gradient(135deg, #22c55e 0%, #15803d 100%);
-}
-
+html.theme-vehicle body,
+html.theme-moto body,
+html.theme-car body,
 html.theme-bike body {
-    background: linear-gradient(135deg, #052e16 0%, #0f172a 100%);
+    background: linear-gradient(135deg, #2b0606 0%, #0f172a 100%);
 }
 
 /* VEHICLE HERO COVER BANNER & EMERGENCY COMPONENTS (MOCKUP ACCURACY 100%) */
@@ -2275,8 +2263,7 @@ html.theme-bike body {
     border-top-left-radius: 32px;
     border-top-right-radius: 32px;
     overflow: hidden;
-    margin-bottom: -55px;
-    /* Overlap with avatar photo */
+    margin-bottom: -55px; /* Overlap with avatar photo */
 }
 
 .vehicle-cover-img {
@@ -2297,11 +2284,11 @@ html.theme-bike body {
 
 .vehicle-banner-header-bar {
     position: absolute;
-    top: 12px;
-    left: 14px;
-    right: 14px;
+    top: 8px;
+    left: 10px;
+    right: 10px;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
     z-index: 5;
 }
@@ -2418,7 +2405,7 @@ html.theme-bike body {
     color: #059669 !important;
 }
 
-/* EMERGENCY CONTACTS SECTION */
+/* EMERGENCY CONTACTS SECTION (GREEN BUTTONS MATCHING SCREENSHOT EXACTLY) */
 .emergency-contacts-section {
     margin-top: 1.25rem;
 }
@@ -2436,79 +2423,140 @@ html.theme-bike body {
 }
 
 .contacts-section-title i {
-    color: var(--accent-main, #dc2626);
+    color: #dc2626;
 }
 
 .emergency-contacts-list {
     display: flex;
     flex-direction: column;
-    gap: 0.65rem;
+    gap: 0.7rem;
 }
 
-.emergency-contact-card {
+.emergency-contact-btn {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background: #ffffff;
-    border-radius: 16px;
-    padding: 0.75rem 1rem;
-    border: 1px solid rgba(0, 0, 0, 0.08);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+    background: linear-gradient(135deg, #25d366 0%, #16a34a 100%);
+    color: #ffffff;
+    padding: 0.82rem 1.1rem;
+    border-radius: 20px;
+    text-decoration: none;
+    box-shadow: 0 6px 18px rgba(37, 211, 102, 0.32);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    width: 100%;
 }
 
-.contact-avatar-icon {
-    width: 36px;
-    height: 36px;
+.emergency-contact-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(37, 211, 102, 0.45);
+}
+
+.contact-btn-left {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+}
+
+.contact-btn-icon {
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
-    background: rgba(220, 38, 38, 0.1);
-    color: #dc2626;
+    background: rgba(255, 255, 255, 0.22);
+    color: #ffffff;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1rem;
+    font-size: 1.3rem;
     flex-shrink: 0;
 }
 
-.contact-info-group {
+.contact-btn-text {
     display: flex;
     flex-direction: column;
-    flex-grow: 1;
-    margin-left: 0.75rem;
+    text-align: left;
 }
 
-.contact-role-label {
-    font-size: 0.68rem;
+.contact-btn-title {
+    font-size: 0.96rem;
     font-weight: 800;
-    color: #64748b;
+    color: #ffffff;
+    line-height: 1.2;
+}
+
+.contact-btn-sub {
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.92);
+}
+
+.contact-btn-arrow {
+    font-size: 1.15rem;
+    color: #ffffff;
+    opacity: 0.9;
+}
+
+/* VEHICLE SPECS CARD (CARRO / MOTO / BICICLETA - ALL UNIFIED IN RED) */
+.vehicle-specs-card {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 1.1rem;
+    margin-top: 1.25rem;
+    border: 1.5px solid rgba(220, 38, 38, 0.2);
+    box-shadow: 0 8px 24px rgba(220, 38, 38, 0.08);
+}
+
+.vehicle-specs-header {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.88rem;
+    font-weight: 900;
     letter-spacing: 0.05em;
+    color: #dc2626;
     text-transform: uppercase;
+    margin-bottom: 0.85rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px dashed rgba(220, 38, 38, 0.15);
 }
 
-.contact-name-val {
-    font-size: 0.95rem;
+.vehicle-specs-header i {
+    font-size: 1.15rem;
+    color: #dc2626;
+}
+
+.vehicle-spec-row {
+    margin-bottom: 0.75rem;
+}
+
+.vehicle-main-spec {
+    font-size: 1.15rem;
     font-weight: 800;
-    color: #0f172a;
+    color: #1e293b;
+    display: block;
+    line-height: 1.35;
 }
 
-.contact-wa-btn {
+.vehicle-spec-details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 0.8rem;
+}
+
+.vehicle-badge-item {
     display: inline-flex;
     align-items: center;
-    gap: 0.4rem;
-    background: rgba(37, 211, 102, 0.12);
-    color: #16a34a;
-    border: 1px solid rgba(37, 211, 102, 0.3);
-    padding: 0.45rem 0.85rem;
-    border-radius: 20px;
-    font-size: 0.88rem;
-    font-weight: 800;
-    text-decoration: none;
-    transition: transform 0.2s ease;
+    gap: 0.35rem;
+    background: rgba(220, 38, 38, 0.05);
+    padding: 0.4rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    color: #475569;
+    font-weight: 500;
 }
 
-.contact-wa-btn:hover {
-    transform: scale(1.03);
-    background: #25d366;
-    color: #ffffff;
+.vehicle-badge-item i {
+    color: #dc2626;
+    font-size: 0.85rem;
 }
 
 /* PROMINENT EMERGENCY CALL BAR */
@@ -2570,23 +2618,9 @@ html.theme-bike body {
    STRICT CLEANUP & COMPACT SINGLE-SCREEN VIEW FOR VEHICLE PROFILES
    =================================================================== */
 html.theme-vehicle .arch-deco,
-html.theme-vehicle .scene-item {
-    display: flex !important;
-}
-
+html.theme-vehicle .scene-item,
 html.theme-vehicle .name-spark {
     display: none !important;
-}
-
-html.theme-vehicle .arch-deco {
-    background: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-    width: auto !important;
-    height: auto !important;
-    padding: 0 !important;
-    font-size: 1.6rem !important;
-    filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.4)) !important;
 }
 
 html.theme-vehicle .arch-photo-container {
@@ -2618,23 +2652,10 @@ html.theme-vehicle .profile-hero-name {
     letter-spacing: 0.02em !important;
 }
 
-/* Category Pill Badges */
-html.theme-moto .security-ribbon {
-    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
-    color: #ffffff !important;
-    box-shadow: 0 4px 15px rgba(220, 38, 38, 0.35) !important;
-    font-weight: 900 !important;
-    letter-spacing: 0.08em !important;
-}
-
-html.theme-car .security-ribbon {
-    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
-    color: #ffffff !important;
-    box-shadow: 0 4px 15px rgba(220, 38, 38, 0.35) !important;
-    font-weight: 900 !important;
-    letter-spacing: 0.08em !important;
-}
-
+/* Category Pill Badges - UNIFIED RED FOR ALL VEHICLES */
+html.theme-vehicle .security-ribbon,
+html.theme-moto .security-ribbon,
+html.theme-car .security-ribbon,
 html.theme-bike .security-ribbon {
     background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
     color: #ffffff !important;

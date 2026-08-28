@@ -546,18 +546,10 @@ class App {
 
         // EMERGENCY CONTACTS SECTION (MATCHING MOCKUP DESIGN)
         const contactsSection = document.getElementById('box-emergency-contacts');
-        const cardContact1 = document.getElementById('card-contact-1');
-        const role1El = document.getElementById('p-contact-role1');
-        const name1El = document.getElementById('p-contact-name1');
-        const phone1El = document.getElementById('p-contact-phone1');
         const btnContactWa1 = document.getElementById('btn-contact-wa1');
-
-        const cardContact2 = document.getElementById('card-contact-2');
-        const role2El = document.getElementById('p-contact-role2');
-        const name2El = document.getElementById('p-contact-name2');
-        const phone2El = document.getElementById('p-contact-phone2');
+        const title1El = document.getElementById('p-contact-title1');
         const btnContactWa2 = document.getElementById('btn-contact-wa2');
-
+        const title2El = document.getElementById('p-contact-title2');
         const standardActions = document.getElementById('standard-actions-stack');
 
         let hasContact1 = profile.parentPhone && profile.parentPhone.trim() !== '';
@@ -565,14 +557,16 @@ class App {
 
         if (isVehicle && (hasContact1 || hasContact2)) {
             contactsSection?.classList.remove('hidden');
-            standardActions?.classList.add('hidden'); // Use dedicated contact cards for vehicles
+            standardActions?.classList.add('hidden'); // Use dedicated contact buttons for vehicles
 
             // Contact 1
             if (hasContact1) {
-                cardContact1?.classList.remove('hidden');
-                if (role1El) role1El.textContent = (profile.contactRole1 && profile.contactRole1.trim() !== '') ? profile.contactRole1.toUpperCase() : (profile.vehicleOwner ? 'PROPIETARIO / FAMILIAR' : 'CONTACTO PRINCIPAL');
-                if (name1El) name1El.textContent = (profile.contactName1 && profile.contactName1.trim() !== '') ? profile.contactName1 : (profile.vehicleOwner || profile.name);
-                if (phone1El) phone1El.textContent = profile.parentPhone;
+                btnContactWa1?.classList.remove('hidden');
+                const roleText = (profile.contactRole1 && profile.contactRole1.trim() !== '') ? profile.contactRole1 : 'Contacto Principal';
+                const nameText = (profile.contactName1 && profile.contactName1.trim() !== '') ? profile.contactName1 : '';
+                const displayTitle = nameText ? `${roleText} - ${nameText}` : roleText;
+                
+                if (title1El) title1El.textContent = displayTitle;
                 if (btnContactWa1) {
                     btnContactWa1.onclick = (e) => {
                         e.preventDefault();
@@ -581,15 +575,17 @@ class App {
                     };
                 }
             } else {
-                cardContact1?.classList.add('hidden');
+                btnContactWa1?.classList.add('hidden');
             }
 
             // Contact 2
             if (hasContact2) {
-                cardContact2?.classList.remove('hidden');
-                if (role2El) role2El.textContent = (profile.contactRole2 && profile.contactRole2.trim() !== '') ? profile.contactRole2.toUpperCase() : 'CONTACTO DE EMERGENCIA 2';
-                if (name2El) name2El.textContent = (profile.contactName2 && profile.contactName2.trim() !== '') ? profile.contactName2 : 'Contacto Secundario';
-                if (phone2El) phone2El.textContent = profile.parentPhone2;
+                btnContactWa2?.classList.remove('hidden');
+                const roleText2 = (profile.contactRole2 && profile.contactRole2.trim() !== '') ? profile.contactRole2 : 'Contacto Alterno';
+                const nameText2 = (profile.contactName2 && profile.contactName2.trim() !== '') ? profile.contactName2 : '';
+                const displayTitle2 = nameText2 ? `${roleText2} - ${nameText2}` : roleText2;
+
+                if (title2El) title2El.textContent = displayTitle2;
                 if (btnContactWa2) {
                     btnContactWa2.onclick = (e) => {
                         e.preventDefault();
@@ -598,7 +594,7 @@ class App {
                     };
                 }
             } else {
-                cardContact2?.classList.add('hidden');
+                btnContactWa2?.classList.add('hidden');
             }
         } else {
             contactsSection?.classList.add('hidden');
