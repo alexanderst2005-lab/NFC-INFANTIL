@@ -182,6 +182,10 @@ class AdminApp {
         let vehiclePlate = (p.vehiclePlate !== undefined && p.vehiclePlate !== null) ? String(p.vehiclePlate).trim() : '';
         let vehicleOwner = (p.vehicleOwner !== undefined && p.vehicleOwner !== null) ? String(p.vehicleOwner).trim() : '';
         let vehicleEngine = (p.vehicleEngine !== undefined && p.vehicleEngine !== null) ? String(p.vehicleEngine).trim() : '';
+        let vehicleClub = (p.vehicleClub !== undefined && p.vehicleClub !== null) ? String(p.vehicleClub).trim() : '';
+        let vehicleClubDesc = (p.vehicleClubDesc !== undefined && p.vehicleClubDesc !== null) ? String(p.vehicleClubDesc).trim() : '';
+        let vehicleClubCity = (p.vehicleClubCity !== undefined && p.vehicleClubCity !== null) ? String(p.vehicleClubCity).trim() : '';
+        let vehicleClubLogo = (p.vehicleClubLogo !== undefined && p.vehicleClubLogo !== null) ? String(p.vehicleClubLogo).trim() : '';
 
         const defaultWaMsg = gender === 'pet'
             ? 'Hola, encontré a la mascota {nombre} y quiero comunicarme con su dueño.'
@@ -220,6 +224,10 @@ class AdminApp {
             vehiclePlate: vehiclePlate,
             vehicleOwner: vehicleOwner,
             vehicleEngine: vehicleEngine,
+            vehicleClub: vehicleClub,
+            vehicleClubDesc: vehicleClubDesc,
+            vehicleClubCity: vehicleClubCity,
+            vehicleClubLogo: vehicleClubLogo,
             birthDate: birthDate,
             age: computedAge,
             bloodType: bloodType,
@@ -579,6 +587,10 @@ class AdminApp {
         if (document.getElementById('input-vehicle-plate')) document.getElementById('input-vehicle-plate').value = profile.vehiclePlate || '';
         if (document.getElementById('input-vehicle-owner')) document.getElementById('input-vehicle-owner').value = profile.vehicleOwner || '';
         if (document.getElementById('input-vehicle-engine')) document.getElementById('input-vehicle-engine').value = profile.vehicleEngine || '';
+        if (document.getElementById('input-vehicle-club')) document.getElementById('input-vehicle-club').value = profile.vehicleClub || '';
+        if (document.getElementById('input-vehicle-club-desc')) document.getElementById('input-vehicle-club-desc').value = profile.vehicleClubDesc || '';
+        if (document.getElementById('input-vehicle-club-city')) document.getElementById('input-vehicle-club-city').value = profile.vehicleClubCity || '';
+        if (document.getElementById('input-vehicle-club-logo')) document.getElementById('input-vehicle-club-logo').value = profile.vehicleClubLogo || '';
 
         const previewImg = document.getElementById('photo-preview');
         if (previewImg) {
@@ -746,6 +758,10 @@ class AdminApp {
             const vehiclePlateVal = document.getElementById('input-vehicle-plate')?.value.trim() || '';
             const vehicleOwnerVal = document.getElementById('input-vehicle-owner')?.value.trim() || '';
             const vehicleEngineVal = document.getElementById('input-vehicle-engine')?.value.trim() || '';
+            const vehicleClubVal = document.getElementById('input-vehicle-club')?.value.trim() || '';
+            const vehicleClubDescVal = document.getElementById('input-vehicle-club-desc')?.value.trim() || '';
+            const vehicleClubCityVal = document.getElementById('input-vehicle-club-city')?.value.trim() || '';
+            const vehicleClubLogoVal = document.getElementById('input-vehicle-club-logo')?.value.trim() || '';
 
             const photoUrlInput = document.getElementById('input-photo-url').value.trim();
             const previewSrc = document.getElementById('photo-preview').src;
@@ -802,6 +818,10 @@ class AdminApp {
                 vehiclePlate: vehiclePlateVal,
                 vehicleOwner: vehicleOwnerVal,
                 vehicleEngine: vehicleEngineVal,
+                vehicleClub: vehicleClubVal,
+                vehicleClubDesc: vehicleClubDescVal,
+                vehicleClubCity: vehicleClubCityVal,
+                vehicleClubLogo: vehicleClubLogoVal,
                 birthDate: birthDateVal,
                 age: computedAge,
                 bloodType: gender === 'pet' ? '' : (document.getElementById('input-blood').value ? document.getElementById('input-blood').value.trim() : ''),

@@ -146,6 +146,10 @@ class App {
         let vehiclePlate = (p.vehiclePlate !== undefined && p.vehiclePlate !== null) ? String(p.vehiclePlate).trim() : '';
         let vehicleOwner = (p.vehicleOwner !== undefined && p.vehicleOwner !== null) ? String(p.vehicleOwner).trim() : '';
         let vehicleEngine = (p.vehicleEngine !== undefined && p.vehicleEngine !== null) ? String(p.vehicleEngine).trim() : '';
+        let vehicleClub = (p.vehicleClub !== undefined && p.vehicleClub !== null) ? String(p.vehicleClub).trim() : '';
+        let vehicleClubDesc = (p.vehicleClubDesc !== undefined && p.vehicleClubDesc !== null) ? String(p.vehicleClubDesc).trim() : '';
+        let vehicleClubCity = (p.vehicleClubCity !== undefined && p.vehicleClubCity !== null) ? String(p.vehicleClubCity).trim() : '';
+        let vehicleClubLogo = (p.vehicleClubLogo !== undefined && p.vehicleClubLogo !== null) ? String(p.vehicleClubLogo).trim() : '';
 
         const defaultWaMsg = gender === 'pet'
             ? 'Hola, encontré a la mascota {nombre} y quiero comunicarme con su dueño.'
@@ -183,6 +187,10 @@ class App {
             vehiclePlate: vehiclePlate,
             vehicleOwner: vehicleOwner,
             vehicleEngine: vehicleEngine,
+            vehicleClub: vehicleClub,
+            vehicleClubDesc: vehicleClubDesc,
+            vehicleClubCity: vehicleClubCity,
+            vehicleClubLogo: vehicleClubLogo,
             birthDate: birthDate,
             age: computedAge,
             bloodType: bloodType,
@@ -676,6 +684,47 @@ class App {
             vehicleBox?.classList.remove('hidden');
         } else {
             vehicleBox?.classList.add('hidden');
+        }
+
+        // Vehicle Club / Group Rendering
+        const vehicleClubBox = document.getElementById('box-vehicle-club');
+        if (isVehicle && profile.vehicleClub && profile.vehicleClub.trim() !== '') {
+            const vClubTitle = document.getElementById('p-vehicle-club-title');
+            const vClubDesc = document.getElementById('p-vehicle-club-desc');
+            const vClubCity = document.getElementById('p-vehicle-club-city');
+            const vClubLogoImg = document.getElementById('p-vehicle-club-logo-img');
+            const vClubLogoIcon = document.getElementById('p-vehicle-club-logo-icon');
+
+            if (vClubTitle) vClubTitle.textContent = profile.vehicleClub;
+
+            if (profile.vehicleClubDesc && profile.vehicleClubDesc.trim() !== '') {
+                vClubDesc?.classList.remove('hidden');
+                if (vClubDesc) vClubDesc.textContent = profile.vehicleClubDesc;
+            } else {
+                vClubDesc?.classList.add('hidden');
+            }
+
+            if (profile.vehicleClubCity && profile.vehicleClubCity.trim() !== '') {
+                vClubCity?.classList.remove('hidden');
+                if (vClubCity) vClubCity.textContent = profile.vehicleClubCity;
+            } else {
+                vClubCity?.classList.add('hidden');
+            }
+
+            if (profile.vehicleClubLogo && profile.vehicleClubLogo.trim() !== '') {
+                if (vClubLogoImg) {
+                    vClubLogoImg.src = profile.vehicleClubLogo;
+                    vClubLogoImg.classList.remove('hidden');
+                }
+                vClubLogoIcon?.classList.add('hidden');
+            } else {
+                vClubLogoImg?.classList.add('hidden');
+                vClubLogoIcon?.classList.remove('hidden');
+            }
+
+            vehicleClubBox?.classList.remove('hidden');
+        } else {
+            vehicleClubBox?.classList.add('hidden');
         }
 
         // WhatsApp Buttons Titles
