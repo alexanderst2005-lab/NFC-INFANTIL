@@ -1137,9 +1137,10 @@ body.theme-girl .btn-maps:hover {
 .bottom-scene-wrapper {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
     width: 100%;
     margin-top: 0.4rem;
+    position: relative;
 }
 
 .scene-item {
@@ -2903,9 +2904,12 @@ html.theme-vehicle .call-bar-plus-icon {
 
 html.theme-vehicle .bottom-scene-wrapper {
     margin-top: 0.4rem !important;
+    justify-content: center !important;
 }
 
 html.theme-vehicle .footer-love-pill {
     padding: 0.25rem 0.6rem !important;
     font-size: 0.7rem !important;
+    margin: 0 auto !important;
+    text-align: center !important;
 }
