@@ -394,6 +394,39 @@ class App {
                 medsCard.classList.add('hidden');
             }
         }
+        // Helper to open WhatsApp with optional live location of the scanner
+        const openWhatsAppWithLocation = (phone, baseMessage) => {
+            let messageText = baseMessage.replace('{nombre}', profile.name);
+            
+            const launchWhatsApp = (finalText) => {
+                const encodedWa = encodeURIComponent(finalText);
+                window.open(`https://wa.me/${phone}?text=${encodedWa}`, '_blank');
+            };
+
+            if ('geolocation' in navigator) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const lat = position.coords.latitude;
+                        const lng = position.coords.longitude;
+                        const mapsUrl = `https://maps.google.com/?q=${lat},${lng}`;
+                        const textWithLocation = `${messageText}\n\n📍 Mi ubicación actual al escanear es: ${mapsUrl}`;
+                        launchWhatsApp(textWithLocation);
+                    },
+                    (error) => {
+                        console.log("Geolocation permission denied or unavailable:", error);
+                        launchWhatsApp(messageText);
+                    },
+                    {
+                        enableHighAccuracy: true,
+                        timeout: 5000,
+                        maximumAge: 0
+                    }
+                );
+            } else {
+                launchWhatsApp(messageText);
+            }
+        };
+
         // WhatsApp Main Action Button 1
         const btnWa1 = document.getElementById('btn-whatsapp-action');
         if (btnWa1) {
@@ -402,9 +435,10 @@ class App {
                 let waText = profile.whatsappMessage || (isPet 
                     ? `Hola, encontré a la mascota ${profile.name} y me quiero comunicar con su dueño.`
                     : (isSenior ? `Hola, encontré el perfil de seguridad del adulto mayor ${profile.name} y me quiero comunicar con sus familiares.` : `Hola, encontré la información del perfil de ${profile.name}.`));
-                waText = waText.replace('{nombre}', profile.name);
-                const encodedWa = encodeURIComponent(waText);
-                btnWa1.onclick = (e) => { e.preventDefault(); window.open(`https://wa.me/${profile.parentPhone}?text=${encodedWa}`, '_blank'); };
+                btnWa1.onclick = (e) => { 
+                    e.preventDefault(); 
+                    openWhatsAppWithLocation(profile.parentPhone, waText);
+                };
             } else {
                 btnWa1.classList.add('hidden');
             }
@@ -418,9 +452,10 @@ class App {
                 let waText = profile.whatsappMessage || (isPet 
                     ? `Hola, encontré a la mascota ${profile.name} y me quiero comunicar con su dueño.`
                     : (isSenior ? `Hola, encontré el perfil de seguridad del adulto mayor ${profile.name} y me quiero comunicar con sus familiares.` : `Hola, encontré la información del perfil de ${profile.name}.`));
-                waText = waText.replace('{nombre}', profile.name);
-                const encodedWa = encodeURIComponent(waText);
-                btnWa2.onclick = (e) => { e.preventDefault(); window.open(`https://wa.me/${profile.parentPhone2}?text=${encodedWa}`, '_blank'); };
+                btnWa2.onclick = (e) => { 
+                    e.preventDefault(); 
+                    openWhatsAppWithLocation(profile.parentPhone2, waText);
+                };
             } else {
                 btnWa2.classList.add('hidden');
             }
