@@ -752,6 +752,7 @@ class AdminApp {
         this.isSaving = true;
         try {
             const id = document.getElementById('input-profile-id').value;
+            const existingProf = id ? this.profiles.find(p => p.id === id) : null;
             let name = document.getElementById('input-name').value.trim();
             if (!name) {
                 name = 'Nuevo Perfil';
@@ -805,8 +806,6 @@ class AdminApp {
             } else if (previewSrc && previewSrc !== NEUTRAL_AVATAR_SVG && !previewSrc.includes('data:image/svg+xml') && previewSrc.length > 50) {
                 finalPhoto = previewSrc;
             }
-
-            const existingProf = id ? this.profiles.find(p => p.id === id) : null;
 
             if (!finalPhoto && existingProf && existingProf.photoUrl && !this.photoRemoved) {
                 finalPhoto = existingProf.photoUrl;
