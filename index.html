@@ -248,6 +248,46 @@
                                     <span class="val" id="p-allergies-val">Ninguna conocida</span>
                                 </div>
                             </div>
+                            <!-- Pet: Especie -->
+                            <div class="info-card-box box-pet-species hidden" id="box-pet-species">
+                                <div class="info-card-icon" style="color: var(--pet-accent, #10b981); background: rgba(16,185,129,0.15);">
+                                    <i class="fa-solid fa-paw"></i>
+                                </div>
+                                <div class="info-card-text">
+                                    <span class="label">Especie</span>
+                                    <span class="val" id="p-pet-species-val"></span>
+                                </div>
+                            </div>
+                            <!-- Pet: Raza -->
+                            <div class="info-card-box box-pet-breed hidden" id="box-pet-breed">
+                                <div class="info-card-icon" style="color: var(--pet-accent, #10b981); background: rgba(16,185,129,0.15);">
+                                    <i class="fa-solid fa-bone"></i>
+                                </div>
+                                <div class="info-card-text">
+                                    <span class="label">Raza</span>
+                                    <span class="val" id="p-pet-breed-val"></span>
+                                </div>
+                            </div>
+                            <!-- Pet: Sexo -->
+                            <div class="info-card-box box-pet-gender hidden" id="box-pet-gender">
+                                <div class="info-card-icon" style="color: var(--pet-accent, #10b981); background: rgba(16,185,129,0.15);">
+                                    <i class="fa-solid fa-venus-mars"></i>
+                                </div>
+                                <div class="info-card-text">
+                                    <span class="label">Sexo</span>
+                                    <span class="val" id="p-pet-gender-val"></span>
+                                </div>
+                            </div>
+                            <!-- Pet: Esterilizado -->
+                            <div class="info-card-box box-pet-neutered hidden" id="box-pet-neutered">
+                                <div class="info-card-icon" style="color: var(--pet-accent, #10b981); background: rgba(16,185,129,0.15);">
+                                    <i class="fa-solid fa-scissors"></i>
+                                </div>
+                                <div class="info-card-text">
+                                    <span class="label">Esterilizado/a</span>
+                                    <span class="val" id="p-pet-neutered-val"></span>
+                                </div>
+                            </div>
                             <!-- EPS / Entidad de Salud -->
                             <div class="info-card-box box-eps hidden" id="box-eps">
                                 <div class="info-card-icon icon-eps">
@@ -281,6 +321,15 @@
                         </div>
 
                         <!-- Optional Extra Cards (School, Grade, Parent) -->
+                        <div class="info-card-box box-pet-vaccines hidden" id="box-pet-vaccines" style="margin-top: 0.75rem;">
+                            <div class="info-card-icon" style="color: var(--pet-accent, #10b981); background: rgba(16,185,129,0.15);">
+                                <i class="fa-solid fa-syringe"></i>
+                            </div>
+                            <div class="info-card-text">
+                                <span class="label">Vacunas</span>
+                                <span class="val" id="p-pet-vaccines-val"></span>
+                            </div>
+                        </div>
                         <div class="info-card-box box-school hidden" id="box-school" style="margin-top: 0.75rem;">
                             <div class="info-card-icon icon-school">
                                 <i class="fa-solid fa-school"></i>
@@ -324,6 +373,17 @@
                                     <div class="contact-btn-icon"><i class="fa-brands fa-whatsapp"></i></div>
                                     <div class="contact-btn-text">
                                         <span class="contact-btn-title" id="p-contact-title2">Contacto Alterno</span>
+                                        <span class="contact-btn-sub">Escríbenos por WhatsApp</span>
+                                    </div>
+                                </div>
+                                <div class="contact-btn-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+                            </a>
+                            <!-- Contact Item 3: Veterinario (Only for Pets) -->
+                            <a href="#" id="btn-contact-vet" class="emergency-contact-btn hidden" style="border-left-color: #10b981;">
+                                <div class="contact-btn-left">
+                                    <div class="contact-btn-icon" style="background: rgba(16,185,129,0.15); color: #10b981;"><i class="fa-brands fa-whatsapp"></i></div>
+                                    <div class="contact-btn-text">
+                                        <span class="contact-btn-title" style="color: #10b981;"><i class="fa-solid fa-stethoscope"></i> Contactar veterinario</span>
                                         <span class="contact-btn-sub">Escríbenos por WhatsApp</span>
                                     </div>
                                 </div>

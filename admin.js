@@ -134,11 +134,33 @@ class AdminApp {
         const currentMonth = today.getMonth() + 1; // 1 to 12
         const currentDay = today.getDate(); // 1 to 31
 
-        let age = currentYear - birthYear;
-        if (currentMonth < birthMonth || (currentMonth === birthMonth && currentDay < birthDay)) {
-            age--;
+        let years = currentYear - birthYear;
+        let months = currentMonth - birthMonth;
+
+        if (currentDay < birthDay) {
+            months--;
         }
-        return age >= 0 ? age : '';
+
+        if (months < 0) {
+            years--;
+            months += 12;
+        }
+
+        if (years < 0) return '';
+
+        if (years === 0 && months === 0) {
+            return "Recién nacido";
+        }
+
+        let ageStr = [];
+        if (years > 0) {
+            ageStr.push(`${years} ${years === 1 ? 'año' : 'años'}`);
+        }
+        if (months > 0) {
+            ageStr.push(`${months} ${months === 1 ? 'mes' : 'meses'}`);
+        }
+
+        return ageStr.join(' y ');
     }
 
     sanitizeProfile(p) {
@@ -188,6 +210,14 @@ class AdminApp {
         let vehicleClubDesc = (p.vehicleClubDesc !== undefined && p.vehicleClubDesc !== null) ? String(p.vehicleClubDesc).trim() : '';
         let vehicleClubCity = (p.vehicleClubCity !== undefined && p.vehicleClubCity !== null) ? String(p.vehicleClubCity).trim() : '';
         let vehicleClubLogo = (p.vehicleClubLogo !== undefined && p.vehicleClubLogo !== null) ? String(p.vehicleClubLogo).trim() : '';
+
+        // Pet Fields
+        let petSpecies = (p.petSpecies !== undefined && p.petSpecies !== null) ? String(p.petSpecies).trim() : 'Perro';
+        let petBreed = (p.petBreed !== undefined && p.petBreed !== null) ? String(p.petBreed).trim() : '';
+        let petGender = (p.petGender !== undefined && p.petGender !== null) ? String(p.petGender).trim() : '';
+        let petNeutered = (p.petNeutered !== undefined && p.petNeutered !== null) ? String(p.petNeutered).trim() : '';
+        let petVaccines = (p.petVaccines !== undefined && p.petVaccines !== null) ? String(p.petVaccines).trim() : '';
+        let vetPhone = (p.vetPhone !== undefined && p.vetPhone !== null && String(p.vetPhone).trim() !== '') ? String(p.vetPhone).trim() : '';
 
         const defaultWaMsg = gender === 'pet'
             ? 'Hola, encontré a la mascota {nombre} y quiero comunicarme con su dueño.'
@@ -249,6 +279,12 @@ class AdminApp {
             grade: grade,
             medicalConditions: medicalConditions,
             importantMedications: importantMedications,
+            petSpecies: petSpecies,
+            petBreed: petBreed,
+            petGender: petGender,
+            petNeutered: petNeutered,
+            petVaccines: petVaccines,
+            vetPhone: vetPhone,
             photoUrl: photoUrl,
             active: true,
             createdAt: p.createdAt || new Date().toISOString(),
@@ -539,6 +575,14 @@ class AdminApp {
         if (document.getElementById('input-vehicle-owner')) document.getElementById('input-vehicle-owner').value = '';
         if (document.getElementById('input-vehicle-engine')) document.getElementById('input-vehicle-engine').value = '';
 
+        // Clear Pet Fields
+        if (document.getElementById('input-pet-species')) document.getElementById('input-pet-species').value = 'Perro';
+        if (document.getElementById('input-pet-breed')) document.getElementById('input-pet-breed').value = '';
+        if (document.getElementById('input-pet-gender')) document.getElementById('input-pet-gender').value = '';
+        if (document.getElementById('input-pet-neutered')) document.getElementById('input-pet-neutered').value = '';
+        if (document.getElementById('input-pet-vaccines')) document.getElementById('input-pet-vaccines').value = '';
+        if (document.getElementById('input-vet-phone')) document.getElementById('input-vet-phone').value = '';
+
         const previewImg = document.getElementById('photo-preview');
         if (previewImg) previewImg.src = NEUTRAL_AVATAR_SVG;
 
@@ -598,6 +642,14 @@ class AdminApp {
         if (document.getElementById('input-vehicle-club-city')) document.getElementById('input-vehicle-club-city').value = profile.vehicleClubCity || '';
         if (document.getElementById('input-vehicle-club-logo')) document.getElementById('input-vehicle-club-logo').value = profile.vehicleClubLogo || '';
 
+        // Populate Pet Fields
+        if (document.getElementById('input-pet-species')) document.getElementById('input-pet-species').value = profile.petSpecies || 'Perro';
+        if (document.getElementById('input-pet-breed')) document.getElementById('input-pet-breed').value = profile.petBreed || '';
+        if (document.getElementById('input-pet-gender')) document.getElementById('input-pet-gender').value = profile.petGender || '';
+        if (document.getElementById('input-pet-neutered')) document.getElementById('input-pet-neutered').value = profile.petNeutered || '';
+        if (document.getElementById('input-pet-vaccines')) document.getElementById('input-pet-vaccines').value = profile.petVaccines || '';
+        if (document.getElementById('input-vet-phone')) document.getElementById('input-vet-phone').value = profile.vetPhone || '';
+
         const clubLogoPreviewWrapper = document.getElementById('club-logo-preview-wrapper');
         const clubLogoPreview = document.getElementById('club-logo-preview');
         if (profile.vehicleClubLogo && profile.vehicleClubLogo.trim() !== '') {
@@ -643,6 +695,8 @@ class AdminApp {
         const waMsgInput = document.getElementById('input-whatsapp-msg');
         const vehicleSection = document.getElementById('section-vehicle');
         const vehicleTypeInput = document.getElementById('input-vehicle-type');
+        const petSection = document.getElementById('section-pet');
+        const vetPhoneGroup = document.getElementById('group-vet-phone');
 
         if (gender === 'vehicle') {
             schoolGroup?.classList.add('hidden');
@@ -657,6 +711,8 @@ class AdminApp {
             this.updateVehicleTypeLabels(vehicleTypeInput ? vehicleTypeInput.value : 'car');
         } else if (gender === 'pet') {
             vehicleSection?.classList.add('hidden');
+            petSection?.classList.remove('hidden');
+            vetPhoneGroup?.classList.remove('hidden');
             schoolGroup?.classList.add('hidden');
             gradeGroup?.classList.add('hidden');
             schoolUrlGroup?.classList.add('hidden');
@@ -667,6 +723,8 @@ class AdminApp {
             }
         } else if (gender === 'senior') {
             vehicleSection?.classList.add('hidden');
+            petSection?.classList.add('hidden');
+            vetPhoneGroup?.classList.add('hidden');
             schoolGroup?.classList.add('hidden');
             gradeGroup?.classList.add('hidden');
             schoolUrlGroup?.classList.add('hidden');
@@ -677,6 +735,8 @@ class AdminApp {
             }
         } else {
             vehicleSection?.classList.add('hidden');
+            petSection?.classList.add('hidden');
+            vetPhoneGroup?.classList.add('hidden');
             schoolGroup?.classList.remove('hidden');
             gradeGroup?.classList.remove('hidden');
             schoolUrlGroup?.classList.remove('hidden');
@@ -780,6 +840,13 @@ class AdminApp {
             const vehicleClubCityVal = document.getElementById('input-vehicle-club-city')?.value.trim() || '';
             const vehicleClubLogoInput = document.getElementById('input-vehicle-club-logo')?.value.trim() || '';
 
+            const petSpeciesVal = document.getElementById('input-pet-species')?.value.trim() || 'Perro';
+            const petBreedVal = document.getElementById('input-pet-breed')?.value.trim() || '';
+            const petGenderVal = document.getElementById('input-pet-gender')?.value.trim() || '';
+            const petNeuteredVal = document.getElementById('input-pet-neutered')?.value.trim() || '';
+            const petVaccinesVal = document.getElementById('input-pet-vaccines')?.value.trim() || '';
+            const vetPhoneVal = document.getElementById('input-vet-phone')?.value.trim() || '';
+
             let finalClubLogo = '';
             if (this.clubLogoRemoved) {
                 finalClubLogo = '';
@@ -848,6 +915,12 @@ class AdminApp {
                 vehicleClubDesc: vehicleClubDescVal,
                 vehicleClubCity: vehicleClubCityVal,
                 vehicleClubLogo: finalClubLogo,
+                petSpecies: petSpeciesVal,
+                petBreed: petBreedVal,
+                petGender: petGenderVal,
+                petNeutered: petNeuteredVal,
+                petVaccines: petVaccinesVal,
+                vetPhone: vetPhoneVal,
                 birthDate: birthDateVal,
                 age: computedAge,
                 bloodType: gender === 'pet' ? '' : (document.getElementById('input-blood').value ? document.getElementById('input-blood').value.trim() : ''),

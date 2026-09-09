@@ -260,8 +260,8 @@
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label" for="input-age">Edad (Años)</label>
-                            <input type="number" id="input-age" class="form-input" min="0" placeholder="Ej: 5 o 75">
+                            <label class="form-label" for="input-age">Edad (Automática)</label>
+                            <input type="text" id="input-age" class="form-input" readonly placeholder="Se calcula al guardar" style="background: rgba(0,0,0,0.03); border-color: rgba(0,0,0,0.05); color: var(--text-secondary);">
                         </div>
 
                         <div class="form-group" id="group-blood">
@@ -388,6 +388,55 @@
                     </div>
                 </div>
 
+                <!-- 2.8 INFORMACIÓN DE MASCOTAS -->
+                <div id="section-pet" class="modal-form-section hidden">
+                    <div class="modal-section-title">
+                        <i class="fa-solid fa-paw"></i> Información de la Mascota
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="input-pet-species">Especie</label>
+                            <select id="input-pet-species" class="form-select">
+                                <option value="Perro" selected>🐶 Perro</option>
+                                <option value="Gato">🐱 Gato</option>
+                                <option value="Ave">🦜 Ave</option>
+                                <option value="Otro">🐾 Otro</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="input-pet-breed">Raza</label>
+                            <input type="text" id="input-pet-breed" class="form-input" placeholder="Ej: Golden Retriever, Criollo">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="input-pet-gender">Sexo</label>
+                            <select id="input-pet-gender" class="form-select">
+                                <option value="" selected>Seleccionar...</option>
+                                <option value="Macho">Macho</option>
+                                <option value="Hembra">Hembra</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="input-pet-neutered">¿Esterilizado/a?</label>
+                            <select id="input-pet-neutered" class="form-select">
+                                <option value="" selected>Seleccionar...</option>
+                                <option value="Sí">Sí</option>
+                                <option value="No">No</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group" style="flex: 1;">
+                            <label class="form-label" for="input-pet-vaccines">Vacunas</label>
+                            <input type="text" id="input-pet-vaccines" class="form-input" placeholder="Ej: Al día, Falta rabia">
+                        </div>
+                    </div>
+                </div>
+
                 <!-- 3. EDUCACIÓN -->
                 <div id="section-school" class="modal-form-section">
                     <div class="modal-section-title">
@@ -462,6 +511,16 @@
                             <label class="form-label" for="input-phone2" id="lbl-input-phone2">Teléfono WhatsApp Contacto 2</label>
                             <input type="tel" id="input-phone2" class="form-input" placeholder="Ej: 573109876543">
                             <span class="field-hint">Segundo contacto de emergencia</span>
+                        </div>
+                    </div>
+
+                    <div class="form-row" id="group-vet-phone" class="hidden">
+                        <div class="form-group" style="grid-column: span 2; margin-top: 1rem;">
+                            <label class="form-label" for="input-vet-phone" style="color: var(--primary);">
+                                <i class="fa-solid fa-stethoscope"></i> WhatsApp del Veterinario
+                            </label>
+                            <input type="tel" id="input-vet-phone" class="form-input" placeholder="Ej: 573201234567">
+                            <span class="field-hint">Tercer botón exclusivo en perfiles de mascota</span>
                         </div>
                     </div>
 

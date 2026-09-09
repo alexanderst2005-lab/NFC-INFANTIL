@@ -116,11 +116,33 @@ class App {
         const currentMonth = today.getMonth() + 1; // 1 to 12
         const currentDay = today.getDate(); // 1 to 31
 
-        let age = currentYear - birthYear;
-        if (currentMonth < birthMonth || (currentMonth === birthMonth && currentDay < birthDay)) {
-            age--;
+        let years = currentYear - birthYear;
+        let months = currentMonth - birthMonth;
+
+        if (currentDay < birthDay) {
+            months--;
         }
-        return age >= 0 ? age : '';
+
+        if (months < 0) {
+            years--;
+            months += 12;
+        }
+
+        if (years < 0) return '';
+
+        if (years === 0 && months === 0) {
+            return "Recién nacido";
+        }
+
+        let ageStr = [];
+        if (years > 0) {
+            ageStr.push(`${years} ${years === 1 ? 'año' : 'años'}`);
+        }
+        if (months > 0) {
+            ageStr.push(`${months} ${months === 1 ? 'mes' : 'meses'}`);
+        }
+
+        return ageStr.join(' y ');
     }
 
     sanitizeProfile(p) {
@@ -165,11 +187,16 @@ class App {
         let vehicleColor = (p.vehicleColor !== undefined && p.vehicleColor !== null) ? String(p.vehicleColor).trim() : '';
         let vehiclePlate = (p.vehiclePlate !== undefined && p.vehiclePlate !== null) ? String(p.vehiclePlate).trim() : '';
         let vehicleOwner = (p.vehicleOwner !== undefined && p.vehicleOwner !== null) ? String(p.vehicleOwner).trim() : '';
-        let vehicleEngine = (p.vehicleEngine !== undefined && p.vehicleEngine !== null) ? String(p.vehicleEngine).trim() : '';
-        let vehicleClub = (p.vehicleClub !== undefined && p.vehicleClub !== null) ? String(p.vehicleClub).trim() : '';
-        let vehicleClubDesc = (p.vehicleClubDesc !== undefined && p.vehicleClubDesc !== null) ? String(p.vehicleClubDesc).trim() : '';
         let vehicleClubCity = (p.vehicleClubCity !== undefined && p.vehicleClubCity !== null) ? String(p.vehicleClubCity).trim() : '';
         let vehicleClubLogo = (p.vehicleClubLogo !== undefined && p.vehicleClubLogo !== null) ? String(p.vehicleClubLogo).trim() : '';
+
+        // Pet Fields
+        let petSpecies = (p.petSpecies !== undefined && p.petSpecies !== null) ? String(p.petSpecies).trim() : 'Perro';
+        let petBreed = (p.petBreed !== undefined && p.petBreed !== null) ? String(p.petBreed).trim() : '';
+        let petGender = (p.petGender !== undefined && p.petGender !== null) ? String(p.petGender).trim() : '';
+        let petNeutered = (p.petNeutered !== undefined && p.petNeutered !== null) ? String(p.petNeutered).trim() : '';
+        let petVaccines = (p.petVaccines !== undefined && p.petVaccines !== null) ? String(p.petVaccines).trim() : '';
+        let vetPhone = (p.vetPhone !== undefined && p.vetPhone !== null && String(p.vetPhone).trim() !== '') ? String(p.vetPhone).trim() : '';
 
         const defaultWaMsg = gender === 'pet'
             ? 'Hola, encontré a la mascota {nombre} y quiero comunicarme con su dueño.'
@@ -230,6 +257,12 @@ class App {
             grade: grade,
             medicalConditions: medicalConditions,
             importantMedications: importantMedications,
+            petSpecies: petSpecies,
+            petBreed: petBreed,
+            petGender: petGender,
+            petNeutered: petNeutered,
+            petVaccines: petVaccines,
+            vetPhone: vetPhone,
             photoUrl: photoUrl,
             active: true,
             createdAt: p.createdAt || new Date().toISOString(),
@@ -492,7 +525,7 @@ class App {
         const ageEl = document.getElementById('p-age-val');
         if (profile.age !== undefined && profile.age !== null && String(profile.age).trim() !== '') {
             ageCard?.classList.remove('hidden');
-            if (ageEl) ageEl.textContent = `${profile.age} años`;
+            if (ageEl) ageEl.textContent = profile.age; // age is already formatted as "3 meses" or "1 año y 3 meses"
         } else {
             ageCard?.classList.add('hidden'); // Ocultar si no hay edad
         }
@@ -577,6 +610,51 @@ class App {
             }
         }
 
+        // Pet Specific Cards
+        const petSpeciesCard = document.getElementById('box-pet-species');
+        const petSpeciesEl = document.getElementById('p-pet-species-val');
+        const petBreedCard = document.getElementById('box-pet-breed');
+        const petBreedEl = document.getElementById('p-pet-breed-val');
+        const petGenderCard = document.getElementById('box-pet-gender');
+        const petGenderEl = document.getElementById('p-pet-gender-val');
+        const petNeuteredCard = document.getElementById('box-pet-neutered');
+        const petNeuteredEl = document.getElementById('p-pet-neutered-val');
+        const petVaccinesCard = document.getElementById('box-pet-vaccines');
+        const petVaccinesEl = document.getElementById('p-pet-vaccines-val');
+
+        if (isPet) {
+            if (profile.petSpecies && profile.petSpecies.trim() !== '') {
+                petSpeciesCard?.classList.remove('hidden');
+                if (petSpeciesEl) petSpeciesEl.textContent = profile.petSpecies;
+            } else { petSpeciesCard?.classList.add('hidden'); }
+
+            if (profile.petBreed && profile.petBreed.trim() !== '') {
+                petBreedCard?.classList.remove('hidden');
+                if (petBreedEl) petBreedEl.textContent = profile.petBreed;
+            } else { petBreedCard?.classList.add('hidden'); }
+
+            if (profile.petGender && profile.petGender.trim() !== '') {
+                petGenderCard?.classList.remove('hidden');
+                if (petGenderEl) petGenderEl.textContent = profile.petGender;
+            } else { petGenderCard?.classList.add('hidden'); }
+
+            if (profile.petNeutered && profile.petNeutered.trim() !== '') {
+                petNeuteredCard?.classList.remove('hidden');
+                if (petNeuteredEl) petNeuteredEl.textContent = profile.petNeutered;
+            } else { petNeuteredCard?.classList.add('hidden'); }
+
+            if (profile.petVaccines && profile.petVaccines.trim() !== '') {
+                petVaccinesCard?.classList.remove('hidden');
+                if (petVaccinesEl) petVaccinesEl.textContent = profile.petVaccines;
+            } else { petVaccinesCard?.classList.add('hidden'); }
+        } else {
+            petSpeciesCard?.classList.add('hidden');
+            petBreedCard?.classList.add('hidden');
+            petGenderCard?.classList.add('hidden');
+            petNeuteredCard?.classList.add('hidden');
+            petVaccinesCard?.classList.add('hidden');
+        }
+
         // EMERGENCY CONTACTS SECTION (MATCHING MOCKUP DESIGN)
         const contactsSection = document.getElementById('box-emergency-contacts');
         const btnContactWa1 = document.getElementById('btn-contact-wa1');
@@ -629,6 +707,12 @@ class App {
             } else {
                 btnContactWa2?.classList.add('hidden');
             }
+        } else if (isPet) {
+            // Reusing contacts section for pet vet if no standard actions show, or just standard actions
+            // But we actually use standard actions for primary contacts.
+            // For pets, the Vet button is inside emergency-contacts-list in index.html
+            contactsSection?.classList.add('hidden');
+            standardActions?.classList.remove('hidden');
         } else {
             contactsSection?.classList.add('hidden');
             standardActions?.classList.remove('hidden');
@@ -796,6 +880,27 @@ class App {
                 launchWhatsApp(messageText);
             }
         };
+
+        // Vet Button Logic
+        const btnVet = document.getElementById('btn-contact-vet');
+        if (btnVet) {
+            if (isPet && profile.vetPhone && profile.vetPhone.trim() !== '') {
+                btnVet.classList.remove('hidden');
+                
+                // if it's a pet and has vet phone, we must show the contacts section
+                if (contactsSection && contactsSection.classList.contains('hidden')) {
+                    contactsSection.classList.remove('hidden');
+                }
+                
+                btnVet.onclick = (e) => {
+                    e.preventDefault();
+                    const waText = `Hola, necesito contactarme con el veterinario de ${profile.name} (perfil NFC).`;
+                    openWhatsAppWithLocation(profile.vetPhone, waText);
+                };
+            } else {
+                btnVet.classList.add('hidden');
+            }
+        }
 
         // WhatsApp Main Action Button 1
         const btnWa1 = document.getElementById('btn-whatsapp-action');
