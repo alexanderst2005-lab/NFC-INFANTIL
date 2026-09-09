@@ -1030,23 +1030,18 @@ class App {
         };
 
         // Vet Button Logic
-        const btnVet = document.getElementById('btn-contact-vet');
-        if (btnVet) {
+        const btnWaVet = document.getElementById('btn-whatsapp-action-vet');
+        if (btnWaVet) {
             if (isPet && profile.vetPhone && profile.vetPhone.trim() !== '') {
-                btnVet.classList.remove('hidden');
+                btnWaVet.classList.remove('hidden');
                 
-                // if it's a pet and has vet phone, we must show the contacts section
-                if (contactsSection && contactsSection.classList.contains('hidden')) {
-                    contactsSection.classList.remove('hidden');
-                }
-                
-                btnVet.onclick = (e) => {
+                btnWaVet.onclick = (e) => {
                     e.preventDefault();
                     const waText = `Hola, necesito contactarme con el veterinario de ${profile.name} (perfil NFC).`;
                     openWhatsAppWithLocation(profile.vetPhone, waText);
                 };
             } else {
-                btnVet.classList.add('hidden');
+                btnWaVet.classList.add('hidden');
             }
         }
 
