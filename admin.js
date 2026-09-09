@@ -479,10 +479,11 @@ class AdminApp {
             const isPet = p.gender === 'pet';
             const isSenior = p.gender === 'senior';
             const isVehicle = p.gender === 'vehicle';
+            const isSecurity = p.gender === 'security';
             const photoSrc = p.photoUrl && p.photoUrl.trim() !== '' ? p.photoUrl : NEUTRAL_AVATAR_SVG;
 
-            let categoryLabel = isPet ? 'Mascota 🐾' : (isSenior ? 'Adulto Mayor 👵👴' : (p.gender === 'girl' ? 'Niña 👧' : 'Niño 🧒'));
-            let categoryClass = isPet ? 'pill-pet' : (isSenior ? 'pill-senior' : (p.gender === 'girl' ? 'pill-girl' : 'pill-boy'));
+            let categoryLabel = isPet ? 'Mascota 🐾' : (isSenior ? 'Adulto Mayor 👵👴' : (p.gender === 'girl' ? 'Niña 👧' : (isSecurity ? 'Seguridad 🛡️' : 'Niño 🧒')));
+            let categoryClass = isPet ? 'pill-pet' : (isSenior ? 'pill-senior' : (p.gender === 'girl' ? 'pill-girl' : (isSecurity ? 'pill-security' : 'pill-boy')));
 
             if (isVehicle) {
                 categoryClass = 'pill-vehicle';
@@ -502,6 +503,13 @@ class AdminApp {
                 }
                 if (p.vehicleOwner) {
                     metaHtml += `<div class="meta-item meta-item-full"><i class="fa-solid fa-user-check"></i> ${p.vehicleOwner}</div>`;
+                }
+            } else if (isSecurity) {
+                if (p.secActivity || p.secItem) {
+                    metaHtml += `<div class="meta-item meta-item-full"><i class="fa-solid fa-shield-halved"></i> ${p.secActivity || ''} ${p.secItem || ''}</div>`;
+                }
+                if (p.bloodType && p.bloodType.trim() !== '') {
+                    metaHtml += `<div class="meta-item"><i class="fa-solid fa-droplet"></i> ${p.bloodType}</div>`;
                 }
             } else {
                 if (p.age !== undefined && p.age !== null && String(p.age).trim() !== '') {
