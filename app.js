@@ -156,7 +156,7 @@ class App {
             ? String(p.name).trim()
             : 'Perfil';
 
-        let gender = (p.gender === 'girl' || p.gender === 'pet' || p.gender === 'senior' || p.gender === 'vehicle') ? p.gender : 'boy';
+        let gender = (p.gender === 'girl' || p.gender === 'pet' || p.gender === 'senior' || p.gender === 'vehicle' || p.gender === 'security') ? p.gender : 'boy';
         if (p.id === 'prof-006-jose' || (p.slug && String(p.slug).toLowerCase().includes('jose-ramirez'))) {
             gender = 'senior';
         }
@@ -270,6 +270,15 @@ class App {
             petNeutered: petNeutered,
             petVaccines: petVaccines,
             vetPhone: vetPhone,
+            secActivity: (p.secActivity !== undefined && p.secActivity !== null) ? String(p.secActivity).trim() : '',
+            secItem: (p.secItem !== undefined && p.secItem !== null) ? String(p.secItem).trim() : '',
+            secDesc: (p.secDesc !== undefined && p.secDesc !== null) ? String(p.secDesc).trim() : '',
+            secBrand: (p.secBrand !== undefined && p.secBrand !== null) ? String(p.secBrand).trim() : '',
+            secModel: (p.secModel !== undefined && p.secModel !== null) ? String(p.secModel).trim() : '',
+            secSerial: (p.secSerial !== undefined && p.secSerial !== null) ? String(p.secSerial).trim() : '',
+            secColor: (p.secColor !== undefined && p.secColor !== null) ? String(p.secColor).trim() : '',
+            secFeatures: (p.secFeatures !== undefined && p.secFeatures !== null) ? String(p.secFeatures).trim() : '',
+            secOwner: (p.secOwner !== undefined && p.secOwner !== null) ? String(p.secOwner).trim() : '',
             photoUrl: photoUrl,
             active: true,
             createdAt: p.createdAt || new Date().toISOString(),
