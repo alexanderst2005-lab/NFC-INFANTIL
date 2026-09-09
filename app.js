@@ -81,7 +81,7 @@ class App {
     }
 
 
-    calculateAgeFromBirthDate(birthDateStr, fallbackAge = '') {
+    calculateAgeFromBirthDate(birthDateStr, fallbackAge = '', isPet = false) {
         if (!birthDateStr || String(birthDateStr).trim() === '') {
             return (fallbackAge !== undefined && fallbackAge !== null && String(fallbackAge).trim() !== '' && parseInt(fallbackAge) >= 0) ? parseInt(fallbackAge) : '';
         }
@@ -129,6 +129,10 @@ class App {
         }
 
         if (years < 0) return '';
+        
+        if (!isPet) {
+            return years;
+        }
 
         if (years === 0 && months === 0) {
             return "Recién nacido";
@@ -210,7 +214,7 @@ class App {
                     : 'Hola, encontré la información del perfil de {nombre}.'));
 
         const birthDate = (p.birthDate !== undefined && p.birthDate !== null) ? String(p.birthDate).trim() : '';
-        const computedAge = this.calculateAgeFromBirthDate(birthDate, (p.age !== undefined && p.age !== null) ? p.age : '');
+        const computedAge = this.calculateAgeFromBirthDate(birthDate, (p.age !== undefined && p.age !== null) ? p.age : '', gender === 'pet');
         const bloodType = gender === 'pet' ? '' : ((p.bloodType !== undefined && p.bloodType !== null && String(p.bloodType).trim() !== 'undefined') ? String(p.bloodType).trim() : '');
         const eps = (p.eps !== undefined && p.eps !== null) ? String(p.eps).trim() : '';
         const allergies = (p.allergies !== undefined && p.allergies !== null) ? String(p.allergies).trim() : '';
@@ -528,7 +532,7 @@ class App {
         const ageEl = document.getElementById('p-age-val');
         if (profile.age !== undefined && profile.age !== null && String(profile.age).trim() !== '') {
             ageCard?.classList.remove('hidden');
-            if (ageEl) ageEl.textContent = profile.age; // age is already formatted as "3 meses" or "1 año y 3 meses"
+            if (ageEl) ageEl.textContent = isPet ? profile.age : `${profile.age} años`; // Solo las mascotas devuelven un string con los meses/años ya formateados
         } else {
             ageCard?.classList.add('hidden'); // Ocultar si no hay edad
         }
