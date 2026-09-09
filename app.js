@@ -36,9 +36,19 @@ class App {
         this.setupNfcListener();
         this.setupSimulatedScanner();
 
-        // 🚀 Instant local render so page is NEVER blank or empty
-        this.renderSingleProfile(targetSlug);
-        document.documentElement.classList.add('ready');
+        this.hasLoadedCloudData = false;
+
+        // 🚀 Instant local render from cache if profile exists in localStorage
+        const cachedProfile = this.findProfileBySlug(targetSlug);
+        if (cachedProfile) {
+            this.renderSingleProfile(targetSlug);
+        } else {
+            // Keep view-profile hidden while waiting for Firestore response
+            const viewProfile = document.getElementById('view-profile');
+            const viewInactive = document.getElementById('view-inactive');
+            if (viewProfile) viewProfile.classList.add('hidden');
+            if (viewInactive) viewInactive.classList.add('hidden');
+        }
 
         // Firestore Realtime Single Source of Truth Listener
         onSnapshot(collection(db, "nfc_profiles"), async (snapshot) => {
@@ -49,6 +59,7 @@ class App {
             });
 
             this.profiles = this.deduplicateProfiles(loaded);
+            this.hasLoadedCloudData = true;
 
             localStorage.setItem('nfc_profiles_db', JSON.stringify(this.profiles));
 
@@ -56,6 +67,7 @@ class App {
             document.documentElement.classList.add('ready');
         }, (error) => {
             console.error("Firestore Realtime Listener Error:", error);
+            this.hasLoadedCloudData = true;
             this.renderSingleProfile(targetSlug);
             document.documentElement.classList.add('ready');
         });
@@ -285,6 +297,12 @@ class App {
         const viewInactive = document.getElementById('view-inactive');
         const profile = this.findProfileBySlug(rawSlug);
         if (!profile || profile.active === false) {
+            // Do not show "Perfil No Encontrado" if Firestore initial fetch hasn't finished yet
+            if (!this.hasLoadedCloudData && !profile) {
+                if (viewProfile) viewProfile.classList.add('hidden');
+                if (viewInactive) viewInactive.classList.add('hidden');
+                return;
+            }
             viewProfile?.classList.add('hidden');
             viewInactive?.classList.remove('hidden');
             const inactiveTitle = document.getElementById('inactive-title');
@@ -295,7 +313,7 @@ class App {
         }
         this.currentProfile = profile;
         viewInactive?.classList.add('hidden');
-        viewProfile?.classList.remove('hidden');
+        // Keep viewProfile hidden until all fields are fully populated at the end of this method
         // Apply Theme
         const isPet = profile.gender === 'pet';
         const isSenior = profile.gender === 'senior';
@@ -814,6 +832,11 @@ class App {
             } else {
                 btnLocation.classList.add('hidden');
             }
+        }
+
+        // 🚀 Reveal complete profile directly ONLY after all DOM elements are fully populated
+        if (viewProfile) {
+            viewProfile.classList.remove('hidden');
         }
     }
 
