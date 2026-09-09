@@ -779,7 +779,7 @@ class App {
         const emergencyCallLink = document.getElementById('btn-emergency-call-link');
         const emergencyNum = document.getElementById('p-emergency-num');
 
-        if (isVehicle) {
+        if (isVehicle || isSecurity) {
             emergencyCallBox?.classList.remove('hidden');
             const targetEmergency = (profile.emergencyPhone && profile.emergencyPhone.trim() !== '') ? profile.emergencyPhone.trim() : '123';
             if (emergencyCallLink) emergencyCallLink.href = `tel:${targetEmergency}`;
@@ -857,6 +857,10 @@ class App {
             let hasAnySecInfo = false;
             const sMainRow = document.getElementById('p-sec-main-row');
             const sMainSpec = document.getElementById('p-sec-main-spec');
+            const sActivityItem = document.getElementById('p-sec-activity-item');
+            const sActivityVal = document.getElementById('p-sec-activity');
+            const sItemItem = document.getElementById('p-sec-item-item');
+            const sItemVal = document.getElementById('p-sec-item');
             const sDescItem = document.getElementById('p-sec-desc-item');
             const sDescVal = document.getElementById('p-sec-desc');
             const sBrandItem = document.getElementById('p-sec-brand-item');
@@ -872,14 +876,20 @@ class App {
             const sOwnerItem = document.getElementById('p-sec-owner-item');
             const sOwnerVal = document.getElementById('p-sec-owner');
 
-            const actStr = profile.secActivity || '';
-            const itemStr = profile.secItem || '';
-            let mainStr = `${actStr} ${itemStr}`.trim();
-            if (mainStr) {
-                sMainRow?.classList.remove('hidden');
-                if (sMainSpec) sMainSpec.textContent = mainStr;
+            // Hide the old main row since we're using pills now
+            sMainRow?.classList.add('hidden');
+
+            if (profile.secActivity && profile.secActivity.trim() !== '') {
+                sActivityItem?.classList.remove('hidden');
+                if (sActivityVal) sActivityVal.textContent = profile.secActivity;
                 hasAnySecInfo = true;
-            } else { sMainRow?.classList.add('hidden'); }
+            } else { sActivityItem?.classList.add('hidden'); }
+
+            if (profile.secItem && profile.secItem.trim() !== '') {
+                sItemItem?.classList.remove('hidden');
+                if (sItemVal) sItemVal.textContent = profile.secItem;
+                hasAnySecInfo = true;
+            } else { sItemItem?.classList.add('hidden'); }
 
             if (profile.secDesc && profile.secDesc.trim() !== '') {
                 sDescItem?.classList.remove('hidden');
