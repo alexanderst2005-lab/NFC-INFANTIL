@@ -2917,4 +2917,19 @@ html.theme-vehicle .footer-love-pill {
 /* Universal Hidden Utility Rule */
 .hidden {
     display: none !important;
-}
+}
+
+/* ==========================================================================
+   ANTI-FLASH: Ocultar tarjeta de perfil hasta que JS inyecte datos reales
+   La clase 'ready' se agrega al <html> únicamente cuando el perfil
+   real ya está cargado y listo para ser mostrado.
+   ========================================================================== */
+html:not(.ready) .profile-card {
+    opacity: 0;
+    pointer-events: none;
+}
+html.ready .profile-card {
+    opacity: 1;
+    transition: opacity 0.18s ease;
+}
+
