@@ -402,7 +402,8 @@ class App {
 
             if (isSecurity) {
                 coverUrl = 'assets/cover-security.png';
-                if (vHeaderBar) vHeaderBar.classList.add('hidden');
+                subTitleText = 'Perfil Oficial de Seguridad';
+                if (vHeaderBar) vHeaderBar.classList.remove('hidden');
             } else {
                 if (vHeaderBar) vHeaderBar.classList.remove('hidden');
                 if (vehicleType === 'car') {
