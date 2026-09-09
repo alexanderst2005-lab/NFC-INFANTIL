@@ -174,7 +174,7 @@ class AdminApp {
             ? String(p.name).trim()
             : 'Perfil';
 
-        let gender = (p.gender === 'girl' || p.gender === 'pet' || p.gender === 'senior' || p.gender === 'vehicle') ? p.gender : 'boy';
+        let gender = (p.gender === 'girl' || p.gender === 'pet' || p.gender === 'senior' || p.gender === 'vehicle' || p.gender === 'security') ? p.gender : 'boy';
         if (p.id === 'prof-006-jose' || (p.slug && String(p.slug).toLowerCase().includes('jose-ramirez'))) {
             gender = 'senior';
         }
@@ -229,7 +229,9 @@ class AdminApp {
                 ? 'Hola, encontré el perfil de seguridad del adulto mayor {nombre} y quiero comunicarme con sus familiares.'
                 : (gender === 'vehicle'
                     ? 'Hola, encontré la información del vehículo {nombre} y quiero comunicarme con el propietario o contacto de emergencia.'
-                    : 'Hola, encontré la información del perfil de {nombre}.'));
+                    : (gender === 'security'
+                        ? 'Hola, encontré la información del perfil de seguridad {nombre} y quiero comunicarme con el contacto de emergencia.'
+                        : 'Hola, encontré la información del perfil de {nombre}.')));
 
         const birthDate = (p.birthDate !== undefined && p.birthDate !== null) ? String(p.birthDate).trim() : '';
         const computedAge = this.calculateAgeFromBirthDate(birthDate, (p.age !== undefined && p.age !== null) ? p.age : '', gender === 'pet');
@@ -246,6 +248,17 @@ class AdminApp {
         let contactName2 = (p.contactName2 !== undefined && p.contactName2 !== null) ? String(p.contactName2).trim() : '';
         let contactRole2 = (p.contactRole2 !== undefined && p.contactRole2 !== null) ? String(p.contactRole2).trim() : '';
         let emergencyPhone = (p.emergencyPhone !== undefined && p.emergencyPhone !== null && String(p.emergencyPhone).trim() !== '') ? String(p.emergencyPhone).trim() : '123';
+
+        // Security Fields
+        let secActivity = (p.secActivity !== undefined && p.secActivity !== null) ? String(p.secActivity).trim() : '';
+        let secItem = (p.secItem !== undefined && p.secItem !== null) ? String(p.secItem).trim() : '';
+        let secDesc = (p.secDesc !== undefined && p.secDesc !== null) ? String(p.secDesc).trim() : '';
+        let secBrand = (p.secBrand !== undefined && p.secBrand !== null) ? String(p.secBrand).trim() : '';
+        let secModel = (p.secModel !== undefined && p.secModel !== null) ? String(p.secModel).trim() : '';
+        let secSerial = (p.secSerial !== undefined && p.secSerial !== null) ? String(p.secSerial).trim() : '';
+        let secColor = (p.secColor !== undefined && p.secColor !== null) ? String(p.secColor).trim() : '';
+        let secFeatures = (p.secFeatures !== undefined && p.secFeatures !== null) ? String(p.secFeatures).trim() : '';
+        let secOwner = (p.secOwner !== undefined && p.secOwner !== null) ? String(p.secOwner).trim() : '';
 
         return {
             id: p.id || `prof-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
@@ -289,6 +302,15 @@ class AdminApp {
             petNeutered: petNeutered,
             petVaccines: petVaccines,
             vetPhone: vetPhone,
+            secActivity: secActivity,
+            secItem: secItem,
+            secDesc: secDesc,
+            secBrand: secBrand,
+            secModel: secModel,
+            secSerial: secSerial,
+            secColor: secColor,
+            secFeatures: secFeatures,
+            secOwner: secOwner,
             photoUrl: photoUrl,
             active: true,
             createdAt: p.createdAt || new Date().toISOString(),
@@ -424,6 +446,8 @@ class AdminApp {
             filtered = filtered.filter(p => p.gender === 'senior');
         } else if (this.currentCategoryTab === 'vehicle') {
             filtered = filtered.filter(p => p.gender === 'vehicle');
+        } else if (this.currentCategoryTab === 'security') {
+            filtered = filtered.filter(p => p.gender === 'security');
         }
 
         // 2. Filter by Search Query
@@ -587,6 +611,17 @@ class AdminApp {
         if (document.getElementById('input-pet-vaccines')) document.getElementById('input-pet-vaccines').value = '';
         if (document.getElementById('input-vet-phone')) document.getElementById('input-vet-phone').value = '';
 
+        // Clear Security Fields
+        if (document.getElementById('input-sec-activity')) document.getElementById('input-sec-activity').value = '';
+        if (document.getElementById('input-sec-item')) document.getElementById('input-sec-item').value = '';
+        if (document.getElementById('input-sec-desc')) document.getElementById('input-sec-desc').value = '';
+        if (document.getElementById('input-sec-brand')) document.getElementById('input-sec-brand').value = '';
+        if (document.getElementById('input-sec-model')) document.getElementById('input-sec-model').value = '';
+        if (document.getElementById('input-sec-serial')) document.getElementById('input-sec-serial').value = '';
+        if (document.getElementById('input-sec-color')) document.getElementById('input-sec-color').value = '';
+        if (document.getElementById('input-sec-features')) document.getElementById('input-sec-features').value = '';
+        if (document.getElementById('input-sec-owner')) document.getElementById('input-sec-owner').value = '';
+
         const previewImg = document.getElementById('photo-preview');
         if (previewImg) previewImg.src = NEUTRAL_AVATAR_SVG;
 
@@ -654,6 +689,17 @@ class AdminApp {
         if (document.getElementById('input-pet-vaccines')) document.getElementById('input-pet-vaccines').value = profile.petVaccines || '';
         if (document.getElementById('input-vet-phone')) document.getElementById('input-vet-phone').value = profile.vetPhone || '';
 
+        // Populate Security Fields
+        if (document.getElementById('input-sec-activity')) document.getElementById('input-sec-activity').value = profile.secActivity || '';
+        if (document.getElementById('input-sec-item')) document.getElementById('input-sec-item').value = profile.secItem || '';
+        if (document.getElementById('input-sec-desc')) document.getElementById('input-sec-desc').value = profile.secDesc || '';
+        if (document.getElementById('input-sec-brand')) document.getElementById('input-sec-brand').value = profile.secBrand || '';
+        if (document.getElementById('input-sec-model')) document.getElementById('input-sec-model').value = profile.secModel || '';
+        if (document.getElementById('input-sec-serial')) document.getElementById('input-sec-serial').value = profile.secSerial || '';
+        if (document.getElementById('input-sec-color')) document.getElementById('input-sec-color').value = profile.secColor || '';
+        if (document.getElementById('input-sec-features')) document.getElementById('input-sec-features').value = profile.secFeatures || '';
+        if (document.getElementById('input-sec-owner')) document.getElementById('input-sec-owner').value = profile.secOwner || '';
+
         const clubLogoPreviewWrapper = document.getElementById('club-logo-preview-wrapper');
         const clubLogoPreview = document.getElementById('club-logo-preview');
         if (profile.vehicleClubLogo && profile.vehicleClubLogo.trim() !== '') {
@@ -701,10 +747,12 @@ class AdminApp {
         const vehicleTypeInput = document.getElementById('input-vehicle-type');
         const petSection = document.getElementById('section-pet');
         const vetPhoneGroup = document.getElementById('group-vet-phone');
+        const securitySection = document.getElementById('section-security');
 
         if (gender === 'vehicle') {
             petSection?.classList.add('hidden');
             vetPhoneGroup?.classList.add('hidden');
+            securitySection?.classList.add('hidden');
             schoolGroup?.classList.add('hidden');
             gradeGroup?.classList.add('hidden');
             schoolUrlGroup?.classList.add('hidden');
@@ -717,6 +765,7 @@ class AdminApp {
             this.updateVehicleTypeLabels(vehicleTypeInput ? vehicleTypeInput.value : 'car');
         } else if (gender === 'pet') {
             vehicleSection?.classList.add('hidden');
+            securitySection?.classList.add('hidden');
             petSection?.classList.remove('hidden');
             vetPhoneGroup?.classList.remove('hidden');
             schoolGroup?.classList.add('hidden');
@@ -731,6 +780,7 @@ class AdminApp {
             vehicleSection?.classList.add('hidden');
             petSection?.classList.add('hidden');
             vetPhoneGroup?.classList.add('hidden');
+            securitySection?.classList.add('hidden');
             schoolGroup?.classList.add('hidden');
             gradeGroup?.classList.add('hidden');
             schoolUrlGroup?.classList.add('hidden');
@@ -739,10 +789,33 @@ class AdminApp {
             if (waMsgInput && !waMsgInput.value) {
                 waMsgInput.value = "Hola, encontré el perfil de seguridad del adulto mayor {nombre} y quiero comunicarme con sus familiares.";
             }
-        } else {
-            vehicleSection?.classList.add('hidden');
+        } else if (gender === 'security') {
+            vehicleSection?.classList.remove('hidden'); // Show vehicle club section (reused as group/club)
+            const vehicleDetails = document.querySelectorAll('#section-vehicle .form-row');
+            vehicleDetails.forEach(row => {
+                if (row.contains(document.getElementById('input-vehicle-type')) || 
+                    row.contains(document.getElementById('input-vehicle-color'))) {
+                    row.style.display = 'none'; // Hide actual vehicle fields, keep club fields
+                }
+            });
             petSection?.classList.add('hidden');
             vetPhoneGroup?.classList.add('hidden');
+            securitySection?.classList.remove('hidden');
+            schoolGroup?.classList.add('hidden');
+            gradeGroup?.classList.add('hidden');
+            schoolUrlGroup?.classList.add('hidden');
+            bloodGroup?.classList.remove('hidden');
+            if (mapsLabel) mapsLabel.textContent = "Ubicación Principal (Google Maps)";
+            if (waMsgInput && !waMsgInput.value) {
+                waMsgInput.value = "Hola, encontré la información del perfil de seguridad {nombre} y quiero comunicarme con el contacto de emergencia.";
+            }
+        } else {
+            vehicleSection?.classList.add('hidden');
+            const vehicleDetails = document.querySelectorAll('#section-vehicle .form-row');
+            vehicleDetails.forEach(row => row.style.display = ''); // Reset display
+            petSection?.classList.add('hidden');
+            vetPhoneGroup?.classList.add('hidden');
+            securitySection?.classList.add('hidden');
             schoolGroup?.classList.remove('hidden');
             gradeGroup?.classList.remove('hidden');
             schoolUrlGroup?.classList.remove('hidden');
@@ -831,7 +904,7 @@ class AdminApp {
             }
 
             const genderInput = document.getElementById('input-gender')?.value;
-            const gender = (genderInput === 'girl' || genderInput === 'pet' || genderInput === 'senior' || genderInput === 'vehicle') ? genderInput : 'boy';
+            const gender = (genderInput === 'girl' || genderInput === 'pet' || genderInput === 'senior' || genderInput === 'vehicle' || genderInput === 'security') ? genderInput : 'boy';
 
             const vehicleTypeVal = document.getElementById('input-vehicle-type')?.value || 'car';
             const vehicleBrandVal = document.getElementById('input-vehicle-brand')?.value.trim() || '';
@@ -844,7 +917,7 @@ class AdminApp {
             const vehicleClubVal = document.getElementById('input-vehicle-club')?.value.trim() || '';
             const vehicleClubDescVal = document.getElementById('input-vehicle-club-desc')?.value.trim() || '';
             const vehicleClubCityVal = document.getElementById('input-vehicle-club-city')?.value.trim() || '';
-            const vehicleClubLogoInput = document.getElementById('input-vehicle-club-logo')?.value.trim() || '';
+            const vehicleClubLogoVal = document.getElementById('input-vehicle-club-logo')?.value.trim() || '';
 
             const petSpeciesVal = document.getElementById('input-pet-species')?.value.trim() || 'Perro';
             const petBreedVal = document.getElementById('input-pet-breed')?.value.trim() || '';
@@ -858,8 +931,8 @@ class AdminApp {
                 finalClubLogo = '';
             } else if (this.pendingUploadedClubLogo && this.pendingUploadedClubLogo.trim() !== '') {
                 finalClubLogo = this.pendingUploadedClubLogo.trim();
-            } else if (vehicleClubLogoInput && vehicleClubLogoInput.trim() !== '') {
-                finalClubLogo = vehicleClubLogoInput.trim();
+            } else if (vehicleClubLogoVal && vehicleClubLogoVal.trim() !== '') {
+                finalClubLogo = vehicleClubLogoVal.trim();
             } else if (existingProf && existingProf.vehicleClubLogo && !this.clubLogoRemoved) {
                 finalClubLogo = existingProf.vehicleClubLogo;
             }
@@ -905,6 +978,16 @@ class AdminApp {
             const parentPhone2Val = document.getElementById('input-phone2')?.value.trim() || '';
             const emergencyPhoneVal = document.getElementById('input-emergency-phone')?.value.trim() || '123';
 
+            const secActivityVal = document.getElementById('input-sec-activity')?.value || '';
+            const secItemVal = document.getElementById('input-sec-item')?.value || '';
+            const secDescVal = document.getElementById('input-sec-desc')?.value || '';
+            const secBrandVal = document.getElementById('input-sec-brand')?.value || '';
+            const secModelVal = document.getElementById('input-sec-model')?.value || '';
+            const secSerialVal = document.getElementById('input-sec-serial')?.value || '';
+            const secColorVal = document.getElementById('input-sec-color')?.value || '';
+            const secFeaturesVal = document.getElementById('input-sec-features')?.value || '';
+            const secOwnerVal = document.getElementById('input-sec-owner')?.value || '';
+
             const rawProfile = {
                 id: id || `prof-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
                 slug: slug,
@@ -948,6 +1031,15 @@ class AdminApp {
                 medicalConditions: medicalVal,
                 importantMedications: medicationsVal,
                 photoUrl: finalPhoto,
+                secActivity: secActivityVal,
+                secItem: secItemVal,
+                secDesc: secDescVal,
+                secBrand: secBrandVal,
+                secModel: secModelVal,
+                secSerial: secSerialVal,
+                secColor: secColorVal,
+                secFeatures: secFeaturesVal,
+                secOwner: secOwnerVal,
                 active: true,
                 createdAt: existingProf ? (existingProf.createdAt || new Date().toISOString()) : new Date().toISOString(),
                 updatedAt: new Date().toISOString()

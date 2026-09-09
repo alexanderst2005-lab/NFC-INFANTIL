@@ -361,9 +361,10 @@ class App {
         const isSenior = profile.gender === 'senior';
         const isGirl = profile.gender === 'girl';
         const isVehicle = profile.gender === 'vehicle';
+        const isSecurity = profile.gender === 'security';
         const vehicleType = profile.vehicleType || 'car'; // 'car', 'moto', 'bike'
 
-        let themeClass = isPet ? 'theme-pet' : (isSenior ? 'theme-senior' : (isGirl ? 'theme-girl' : 'theme-boy'));
+        let themeClass = isPet ? 'theme-pet' : (isSenior ? 'theme-senior' : (isGirl ? 'theme-girl' : (isSecurity ? 'theme-security' : 'theme-boy')));
         if (isVehicle) {
             themeClass = `theme-vehicle theme-${vehicleType}`;
         }
@@ -372,7 +373,7 @@ class App {
         // (si se quita primero, hay un frame con :root por defecto → fondo/loader cambia de color)
         document.documentElement.classList.add(...themeClass.split(' '));
         document.documentElement.classList.remove(
-            ...['theme-boy', 'theme-girl', 'theme-pet', 'theme-senior', 'theme-vehicle', 'theme-car', 'theme-moto', 'theme-bike']
+            ...['theme-boy', 'theme-girl', 'theme-pet', 'theme-senior', 'theme-vehicle', 'theme-car', 'theme-moto', 'theme-bike', 'theme-security']
             .filter(t => !themeClass.includes(t))
         );
 
@@ -468,6 +469,13 @@ class App {
             if (decoBr) decoBr.innerHTML = '<i class="fa-solid fa-hand-holding-heart"></i>';
             if (sceneLeft) sceneLeft.innerHTML = '<i class="fa-solid fa-tree"></i>';
             if (sceneRight) sceneRight.innerHTML = '<i class="fa-solid fa-shield-heart"></i>';
+        } else if (isSecurity) {
+            if (footerTag) footerTag.innerHTML = '<i class="fa-solid fa-shield-heart"></i> NFC - COL • Perfil Oficial de Seguridad';
+            if (decoTl) decoTl.innerHTML = '<i class="fa-solid fa-shield-halved"></i>';
+            if (decoTr) decoTr.innerHTML = '<i class="fa-solid fa-fingerprint"></i>';
+            if (decoBr) decoBr.innerHTML = '<i class="fa-solid fa-link"></i>';
+            if (sceneLeft) sceneLeft.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
+            if (sceneRight) sceneRight.innerHTML = '<i class="fa-solid fa-shield-halved"></i>';
         } else {
             // Default Boy Theme
             if (footerTag) footerTag.innerHTML = '<i class="fa-solid fa-shield-heart"></i> Protegido con amor <i class="fa-solid fa-heart" style="color: #ec4899;"></i>';
@@ -499,6 +507,11 @@ class App {
             if (badgeTitle) badgeTitle.textContent = 'Adulto Mayor / Identificación';
             if (headerBadgeText) headerBadgeText.textContent = 'Perfil de Seguridad Adulto Mayor';
             if (secRibbon) secRibbon.textContent = 'Mi perfil de seguridad';
+        } else if (isSecurity) {
+            if (topBrandTitle) topBrandTitle.textContent = 'Perfil de Seguridad';
+            if (badgeTitle) badgeTitle.textContent = 'Identificación / Seguridad';
+            if (headerBadgeText) headerBadgeText.textContent = 'Perfil Oficial de Seguridad';
+            if (secRibbon) secRibbon.textContent = 'PERFIL DE SEGURIDAD';
         } else {
             if (topBrandTitle) topBrandTitle.textContent = 'Identificación Infantil';
             if (badgeTitle) badgeTitle.textContent = 'NFC - INFANTIL';
@@ -673,9 +686,9 @@ class App {
         let hasContact1 = profile.parentPhone && profile.parentPhone.trim() !== '';
         let hasContact2 = profile.parentPhone2 && profile.parentPhone2.trim() !== '';
 
-        if (isVehicle && (hasContact1 || hasContact2)) {
+        if ((isVehicle || isSecurity) && (hasContact1 || hasContact2)) {
             contactsSection?.classList.remove('hidden');
-            standardActions?.classList.add('hidden'); // Use dedicated contact buttons for vehicles
+            standardActions?.classList.add('hidden'); // Use dedicated contact buttons for vehicles/security
 
             // Contact 1
             if (hasContact1) {
@@ -688,7 +701,9 @@ class App {
                 if (btnContactWa1) {
                     btnContactWa1.onclick = (e) => {
                         e.preventDefault();
-                        const waText = profile.whatsappMessage || `Hola, encontré el perfil de emergencia del conductor ${profile.name} y me quiero comunicar con sus contactos.`;
+                        const waText = profile.whatsappMessage || (isSecurity 
+                            ? `Hola, encontré el perfil de seguridad de ${profile.name} y me quiero comunicar con el contacto de emergencia.`
+                            : `Hola, encontré el perfil de emergencia del conductor ${profile.name} y me quiero comunicar con sus contactos.`);
                         openWhatsAppWithLocation(profile.parentPhone, waText);
                     };
                 }
@@ -707,8 +722,10 @@ class App {
                 if (btnContactWa2) {
                     btnContactWa2.onclick = (e) => {
                         e.preventDefault();
-                        const waText = profile.whatsappMessage || `Hola, encontré el perfil de emergencia del conductor ${profile.name} y me quiero comunicar con sus contactos.`;
-                        openWhatsAppWithLocation(profile.parentPhone2, waText);
+                        const waText2 = profile.whatsappMessage || (isSecurity 
+                            ? `Hola, encontré el perfil de seguridad de ${profile.name} y me quiero comunicar con el contacto de emergencia.`
+                            : `Hola, encontré el perfil de emergencia del conductor ${profile.name} y me quiero comunicar con sus contactos.`);
+                        openWhatsAppWithLocation(profile.parentPhone2, waText2);
                     };
                 }
             } else {
@@ -802,9 +819,90 @@ class App {
             vehicleBox?.classList.add('hidden');
         }
 
-        // Vehicle Club / Group Rendering
+        // Security Profile Info Rendering
+        const secBox = document.getElementById('box-security-info');
+        if (isSecurity) {
+            let hasAnySecInfo = false;
+            const sMainRow = document.getElementById('p-sec-main-row');
+            const sMainSpec = document.getElementById('p-sec-main-spec');
+            const sDescItem = document.getElementById('p-sec-desc-item');
+            const sDescVal = document.getElementById('p-sec-desc');
+            const sBrandItem = document.getElementById('p-sec-brand-item');
+            const sBrandVal = document.getElementById('p-sec-brand');
+            const sModelItem = document.getElementById('p-sec-model-item');
+            const sModelVal = document.getElementById('p-sec-model');
+            const sSerialItem = document.getElementById('p-sec-serial-item');
+            const sSerialVal = document.getElementById('p-sec-serial');
+            const sColorItem = document.getElementById('p-sec-color-item');
+            const sColorVal = document.getElementById('p-sec-color');
+            const sFeaturesItem = document.getElementById('p-sec-features-item');
+            const sFeaturesVal = document.getElementById('p-sec-features');
+            const sOwnerItem = document.getElementById('p-sec-owner-item');
+            const sOwnerVal = document.getElementById('p-sec-owner');
+
+            const actStr = profile.secActivity || '';
+            const itemStr = profile.secItem || '';
+            let mainStr = `${actStr} ${itemStr}`.trim();
+            if (mainStr) {
+                sMainRow?.classList.remove('hidden');
+                if (sMainSpec) sMainSpec.textContent = mainStr;
+                hasAnySecInfo = true;
+            } else { sMainRow?.classList.add('hidden'); }
+
+            if (profile.secDesc && profile.secDesc.trim() !== '') {
+                sDescItem?.classList.remove('hidden');
+                if (sDescVal) sDescVal.textContent = profile.secDesc;
+                hasAnySecInfo = true;
+            } else { sDescItem?.classList.add('hidden'); }
+
+            if (profile.secBrand && profile.secBrand.trim() !== '') {
+                sBrandItem?.classList.remove('hidden');
+                if (sBrandVal) sBrandVal.textContent = profile.secBrand;
+                hasAnySecInfo = true;
+            } else { sBrandItem?.classList.add('hidden'); }
+
+            if (profile.secModel && profile.secModel.trim() !== '') {
+                sModelItem?.classList.remove('hidden');
+                if (sModelVal) sModelVal.textContent = profile.secModel;
+                hasAnySecInfo = true;
+            } else { sModelItem?.classList.add('hidden'); }
+
+            if (profile.secSerial && profile.secSerial.trim() !== '') {
+                sSerialItem?.classList.remove('hidden');
+                if (sSerialVal) sSerialVal.textContent = profile.secSerial;
+                hasAnySecInfo = true;
+            } else { sSerialItem?.classList.add('hidden'); }
+
+            if (profile.secColor && profile.secColor.trim() !== '') {
+                sColorItem?.classList.remove('hidden');
+                if (sColorVal) sColorVal.textContent = profile.secColor;
+                hasAnySecInfo = true;
+            } else { sColorItem?.classList.add('hidden'); }
+
+            if (profile.secFeatures && profile.secFeatures.trim() !== '') {
+                sFeaturesItem?.classList.remove('hidden');
+                if (sFeaturesVal) sFeaturesVal.textContent = profile.secFeatures;
+                hasAnySecInfo = true;
+            } else { sFeaturesItem?.classList.add('hidden'); }
+
+            if (profile.secOwner && profile.secOwner.trim() !== '') {
+                sOwnerItem?.classList.remove('hidden');
+                if (sOwnerVal) sOwnerVal.textContent = profile.secOwner;
+                hasAnySecInfo = true;
+            } else { sOwnerItem?.classList.add('hidden'); }
+
+            if (hasAnySecInfo) {
+                secBox?.classList.remove('hidden');
+            } else {
+                secBox?.classList.add('hidden');
+            }
+        } else {
+            secBox?.classList.add('hidden');
+        }
+
+        // Vehicle Club / Group Rendering (Also used for Security Profile)
         const vehicleClubBox = document.getElementById('box-vehicle-club');
-        if (isVehicle && profile.vehicleClub && profile.vehicleClub.trim() !== '') {
+        if ((isVehicle || isSecurity) && profile.vehicleClub && profile.vehicleClub.trim() !== '') {
             const vClubTitle = document.getElementById('p-vehicle-club-title');
             const vClubDesc = document.getElementById('p-vehicle-club-desc');
             const vClubCity = document.getElementById('p-vehicle-club-city');

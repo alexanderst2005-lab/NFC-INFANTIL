@@ -16,7 +16,7 @@
         (function() {
             try {
                 function setTheme(t) {
-                    document.documentElement.classList.remove('theme-boy', 'theme-girl', 'theme-pet', 'theme-senior');
+                    document.documentElement.classList.remove('theme-boy', 'theme-girl', 'theme-pet', 'theme-senior', 'theme-security');
                     document.documentElement.classList.add(t);
                 }
                 var rawPath = window.location.pathname;
@@ -60,6 +60,8 @@
                                 setTheme('theme-pet');
                             } else if (p && p.gender === 'senior') {
                                 setTheme('theme-senior');
+                            } else if (p && p.gender === 'security') {
+                                setTheme('theme-security');
                             } else if (p && p.gender === 'boy') {
                                 setTheme('theme-boy');
                             }
@@ -70,6 +72,8 @@
                         setTheme('theme-pet');
                     } else if (slug === 'jose-ramirez' || slug === 'jose') {
                         setTheme('theme-senior');
+                    } else if (slug === 'seguridad' || slug === 'security') {
+                        setTheme('theme-security');
                     }
                 }
             } catch(e) {}
@@ -389,6 +393,28 @@
                                 </div>
                                 <div class="contact-btn-arrow"><i class="fa-solid fa-chevron-right"></i></div>
                             </a>
+                        </div>
+                        </div>
+                    </div>
+
+                    <!-- SECURITY INFO CARD (PERFIL DE SEGURIDAD) -->
+                    <div class="vehicle-specs-card hidden" id="box-security-info">
+                        <div class="vehicle-specs-header">
+                            <i class="fa-solid fa-shield-halved"></i> <span>INFORMACIÓN ADICIONAL</span>
+                        </div>
+                        <div class="vehicle-specs-body">
+                            <div class="vehicle-spec-row hidden" id="p-sec-main-row">
+                                <span class="vehicle-main-spec" id="p-sec-main-spec"></span>
+                            </div>
+                            <div class="vehicle-spec-details">
+                                <span class="vehicle-badge-item hidden" id="p-sec-desc-item"><i class="fa-solid fa-align-left"></i> Descripción: <strong id="p-sec-desc"></strong></span>
+                                <span class="vehicle-badge-item hidden" id="p-sec-brand-item"><i class="fa-solid fa-tag"></i> Marca: <strong id="p-sec-brand"></strong></span>
+                                <span class="vehicle-badge-item hidden" id="p-sec-model-item"><i class="fa-solid fa-cube"></i> Modelo: <strong id="p-sec-model"></strong></span>
+                                <span class="vehicle-badge-item hidden" id="p-sec-serial-item"><i class="fa-solid fa-hashtag"></i> Serie: <strong id="p-sec-serial"></strong></span>
+                                <span class="vehicle-badge-item hidden" id="p-sec-color-item"><i class="fa-solid fa-palette"></i> Color: <strong id="p-sec-color"></strong></span>
+                                <span class="vehicle-badge-item hidden" id="p-sec-features-item"><i class="fa-solid fa-list-check"></i> Características: <strong id="p-sec-features"></strong></span>
+                                <span class="vehicle-badge-item hidden" id="p-sec-owner-item"><i class="fa-solid fa-user"></i> Propietario: <strong id="p-sec-owner"></strong></span>
+                            </div>
                         </div>
                     </div>
 

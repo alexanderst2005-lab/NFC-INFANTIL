@@ -107,6 +107,31 @@ html.theme-pet .app-header .brand-icon {
     font-family: var(--font-main);
     -webkit-tap-highlight-color: transparent;
 }
+/* SECURITY THEME (🩶 Professional Neutral Gray/Silver Gradient) */
+html.theme-security,
+html.theme-security body,
+body.theme-security {
+    --bg-page: linear-gradient(180deg, #f8f9fa 0%, #e9ecef 45%, #dee2e6 100%);
+    --card-bg: #ffffff;
+    --text-title: #343a40;
+    --text-sub: #495057;
+    background: linear-gradient(180deg, #f8f9fa 0%, #e9ecef 45%, #dee2e6 100%) !important;
+    background-color: #f8f9fa !important;
+}
+
+html.theme-security .app-header {
+    background: transparent !important;
+    color: #343a40 !important;
+}
+
+html.theme-security .app-header .brand-logo {
+    color: #343a40 !important;
+}
+
+html.theme-security .app-header .brand-icon {
+    background: rgba(73, 80, 87, 0.15) !important;
+    color: #495057 !important;
+}
 
 html {
     background-color: #070d18;
