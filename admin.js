@@ -393,6 +393,7 @@ class AdminApp {
         const pets = this.profiles.filter(p => p.gender === 'pet').length;
         const seniors = this.profiles.filter(p => p.gender === 'senior').length;
         const vehicles = this.profiles.filter(p => p.gender === 'vehicle').length;
+        const security = this.profiles.filter(p => p.gender === 'security').length;
 
         const statTotal = document.getElementById('stat-total-count');
         if (statTotal) statTotal.textContent = total;
@@ -414,6 +415,9 @@ class AdminApp {
 
         const countVehicle = document.getElementById('tab-count-vehicle');
         if (countVehicle) countVehicle.textContent = vehicles;
+
+        const countSecurity = document.getElementById('tab-count-security');
+        if (countSecurity) countSecurity.textContent = security;
     }
 
     onLogoClick() {
