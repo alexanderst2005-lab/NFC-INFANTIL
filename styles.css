@@ -2288,7 +2288,7 @@ html.ready .container {
 }
 
 /* VEHICLE THEME ACCENTS - ALL VEHICLES (CARRO, MOTO, BICICLETA) IN UNIFIED EMERGENCY RED */
-html.theme-vehicle,
+html.theme-vehicle, html.theme-security,
 html.theme-moto,
 html.theme-car,
 html.theme-bike {
@@ -2296,7 +2296,7 @@ html.theme-bike {
     --accent-gradient: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
 }
 
-html.theme-vehicle body,
+html.theme-vehicle body, html.theme-security body,
 html.theme-moto body,
 html.theme-car body,
 html.theme-bike body {
@@ -2665,13 +2665,13 @@ html.theme-bike body {
 /* ===================================================================
    STRICT CLEANUP & COMPACT SINGLE-SCREEN VIEW FOR VEHICLE PROFILES
    =================================================================== */
-html.theme-vehicle .arch-deco,
-html.theme-vehicle .scene-item,
-html.theme-vehicle .name-spark {
+html.theme-vehicle .arch-deco, html.theme-security .arch-deco,
+html.theme-vehicle .scene-item, html.theme-security .scene-item,
+html.theme-vehicle .name-spark , html.theme-security .name-spark {
     display: none !important;
 }
 
-html.theme-vehicle .arch-photo-container {
+html.theme-vehicle .arch-photo-container , html.theme-security .arch-photo-container {
     width: 105px !important;
     height: 105px !important;
     border-radius: 50% !important;
@@ -2680,19 +2680,19 @@ html.theme-vehicle .arch-photo-container {
     background: #ffffff !important;
 }
 
-html.theme-vehicle .arch-photo-img {
+html.theme-vehicle .arch-photo-img , html.theme-security .arch-photo-img {
     width: 100% !important;
     height: 100% !important;
     object-fit: cover !important;
     border-radius: 50% !important;
 }
 
-html.theme-vehicle .hero-arch-wrapper {
+html.theme-vehicle .hero-arch-wrapper , html.theme-security .hero-arch-wrapper {
     margin-top: 0 !important;
     margin-bottom: 0.2rem !important;
 }
 
-html.theme-vehicle .profile-hero-name {
+html.theme-vehicle .profile-hero-name , html.theme-security .profile-hero-name {
     font-size: 1.35rem !important;
     margin-top: 0.15rem !important;
     color: #0f172a !important;
@@ -2701,7 +2701,7 @@ html.theme-vehicle .profile-hero-name {
 }
 
 /* Category Pill Badges - UNIFIED RED FOR ALL VEHICLES */
-html.theme-vehicle .security-ribbon,
+html.theme-vehicle .security-ribbon, html.theme-security .security-ribbon,
 html.theme-moto .security-ribbon,
 html.theme-car .security-ribbon,
 html.theme-bike .security-ribbon {
@@ -2713,18 +2713,18 @@ html.theme-bike .security-ribbon {
 }
 
 /* Streamlined Ultra-Compact Heights & Padding for Single-Screen View */
-html.theme-vehicle body {
+html.theme-vehicle body , html.theme-security body {
     padding: 0.25rem 0 !important;
 }
 
-html.theme-vehicle .profile-card {
+html.theme-vehicle .profile-card , html.theme-security .profile-card {
     padding: 0 0.75rem 0.65rem 0.75rem !important;
     overflow: hidden !important;
     max-width: 440px !important;
     margin: 0 auto !important;
 }
 
-html.theme-vehicle .vehicle-hero-banner {
+html.theme-vehicle .vehicle-hero-banner , html.theme-security .vehicle-hero-banner {
     height: 145px !important;
     margin-bottom: -45px !important;
     margin-left: -0.75rem !important;
@@ -2734,7 +2734,7 @@ html.theme-vehicle .vehicle-hero-banner {
     border-top-right-radius: 24px !important;
 }
 
-html.theme-vehicle .arch-photo-container {
+html.theme-vehicle .arch-photo-container , html.theme-security .arch-photo-container {
     width: 105px !important;
     height: 105px !important;
     border: 4px solid #ffffff !important;
@@ -2742,65 +2742,65 @@ html.theme-vehicle .arch-photo-container {
     background: #ffffff !important;
 }
 
-html.theme-vehicle .profile-hero-name {
+html.theme-vehicle .profile-hero-name , html.theme-security .profile-hero-name {
     font-size: 1.15rem !important;
     margin-top: 0.1rem !important;
     line-height: 1.15 !important;
 }
 
-html.theme-vehicle .security-ribbon {
+html.theme-vehicle .security-ribbon , html.theme-security .security-ribbon {
     font-size: 0.64rem !important;
     padding: 0.2rem 0.6rem !important;
     margin-top: 0.15rem !important;
 }
 
-html.theme-vehicle .emergency-instruction-banner {
+html.theme-vehicle .emergency-instruction-banner , html.theme-security .emergency-instruction-banner {
     margin: 0.4rem 0 !important;
     padding: 0.4rem 0.7rem !important;
     border-radius: 10px !important;
 }
 
-html.theme-vehicle .instruction-icon {
+html.theme-vehicle .instruction-icon , html.theme-security .instruction-icon {
     width: 26px !important;
     height: 26px !important;
     font-size: 0.8rem !important;
 }
 
-html.theme-vehicle .instruction-text {
+html.theme-vehicle .instruction-text , html.theme-security .instruction-text {
     font-size: 0.72rem !important;
     line-height: 1.2 !important;
 }
 
-html.theme-vehicle .emergency-contacts-section {
+html.theme-vehicle .emergency-contacts-section , html.theme-security .emergency-contacts-section {
     margin-top: 0.45rem !important;
 }
 
-html.theme-vehicle .contacts-section-title {
+html.theme-vehicle .contacts-section-title , html.theme-security .contacts-section-title {
     font-size: 0.72rem !important;
     margin-bottom: 0.3rem !important;
 }
 
-html.theme-vehicle .emergency-contact-btn {
+html.theme-vehicle .emergency-contact-btn , html.theme-security .emergency-contact-btn {
     padding: 0.4rem 0.7rem !important;
     margin-bottom: 0.3rem !important;
     border-radius: 10px !important;
 }
 
-html.theme-vehicle .contact-btn-icon {
+html.theme-vehicle .contact-btn-icon , html.theme-security .contact-btn-icon {
     width: 26px !important;
     height: 26px !important;
     font-size: 0.8rem !important;
 }
 
-html.theme-vehicle .contact-btn-title {
+html.theme-vehicle .contact-btn-title , html.theme-security .contact-btn-title {
     font-size: 0.8rem !important;
 }
 
-html.theme-vehicle .contact-btn-sub {
+html.theme-vehicle .contact-btn-sub , html.theme-security .contact-btn-sub {
     font-size: 0.65rem !important;
 }
 
-html.theme-vehicle .vehicle-specs-card {
+html.theme-vehicle .vehicle-specs-card , html.theme-security .vehicle-specs-card {
     margin-top: 0.45rem !important;
     padding: 0.6rem 0.75rem !important;
     border-radius: 12px !important;
@@ -2809,17 +2809,17 @@ html.theme-vehicle .vehicle-specs-card {
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03) !important;
 }
 
-html.theme-vehicle .vehicle-specs-header {
+html.theme-vehicle .vehicle-specs-header , html.theme-security .vehicle-specs-header {
     font-size: 0.72rem !important;
     margin-bottom: 0.35rem !important;
     padding-bottom: 0.25rem !important;
 }
 
-html.theme-vehicle .vehicle-main-spec {
+html.theme-vehicle .vehicle-main-spec , html.theme-security .vehicle-main-spec {
     font-size: 0.9rem !important;
 }
 
-html.theme-vehicle .vehicle-badge-item {
+html.theme-vehicle .vehicle-badge-item , html.theme-security .vehicle-badge-item {
     font-size: 0.72rem !important;
     padding: 0.18rem 0.45rem !important;
 }
@@ -2906,33 +2906,33 @@ html.theme-vehicle .vehicle-badge-item {
     line-height: 1.18 !important;
 }
 
-html.theme-vehicle .emergency-call-bar-wrapper {
+html.theme-vehicle .emergency-call-bar-wrapper , html.theme-security .emergency-call-bar-wrapper {
     margin-top: 0.45rem !important;
 }
 
-html.theme-vehicle .btn-emergency-call-bar {
+html.theme-vehicle .btn-emergency-call-bar , html.theme-security .btn-emergency-call-bar {
     padding: 0.45rem 0.75rem !important;
     border-radius: 12px !important;
 }
 
-html.theme-vehicle .call-bar-title {
+html.theme-vehicle .call-bar-title , html.theme-security .call-bar-title {
     font-size: 0.68rem !important;
 }
 
-html.theme-vehicle .call-bar-num {
+html.theme-vehicle .call-bar-num , html.theme-security .call-bar-num {
     font-size: 0.98rem !important;
 }
 
-html.theme-vehicle .call-bar-plus-icon {
+html.theme-vehicle .call-bar-plus-icon , html.theme-security .call-bar-plus-icon {
     font-size: 1.2rem !important;
 }
 
-html.theme-vehicle .bottom-scene-wrapper {
+html.theme-vehicle .bottom-scene-wrapper , html.theme-security .bottom-scene-wrapper {
     margin-top: 0.4rem !important;
     justify-content: center !important;
 }
 
-html.theme-vehicle .footer-love-pill {
+html.theme-vehicle .footer-love-pill , html.theme-security .footer-love-pill {
     padding: 0.25rem 0.6rem !important;
     font-size: 0.7rem !important;
     margin: 0 auto !important;
@@ -2956,7 +2956,7 @@ html.theme-vehicle .footer-love-pill {
 html.theme-girl      { --loader-accent: #db2777; --loader-accent-light: #f472b6; }
 html.theme-pet       { --loader-accent: #059669; --loader-accent-light: #34d399; }
 html.theme-senior    { --loader-accent: #7c3aed; --loader-accent-light: #a78bfa; }
-html.theme-vehicle,
+html.theme-vehicle, html.theme-security,
 html.theme-car,
 html.theme-moto,
 html.theme-bike      { --loader-accent: #dc2626; --loader-accent-light: #f87171; }

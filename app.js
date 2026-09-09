@@ -391,20 +391,27 @@ class App {
         const standardTopBar = document.getElementById('standard-top-bar');
         const coverImg = document.getElementById('vehicle-cover-img');
         const vBadgeSub = document.getElementById('p-v-badge-sub');
+        const vHeaderBar = document.querySelector('.vehicle-banner-header-bar');
 
-        if (isVehicle) {
+        if (isVehicle || isSecurity) {
             vehicleBanner?.classList.remove('hidden');
             standardTopBar?.classList.add('hidden');
 
             let coverUrl = 'assets/cover-moto.png'; // Moto (Foto 3)
             let subTitleText = 'Perfil de Emergencia Motociclista';
 
-            if (vehicleType === 'car') {
-                coverUrl = 'assets/cover-car.jpg'; // Carro (Foto 1)
-                subTitleText = 'Perfil de Emergencia Conductor';
-            } else if (vehicleType === 'bike') {
-                coverUrl = 'assets/cover-bike.png'; // Bicicleta (Foto 2)
-                subTitleText = 'Perfil de Identificación Ciclista';
+            if (isSecurity) {
+                coverUrl = 'assets/cover-security.png';
+                if (vHeaderBar) vHeaderBar.classList.add('hidden');
+            } else {
+                if (vHeaderBar) vHeaderBar.classList.remove('hidden');
+                if (vehicleType === 'car') {
+                    coverUrl = 'assets/cover-car.jpg'; // Carro (Foto 1)
+                    subTitleText = 'Perfil de Emergencia Conductor';
+                } else if (vehicleType === 'bike') {
+                    coverUrl = 'assets/cover-bike.png'; // Bicicleta (Foto 2)
+                    subTitleText = 'Perfil de Identificación Ciclista';
+                }
             }
 
             if (coverImg) coverImg.src = coverUrl;
@@ -412,11 +419,12 @@ class App {
         } else {
             vehicleBanner?.classList.add('hidden');
             standardTopBar?.classList.remove('hidden');
+            if (vHeaderBar) vHeaderBar.classList.remove('hidden');
         }
 
-        // Emergency Instruction Banner (ONLY for Vehicles)
+        // Emergency Instruction Banner (ONLY for Vehicles & Security)
         const instructionBox = document.getElementById('box-emergency-instruction');
-        if (isVehicle) {
+        if (isVehicle || isSecurity) {
             instructionBox?.classList.remove('hidden');
         } else {
             instructionBox?.classList.add('hidden');
@@ -539,7 +547,22 @@ class App {
         }
         // Name
         const nameEl = document.getElementById('p-hero-name');
-        if (nameEl) nameEl.textContent = profile.name;
+        const sparkLeft = document.getElementById('p-spark-left');
+        const sparkRight = document.getElementById('p-spark-right');
+        
+        if (nameEl) {
+            if (isSecurity) {
+                nameEl.textContent = 'PERFIL DE SEGURIDAD';
+                if (sparkLeft) sparkLeft.classList.add('hidden');
+                if (sparkRight) sparkRight.classList.add('hidden');
+                if (secRibbon) secRibbon.classList.add('hidden');
+            } else {
+                nameEl.textContent = profile.name;
+                if (sparkLeft) sparkLeft.classList.remove('hidden');
+                if (sparkRight) sparkRight.classList.remove('hidden');
+                if (secRibbon) secRibbon.classList.remove('hidden');
+            }
+        }
         // Category Badge Pill
         const genderText = document.getElementById('p-gender-text');
         if (genderText) {
