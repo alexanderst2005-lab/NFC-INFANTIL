@@ -39,6 +39,8 @@ class App {
         // 🚀 Si el perfil ya está en caché → ocultar loader INSTANTÁNEAMENTE (~0ms)
         const cachedProfile = this.findProfileBySlug(targetSlug);
         if (cachedProfile) {
+            // Apply theme immediately so the loader shows the correct color
+            this._applyThemeFromProfile(cachedProfile);
             this._hideLoader(); // Sin demora — perfil en localStorage
             this.renderSingleProfile(targetSlug);
             document.documentElement.classList.add('ready');
@@ -59,6 +61,10 @@ class App {
 
             localStorage.setItem('nfc_profiles_db', JSON.stringify(this.profiles));
 
+            // Apply theme immediately so loader shows correct color before hiding
+            const freshProfile = this.findProfileBySlug(targetSlug);
+            if (freshProfile) this._applyThemeFromProfile(freshProfile);
+
             this._hideLoader(); // Ocultar loader cuando Firestore responde
             this.renderSingleProfile(targetSlug);
             document.documentElement.classList.add('ready');
@@ -78,6 +84,23 @@ class App {
         setTimeout(() => {
             if (loader.parentNode) loader.parentNode.removeChild(loader);
         }, 250);
+    }
+
+    // Aplica el tema al html INMEDIATAMENTE (para que el loader muestre el color correcto)
+    _applyThemeFromProfile(profile) {
+        if (!profile) return;
+        const isPet = profile.gender === 'pet';
+        const isSenior = profile.gender === 'senior';
+        const isGirl = profile.gender === 'girl';
+        const isVehicle = profile.gender === 'vehicle';
+        const isSecurity = profile.gender === 'security';
+        const vehicleType = profile.vehicleType || 'car';
+
+        let themeClass = isPet ? 'theme-pet' : (isSenior ? 'theme-senior' : (isGirl ? 'theme-girl' : (isSecurity ? 'theme-security' : 'theme-boy')));
+        if (isVehicle) {
+            themeClass = `theme-vehicle theme-${vehicleType}`;
+        }
+        document.documentElement.classList.add(...themeClass.split(' '));
     }
 
 
