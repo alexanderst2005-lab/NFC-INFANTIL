@@ -187,6 +187,9 @@ class App {
         let vehicleColor = (p.vehicleColor !== undefined && p.vehicleColor !== null) ? String(p.vehicleColor).trim() : '';
         let vehiclePlate = (p.vehiclePlate !== undefined && p.vehiclePlate !== null) ? String(p.vehiclePlate).trim() : '';
         let vehicleOwner = (p.vehicleOwner !== undefined && p.vehicleOwner !== null) ? String(p.vehicleOwner).trim() : '';
+        let vehicleEngine = (p.vehicleEngine !== undefined && p.vehicleEngine !== null) ? String(p.vehicleEngine).trim() : '';
+        let vehicleClub = (p.vehicleClub !== undefined && p.vehicleClub !== null) ? String(p.vehicleClub).trim() : '';
+        let vehicleClubDesc = (p.vehicleClubDesc !== undefined && p.vehicleClubDesc !== null) ? String(p.vehicleClubDesc).trim() : '';
         let vehicleClubCity = (p.vehicleClubCity !== undefined && p.vehicleClubCity !== null) ? String(p.vehicleClubCity).trim() : '';
         let vehicleClubLogo = (p.vehicleClubLogo !== undefined && p.vehicleClubLogo !== null) ? String(p.vehicleClubLogo).trim() : '';
 
