@@ -38,13 +38,7 @@ class App {
 
         // 🚀 Instant local render so page is NEVER blank or empty
         this.renderSingleProfile(targetSlug);
-        // 'ready' is set inside renderSingleProfile when a real profile is found
-        // This ensures the card is only visible once data is actually injected
-
-        // Safety fallback: if Firestore never fires (no internet), reveal after 6s
-        setTimeout(() => {
-            document.documentElement.classList.add('ready');
-        }, 6000);
+        document.documentElement.classList.add('ready');
 
         // Firestore Realtime Single Source of Truth Listener
         onSnapshot(collection(db, "nfc_profiles"), async (snapshot) => {
@@ -302,8 +296,6 @@ class App {
         this.currentProfile = profile;
         viewInactive?.classList.add('hidden');
         viewProfile?.classList.remove('hidden');
-        // Mark page as ready NOW that real profile data is about to be injected
-        document.documentElement.classList.add('ready');
         // Apply Theme
         const isPet = profile.gender === 'pet';
         const isSenior = profile.gender === 'senior';
