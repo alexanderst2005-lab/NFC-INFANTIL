@@ -38,17 +38,9 @@ class App {
 
         this.hasLoadedCloudData = false;
 
-        // 🚀 Instant local render from cache if profile exists in localStorage
-        const cachedProfile = this.findProfileBySlug(targetSlug);
-        if (cachedProfile) {
-            this.renderSingleProfile(targetSlug);
-        } else {
-            // Keep view-profile hidden while waiting for Firestore response
-            const viewProfile = document.getElementById('view-profile');
-            const viewInactive = document.getElementById('view-inactive');
-            if (viewProfile) viewProfile.classList.add('hidden');
-            if (viewInactive) viewInactive.classList.add('hidden');
-        }
+        // 🚀 Instant local render from cache if profile exists
+        // (view-profile starts hidden in HTML, renderSingleProfile will reveal it once data is injected)
+        this.renderSingleProfile(targetSlug);
 
         // Firestore Realtime Single Source of Truth Listener
         onSnapshot(collection(db, "nfc_profiles"), async (snapshot) => {
@@ -299,8 +291,7 @@ class App {
         if (!profile || profile.active === false) {
             // Do not show "Perfil No Encontrado" if Firestore initial fetch hasn't finished yet
             if (!this.hasLoadedCloudData && !profile) {
-                if (viewProfile) viewProfile.classList.add('hidden');
-                if (viewInactive) viewInactive.classList.add('hidden');
+                // Still loading from cloud - keep both sections hidden, do nothing
                 return;
             }
             viewProfile?.classList.add('hidden');
@@ -313,7 +304,8 @@ class App {
         }
         this.currentProfile = profile;
         viewInactive?.classList.add('hidden');
-        // Keep viewProfile hidden until all fields are fully populated at the end of this method
+        // 🚀 Reveal profile immediately once we have a valid profile to show
+        viewProfile?.classList.remove('hidden');
         // Apply Theme
         const isPet = profile.gender === 'pet';
         const isSenior = profile.gender === 'senior';
@@ -832,11 +824,6 @@ class App {
             } else {
                 btnLocation.classList.add('hidden');
             }
-        }
-
-        // 🚀 Reveal complete profile directly ONLY after all DOM elements are fully populated
-        if (viewProfile) {
-            viewProfile.classList.remove('hidden');
         }
     }
 
