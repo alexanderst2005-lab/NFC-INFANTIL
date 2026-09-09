@@ -2918,4 +2918,193 @@ html.theme-vehicle .footer-love-pill {
 .hidden {
     display: none !important;
 }
+
+/* ==========================================================================
+   NFC PROFILE DYNAMIC LOADER
+   Overlay animado que cubre el perfil mientras se cargan los datos.
+   Se oculta en ~0ms si el perfil está en caché local, o en ~200-500ms
+   cuando Firestore responde. Colores adaptativos por tema.
+   ========================================================================== */
+
+/* --- Theme-aware loader accent color --- */
+:root                { --loader-accent: #0284c7; --loader-accent-light: #38bdf8; }
+html.theme-girl      { --loader-accent: #db2777; --loader-accent-light: #f472b6; }
+html.theme-pet       { --loader-accent: #059669; --loader-accent-light: #34d399; }
+html.theme-senior    { --loader-accent: #7c3aed; --loader-accent-light: #a78bfa; }
+html.theme-vehicle,
+html.theme-car,
+html.theme-moto,
+html.theme-bike      { --loader-accent: #dc2626; --loader-accent-light: #f87171; }
+
+/* --- Overlay base --- */
+.app-loader-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    pointer-events: all;
+    opacity: 1;
+    transition: opacity 0.22s ease, transform 0.22s ease;
+}
+
+.app-loader-overlay.loader-hidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: scale(1.03);
+}
+
+/* --- Card glassmorphic --- */
+.loader-card {
+    background: rgba(255, 255, 255, 0.93);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border-radius: 32px;
+    padding: 2.2rem 2rem 1.8rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.85rem;
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.22), inset 0 1px 0 rgba(255,255,255,0.95);
+    border: 2px solid rgba(255, 255, 255, 0.95);
+    min-width: 270px;
+    max-width: 320px;
+    width: 100%;
+    animation: loader-card-in 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes loader-card-in {
+    from { opacity: 0; transform: translateY(16px) scale(0.96); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* --- Rings + Shield --- */
+.loader-rings-wrapper {
+    position: relative;
+    width: 88px;
+    height: 88px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.loader-ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 3px solid transparent;
+}
+
+.loader-ring-outer {
+    width: 88px;
+    height: 88px;
+    border-top-color: var(--loader-accent);
+    border-right-color: var(--loader-accent);
+    opacity: 0.85;
+    animation: nfc-spin 1.1s linear infinite;
+}
+
+.loader-ring-mid {
+    width: 66px;
+    height: 66px;
+    border-bottom-color: var(--loader-accent-light);
+    border-left-color: var(--loader-accent-light);
+    opacity: 0.7;
+    animation: nfc-spin 0.8s linear infinite reverse;
+}
+
+@keyframes nfc-spin {
+    to { transform: rotate(360deg); }
+}
+
+.loader-shield-center {
+    position: relative;
+    z-index: 2;
+    font-size: 1.9rem;
+    color: var(--loader-accent);
+    animation: nfc-shield-pulse 1.6s ease-in-out infinite;
+    filter: drop-shadow(0 2px 8px rgba(0,0,0,0.18));
+}
+
+@keyframes nfc-shield-pulse {
+    0%, 100% { transform: scale(1);    opacity: 1;    }
+    50%       { transform: scale(1.13); opacity: 0.82; }
+}
+
+/* --- Brand text --- */
+.loader-brand-text {
+    font-family: var(--font-main, sans-serif);
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: var(--loader-accent);
+    letter-spacing: -0.02em;
+    margin: 0;
+    line-height: 1;
+}
+
+.loader-brand-text span {
+    opacity: 0.7;
+}
+
+/* --- Progress bar shimmer --- */
+.loader-progress-bar {
+    width: 100%;
+    height: 4px;
+    background: rgba(0, 0, 0, 0.07);
+    border-radius: 99px;
+    overflow: hidden;
+}
+
+.loader-progress-fill {
+    height: 100%;
+    width: 55%;
+    background: linear-gradient(90deg,
+        transparent 0%,
+        var(--loader-accent-light) 40%,
+        var(--loader-accent) 60%,
+        transparent 100%
+    );
+    border-radius: 99px;
+    animation: nfc-progress-slide 1.3s ease-in-out infinite;
+}
+
+@keyframes nfc-progress-slide {
+    0%   { transform: translateX(-110%); }
+    100% { transform: translateX(210%); }
+}
+
+/* --- Bouncing dots --- */
+.loader-dots {
+    display: flex;
+    gap: 7px;
+    align-items: center;
+    height: 18px;
+}
+
+.loader-dots span {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--loader-accent);
+    animation: nfc-dot-bounce 1.1s ease-in-out infinite;
+}
+.loader-dots span:nth-child(2) { animation-delay: 0.18s; }
+.loader-dots span:nth-child(3) { animation-delay: 0.36s; }
+
+@keyframes nfc-dot-bounce {
+    0%, 100% { transform: translateY(0);   opacity: 0.35; }
+    45%       { transform: translateY(-9px); opacity: 1;    }
+}
+
+/* --- Subtitle --- */
+.loader-subtitle {
+    font-size: 0.8rem;
+    color: #64748b;
+    font-weight: 500;
+    margin: 0;
+    text-align: center;
+    letter-spacing: 0.01em;
+}
 

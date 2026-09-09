@@ -36,9 +36,16 @@ class App {
         this.setupNfcListener();
         this.setupSimulatedScanner();
 
-        // 🚀 Instant local render so page is NEVER blank or empty
-        this.renderSingleProfile(targetSlug);
-        document.documentElement.classList.add('ready');
+        // 🚀 Si el perfil ya está en caché → ocultar loader INSTANTÁNEAMENTE (~0ms)
+        const cachedProfile = this.findProfileBySlug(targetSlug);
+        if (cachedProfile) {
+            this._hideLoader(); // Sin demora — perfil en localStorage
+            this.renderSingleProfile(targetSlug);
+            document.documentElement.classList.add('ready');
+        }
+
+        // ⏱ Failsafe: si Firestore no responde en 5s, eliminar loader de todas formas
+        setTimeout(() => this._hideLoader(), 5000);
 
         // Firestore Realtime Single Source of Truth Listener
         onSnapshot(collection(db, "nfc_profiles"), async (snapshot) => {
@@ -52,14 +59,27 @@ class App {
 
             localStorage.setItem('nfc_profiles_db', JSON.stringify(this.profiles));
 
+            this._hideLoader(); // Ocultar loader cuando Firestore responde
             this.renderSingleProfile(targetSlug);
             document.documentElement.classList.add('ready');
         }, (error) => {
             console.error("Firestore Realtime Listener Error:", error);
+            this._hideLoader();
             this.renderSingleProfile(targetSlug);
             document.documentElement.classList.add('ready');
         });
     }
+
+    // Oculta el loader con animación de salida y lo elimina del DOM
+    _hideLoader() {
+        const loader = document.getElementById('app-loader');
+        if (!loader || loader.classList.contains('loader-hidden')) return;
+        loader.classList.add('loader-hidden');
+        setTimeout(() => {
+            if (loader.parentNode) loader.parentNode.removeChild(loader);
+        }, 250);
+    }
+
 
     calculateAgeFromBirthDate(birthDateStr, fallbackAge = '') {
         if (!birthDateStr || String(birthDateStr).trim() === '') {

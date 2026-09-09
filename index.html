@@ -75,9 +75,37 @@
             } catch(e) {}
         })();
     </script>
-    <link rel="stylesheet" href="styles.css?v=3.9">
+    <link rel="stylesheet" href="styles.css?v=4.0">
 </head>
 <body>
+
+    <!-- ================================================================
+         NFC LOADER OVERLAY — Se oculta automáticamente cuando el perfil
+         real ya está listo. Usa colores del tema activo.
+         ================================================================ -->
+    <div id="app-loader" class="app-loader-overlay" aria-live="polite" aria-label="Cargando perfil NFC">
+        <div class="loader-card">
+            <!-- Rings + Icon -->
+            <div class="loader-rings-wrapper">
+                <div class="loader-ring loader-ring-outer"></div>
+                <div class="loader-ring loader-ring-mid"></div>
+                <div class="loader-shield-center">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+            </div>
+            <!-- Brand -->
+            <p class="loader-brand-text">NFC <span>- COL</span></p>
+            <!-- Progress bar -->
+            <div class="loader-progress-bar">
+                <div class="loader-progress-fill"></div>
+            </div>
+            <!-- Bouncing dots -->
+            <div class="loader-dots">
+                <span></span><span></span><span></span>
+            </div>
+            <p class="loader-subtitle">Verificando perfil de seguridad...</p>
+        </div>
+    </div>
 
     <!-- Ambient Dynamic Glow Orbs -->
     <div class="bg-bubbles">
@@ -413,6 +441,6 @@
         </section>
     </main>
 
-    <script type="module" src="app.js?v=5.9"></script>
+    <script type="module" src="app.js?v=6.0"></script>
 </body>
 </html>
