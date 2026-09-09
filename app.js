@@ -780,7 +780,7 @@ class App {
         const emergencyCallLink = document.getElementById('btn-emergency-call-link');
         const emergencyNum = document.getElementById('p-emergency-num');
 
-        if (isVehicle || isSecurity) {
+        if (isVehicle || isSecurity || isPet) {
             emergencyCallBox?.classList.remove('hidden');
             const targetEmergency = (profile.emergencyPhone && profile.emergencyPhone.trim() !== '') ? profile.emergencyPhone.trim() : '123';
             if (emergencyCallLink) emergencyCallLink.href = `tel:${targetEmergency}`;

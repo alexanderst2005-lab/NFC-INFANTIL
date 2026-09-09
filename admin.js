@@ -756,7 +756,23 @@ class AdminApp {
         const petSection = document.getElementById('section-pet');
         const vetPhoneGroup = document.getElementById('group-vet-phone');
         const securitySection = document.getElementById('section-security');
+        const lblEps = document.getElementById('lbl-input-eps');
+        const inputEps = document.getElementById('input-eps');
 
+        if (gender === 'pet') {
+            if (lblEps) lblEps.textContent = "Veterinario / Clínica Veterinaria";
+            if (inputEps) {
+                inputEps.placeholder = "Ej: Clínica Veterinaria San Francisco";
+                inputEps.nextElementSibling.textContent = "Nombre del veterinario o clínica de confianza";
+            }
+        } else {
+            if (lblEps) lblEps.textContent = "EPS / Entidad de Salud / Aseguradora";
+            if (inputEps) {
+                inputEps.placeholder = "Ej: EPS Sura, Sanitas, Colsánitas, Nueva EPS...";
+                inputEps.nextElementSibling.textContent = "Entidad de salud o aseguradora para atención de emergencias";
+            }
+        }
+        
         if (gender === 'vehicle') {
             petSection?.classList.add('hidden');
             vetPhoneGroup?.classList.add('hidden');
