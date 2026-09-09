@@ -36,11 +36,9 @@ class App {
         this.setupNfcListener();
         this.setupSimulatedScanner();
 
-        this.hasLoadedCloudData = false;
-
-        // 🚀 Instant local render from cache if profile exists
-        // (view-profile starts hidden in HTML, renderSingleProfile will reveal it once data is injected)
+        // 🚀 Instant local render so page is NEVER blank or empty
         this.renderSingleProfile(targetSlug);
+        document.documentElement.classList.add('ready');
 
         // Firestore Realtime Single Source of Truth Listener
         onSnapshot(collection(db, "nfc_profiles"), async (snapshot) => {
@@ -51,7 +49,6 @@ class App {
             });
 
             this.profiles = this.deduplicateProfiles(loaded);
-            this.hasLoadedCloudData = true;
 
             localStorage.setItem('nfc_profiles_db', JSON.stringify(this.profiles));
 
@@ -59,7 +56,6 @@ class App {
             document.documentElement.classList.add('ready');
         }, (error) => {
             console.error("Firestore Realtime Listener Error:", error);
-            this.hasLoadedCloudData = true;
             this.renderSingleProfile(targetSlug);
             document.documentElement.classList.add('ready');
         });
@@ -289,11 +285,6 @@ class App {
         const viewInactive = document.getElementById('view-inactive');
         const profile = this.findProfileBySlug(rawSlug);
         if (!profile || profile.active === false) {
-            // Do not show "Perfil No Encontrado" if Firestore initial fetch hasn't finished yet
-            if (!this.hasLoadedCloudData && !profile) {
-                // Still loading from cloud - keep both sections hidden, do nothing
-                return;
-            }
             viewProfile?.classList.add('hidden');
             viewInactive?.classList.remove('hidden');
             const inactiveTitle = document.getElementById('inactive-title');
@@ -304,7 +295,6 @@ class App {
         }
         this.currentProfile = profile;
         viewInactive?.classList.add('hidden');
-        // 🚀 Reveal profile immediately once we have a valid profile to show
         viewProfile?.classList.remove('hidden');
         // Apply Theme
         const isPet = profile.gender === 'pet';
