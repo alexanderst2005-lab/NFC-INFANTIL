@@ -576,13 +576,13 @@ class App {
         
         if (nameEl) {
             if (isSecurity) {
-                nameEl.textContent = 'PERFIL DE SEGURIDAD';
+                // Show real name as title, PERFIL DE SEGURIDAD as subtitle ribbon
+                nameEl.textContent = profile.name || 'PERFIL DE SEGURIDAD';
                 if (sparkLeft) sparkLeft.classList.add('hidden');
                 if (sparkRight) sparkRight.classList.add('hidden');
-                // Show name below "PERFIL DE SEGURIDAD" using the security ribbon
                 if (secRibbon) {
                     secRibbon.classList.remove('hidden');
-                    secRibbon.textContent = profile.name || '';
+                    secRibbon.textContent = 'PERFIL DE SEGURIDAD';
                 }
             } else {
                 nameEl.textContent = profile.name;

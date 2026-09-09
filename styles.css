@@ -2370,6 +2370,12 @@ html.theme-security body {
     box-shadow: 0 4px 10px rgba(220, 38, 38, 0.4);
 }
 
+/* Override shield icon to gray for security profile */
+html.theme-security .v-badge-icon {
+    background: #6b7280;
+    box-shadow: 0 4px 10px rgba(107, 114, 128, 0.4);
+}
+
 .v-badge-text-group {
     display: flex;
     flex-direction: column;
