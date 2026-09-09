@@ -328,8 +328,13 @@ class App {
             themeClass = `theme-vehicle theme-${vehicleType}`;
         }
 
-        document.documentElement.classList.remove('theme-boy', 'theme-girl', 'theme-pet', 'theme-senior', 'theme-vehicle', 'theme-car', 'theme-moto', 'theme-bike');
+        // Aplicar el nuevo tema ANTES de quitar el anterior para evitar flash de color
+        // (si se quita primero, hay un frame con :root por defecto → fondo/loader cambia de color)
         document.documentElement.classList.add(...themeClass.split(' '));
+        document.documentElement.classList.remove(
+            ...['theme-boy', 'theme-girl', 'theme-pet', 'theme-senior', 'theme-vehicle', 'theme-car', 'theme-moto', 'theme-bike']
+            .filter(t => !themeClass.includes(t))
+        );
 
         // Vehicle Hero Cover Banner Visibility
         const vehicleBanner = document.getElementById('vehicle-hero-banner');
