@@ -2955,11 +2955,12 @@ html.theme-vehicle .footer-love-pill , html.theme-security .footer-love-pill {
 :root                { --loader-accent: #0284c7; --loader-accent-light: #38bdf8; }
 html.theme-girl      { --loader-accent: #db2777; --loader-accent-light: #f472b6; }
 html.theme-pet       { --loader-accent: #059669; --loader-accent-light: #34d399; }
-html.theme-senior    { --loader-accent: #7c3aed; --loader-accent-light: #a78bfa; }
-html.theme-vehicle, html.theme-security,
+html.theme-senior    { --loader-accent: #ea580c; --loader-accent-light: #fb923c; }
+html.theme-vehicle,
 html.theme-car,
 html.theme-moto,
 html.theme-bike      { --loader-accent: #dc2626; --loader-accent-light: #f87171; }
+html.theme-security  { --loader-accent: #6b7280; --loader-accent-light: #9ca3af; }
 
 /* --- Overlay base --- */
 .app-loader-overlay {
