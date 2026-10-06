@@ -305,6 +305,7 @@ class AdminApp {
             petNeutered: petNeutered,
             petVaccines: petVaccines,
             vetPhone: vetPhone,
+            securityNotice: securityNotice,
             secActivity: secActivity,
             secItem: secItem,
             secDesc: secDesc,
