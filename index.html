@@ -362,29 +362,41 @@
                     <!-- EMERGENCY CONTACTS LIST SECTION (MOCKUP STYLE) -->
                     <div class="emergency-contacts-section hidden" id="box-emergency-contacts">
                         <h3 class="contacts-section-title"><i class="fa-solid fa-users"></i> CONTACTOS DE EMERGENCIA</h3>
-                        <div class="emergency-contacts-list">
-                            <!-- Contact Item 1 -->
-                            <a href="#" id="btn-contact-wa1" class="emergency-contact-btn hidden">
-                                <div class="contact-btn-left">
-                                    <div class="contact-btn-icon"><i class="fa-brands fa-whatsapp"></i></div>
-                                    <div class="contact-btn-text">
-                                        <span class="contact-btn-title" id="p-contact-title1">Contacto Principal</span>
-                                        <span class="contact-btn-sub">Escríbenos por WhatsApp</span>
-                                    </div>
+                        <div class="emergency-contacts-grid">
+                            <!-- Fila 1: Contacto Principal -->
+                            <a href="#" id="btn-contact-call1" class="emergency-grid-btn btn-call hidden">
+                                <div class="grid-btn-icon"><i class="fa-solid fa-phone"></i></div>
+                                <div class="grid-btn-text">
+                                    <span class="grid-btn-title">Llamar</span>
+                                    <span class="grid-btn-sub" id="p-contact-title1-call">Contacto Principal</span>
                                 </div>
-                                <div class="contact-btn-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+                                <div class="grid-btn-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+                            </a>
+                            <a href="#" id="btn-contact-wa1" class="emergency-grid-btn btn-wa hidden">
+                                <div class="grid-btn-icon"><i class="fa-brands fa-whatsapp"></i></div>
+                                <div class="grid-btn-text">
+                                    <span class="grid-btn-title">WhatsApp</span>
+                                    <span class="grid-btn-sub" id="p-contact-title1">Contacto Principal</span>
+                                </div>
+                                <div class="grid-btn-arrow"><i class="fa-solid fa-chevron-right"></i></div>
                             </a>
 
-                            <!-- Contact Item 2 -->
-                            <a href="#" id="btn-contact-wa2" class="emergency-contact-btn hidden">
-                                <div class="contact-btn-left">
-                                    <div class="contact-btn-icon"><i class="fa-brands fa-whatsapp"></i></div>
-                                    <div class="contact-btn-text">
-                                        <span class="contact-btn-title" id="p-contact-title2">Contacto Alterno</span>
-                                        <span class="contact-btn-sub">Escríbenos por WhatsApp</span>
-                                    </div>
+                            <!-- Fila 2: Contacto Alterno -->
+                            <a href="#" id="btn-contact-call2" class="emergency-grid-btn btn-call hidden">
+                                <div class="grid-btn-icon"><i class="fa-solid fa-phone"></i></div>
+                                <div class="grid-btn-text">
+                                    <span class="grid-btn-title">Llamar</span>
+                                    <span class="grid-btn-sub" id="p-contact-title2-call">Contacto Alterno</span>
                                 </div>
-                                <div class="contact-btn-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+                                <div class="grid-btn-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+                            </a>
+                            <a href="#" id="btn-contact-wa2" class="emergency-grid-btn btn-wa hidden">
+                                <div class="grid-btn-icon"><i class="fa-brands fa-whatsapp"></i></div>
+                                <div class="grid-btn-text">
+                                    <span class="grid-btn-title">WhatsApp</span>
+                                    <span class="grid-btn-sub" id="p-contact-title2">Contacto Alterno</span>
+                                </div>
+                                <div class="grid-btn-arrow"><i class="fa-solid fa-chevron-right"></i></div>
                             </a>
                         </div>
                         </div>
@@ -532,6 +544,6 @@
         </section>
     </main>
 
-    <script type="module" src="app.js?v=6.11"></script>
+    <script type="module" src="app.js?v=7.0"></script>
 </body>
 </html>

@@ -587,15 +587,37 @@
 
                     <div class="form-row" style="margin-bottom: 1rem;">
                         <div class="form-group" style="grid-column: span 2;">
-                            <label class="form-label" for="input-phone" id="lbl-input-phone">Teléfono WhatsApp Contacto 1</label>
+                            <label class="form-label" for="input-call-phone1">
+                                <i class="fa-solid fa-phone"></i> Teléfono Llamada Contacto 1
+                            </label>
+                            <input type="tel" id="input-call-phone1" class="form-input" placeholder="Ej: +573001234567">
+                        </div>
+                    </div>
+
+                    <div class="form-row" style="margin-bottom: 1rem;">
+                        <div class="form-group" style="grid-column: span 2;">
+                            <label class="form-label" for="input-phone" id="lbl-input-phone">
+                                <i class="fa-brands fa-whatsapp"></i> Teléfono WhatsApp Contacto 1
+                            </label>
                             <input type="tel" id="input-phone" class="form-input" placeholder="Ej: 573001234567">
                             <span class="field-hint">Sin + ni espacios (Ej: 573001234567)</span>
                         </div>
                     </div>
 
+                    <div class="form-row" style="margin-bottom: 1rem;">
+                        <div class="form-group" style="grid-column: span 2;">
+                            <label class="form-label" for="input-call-phone2">
+                                <i class="fa-solid fa-phone"></i> Teléfono Llamada Contacto 2
+                            </label>
+                            <input type="tel" id="input-call-phone2" class="form-input" placeholder="Ej: +573109876543">
+                        </div>
+                    </div>
+
                     <div class="form-row">
                         <div class="form-group" style="grid-column: span 2;">
-                            <label class="form-label" for="input-phone2" id="lbl-input-phone2">Teléfono WhatsApp Contacto 2</label>
+                            <label class="form-label" for="input-phone2" id="lbl-input-phone2">
+                                <i class="fa-brands fa-whatsapp"></i> Teléfono WhatsApp Contacto 2
+                            </label>
                             <input type="tel" id="input-phone2" class="form-input" placeholder="Ej: 573109876543">
                             <span class="field-hint">Segundo contacto de emergencia</span>
                         </div>
@@ -693,7 +715,6 @@
     <!-- TOAST NOTIFICATION -->
     <div id="toast" class="toast hidden">Notificación</div>
 
-    <script type="module" src="admin.js?v=13.6"></script>
+    <script type="module" src="admin.js?v=13.7"></script>
 </body>
-
 </html>

@@ -782,33 +782,45 @@ class App {
 
         // EMERGENCY CONTACTS SECTION (MATCHING MOCKUP DESIGN)
         const contactsSection = document.getElementById('box-emergency-contacts');
+        
+        const btnContactCall1 = document.getElementById('btn-contact-call1');
         const btnContactWa1 = document.getElementById('btn-contact-wa1');
         const title1El = document.getElementById('p-contact-title1');
+        const title1CallEl = document.getElementById('p-contact-title1-call');
+        
+        const btnContactCall2 = document.getElementById('btn-contact-call2');
         const btnContactWa2 = document.getElementById('btn-contact-wa2');
         const title2El = document.getElementById('p-contact-title2');
+        const title2CallEl = document.getElementById('p-contact-title2-call');
+        
         const standardActions = document.getElementById('standard-actions-stack');
 
         let hasContact1 = profile.parentPhone && profile.parentPhone.trim() !== '';
         let hasContact2 = profile.parentPhone2 && profile.parentPhone2.trim() !== '';
+        let hasCall1 = profile.callPhone1 && profile.callPhone1.trim() !== '';
+        let hasCall2 = profile.callPhone2 && profile.callPhone2.trim() !== '';
 
-        if ((isVehicle || isSecurity) && (hasContact1 || hasContact2)) {
+        if ((hasContact1 || hasContact2 || hasCall1 || hasCall2)) { // APLICAR PARA TODOS LOS PERFILES
             contactsSection?.classList.remove('hidden');
-            standardActions?.classList.add('hidden'); // Use dedicated contact buttons for vehicles/security
+            standardActions?.classList.add('hidden'); // Use dedicated contact buttons
 
-            // Contact 1
+            // Contact 1 Titles
+            const roleText = (profile.contactRole1 && profile.contactRole1.trim() !== '') ? profile.contactRole1 : 'Contacto Principal';
+            const nameText = (profile.contactName1 && profile.contactName1.trim() !== '') ? profile.contactName1 : '';
+            const displayTitle = nameText ? `${roleText} - ${nameText}` : roleText;
+            
+            if (title1El) title1El.textContent = displayTitle;
+            if (title1CallEl) title1CallEl.textContent = displayTitle;
+
+            // Contact 1 WA
             if (hasContact1) {
                 btnContactWa1?.classList.remove('hidden');
-                const roleText = (profile.contactRole1 && profile.contactRole1.trim() !== '') ? profile.contactRole1 : 'Contacto Principal';
-                const nameText = (profile.contactName1 && profile.contactName1.trim() !== '') ? profile.contactName1 : '';
-                const displayTitle = nameText ? `${roleText} - ${nameText}` : roleText;
-                
-                if (title1El) title1El.textContent = displayTitle;
                 if (btnContactWa1) {
                     btnContactWa1.onclick = (e) => {
                         e.preventDefault();
                         const waText = profile.whatsappMessage || (isSecurity 
                             ? `Hola, encontré el perfil de seguridad de ${profile.name} y me quiero comunicar con el contacto de emergencia.`
-                            : `Hola, encontré el perfil de emergencia del conductor ${profile.name} y me quiero comunicar con sus contactos.`);
+                            : `Hola, encontré el perfil de emergencia de ${profile.name} y me quiero comunicar con sus contactos.`);
                         openWhatsAppWithLocation(profile.parentPhone, waText);
                     };
                 }
@@ -816,32 +828,46 @@ class App {
                 btnContactWa1?.classList.add('hidden');
             }
 
-            // Contact 2
+            // Contact 1 Call
+            if (hasCall1) {
+                btnContactCall1?.classList.remove('hidden');
+                if (btnContactCall1) btnContactCall1.href = `tel:${profile.callPhone1.replace(/\s+/g, '')}`;
+            } else {
+                btnContactCall1?.classList.add('hidden');
+            }
+
+            // Contact 2 Titles
+            const roleText2 = (profile.contactRole2 && profile.contactRole2.trim() !== '') ? profile.contactRole2 : 'Contacto Alterno';
+            const nameText2 = (profile.contactName2 && profile.contactName2.trim() !== '') ? profile.contactName2 : '';
+            const displayTitle2 = nameText2 ? `${roleText2} - ${nameText2}` : roleText2;
+
+            if (title2El) title2El.textContent = displayTitle2;
+            if (title2CallEl) title2CallEl.textContent = displayTitle2;
+
+            // Contact 2 WA
             if (hasContact2) {
                 btnContactWa2?.classList.remove('hidden');
-                const roleText2 = (profile.contactRole2 && profile.contactRole2.trim() !== '') ? profile.contactRole2 : 'Contacto Alterno';
-                const nameText2 = (profile.contactName2 && profile.contactName2.trim() !== '') ? profile.contactName2 : '';
-                const displayTitle2 = nameText2 ? `${roleText2} - ${nameText2}` : roleText2;
-
-                if (title2El) title2El.textContent = displayTitle2;
                 if (btnContactWa2) {
                     btnContactWa2.onclick = (e) => {
                         e.preventDefault();
                         const waText2 = profile.whatsappMessage || (isSecurity 
                             ? `Hola, encontré el perfil de seguridad de ${profile.name} y me quiero comunicar con el contacto de emergencia.`
-                            : `Hola, encontré el perfil de emergencia del conductor ${profile.name} y me quiero comunicar con sus contactos.`);
+                            : `Hola, encontré el perfil de emergencia de ${profile.name} y me quiero comunicar con sus contactos.`);
                         openWhatsAppWithLocation(profile.parentPhone2, waText2);
                     };
                 }
             } else {
                 btnContactWa2?.classList.add('hidden');
             }
-        } else if (isPet) {
-            // Reusing contacts section for pet vet if no standard actions show, or just standard actions
-            // But we actually use standard actions for primary contacts.
-            // For pets, the Vet button is inside emergency-contacts-list in index.html
-            contactsSection?.classList.add('hidden');
-            standardActions?.classList.remove('hidden');
+
+            // Contact 2 Call
+            if (hasCall2) {
+                btnContactCall2?.classList.remove('hidden');
+                if (btnContactCall2) btnContactCall2.href = `tel:${profile.callPhone2.replace(/\s+/g, '')}`;
+            } else {
+                btnContactCall2?.classList.add('hidden');
+            }
+
         } else {
             contactsSection?.classList.add('hidden');
             standardActions?.classList.remove('hidden');
