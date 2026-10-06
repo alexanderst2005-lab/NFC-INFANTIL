@@ -250,12 +250,14 @@ class App {
         const emergencyPhone = (p.emergencyPhone !== undefined && p.emergencyPhone !== null && String(p.emergencyPhone).trim() !== '') ? String(p.emergencyPhone).trim() : '123';
         const whatsappMessage = (p.whatsappMessage && String(p.whatsappMessage).trim() !== '') ? String(p.whatsappMessage).trim() : defaultWaMsg;
         const photoUrl = (p.photoUrl !== undefined && p.photoUrl !== null && String(p.photoUrl).trim() !== 'undefined') ? String(p.photoUrl).trim() : '';
+        const securityNotice = (p.securityNotice === 'object' || p.securityNotice === 'person') ? p.securityNotice : 'person';
 
         return {
             id: p.id || `prof-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
             slug: slug,
             name: name,
             gender: gender,
+            securityNotice: securityNotice,
             vehicleType: vehicleType,
             vehicleBrand: vehicleBrand,
             vehicleModel: vehicleModel,
