@@ -252,6 +252,7 @@ class App {
         const photoUrl = (p.photoUrl !== undefined && p.photoUrl !== null && String(p.photoUrl).trim() !== 'undefined') ? String(p.photoUrl).trim() : '';
         const securityNotice = (p.securityNotice === 'object' || p.securityNotice === 'person') ? p.securityNotice : 'person';
         const contactsTitle = (p.contactsTitle === 'owner' || p.contactsTitle === 'emergency') ? p.contactsTitle : 'emergency';
+        const badgeTitle = (p.badgeTitle === 'loss' || p.badgeTitle === 'emergency') ? p.badgeTitle : 'emergency';
 
         return {
             id: p.id || `prof-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
@@ -260,6 +261,7 @@ class App {
             gender: gender,
             securityNotice: securityNotice,
             contactsTitle: contactsTitle,
+            badgeTitle: badgeTitle,
             vehicleType: vehicleType,
             vehicleBrand: vehicleBrand,
             vehicleModel: vehicleModel,
