@@ -247,7 +247,7 @@ class App {
         const contactRole2 = (p.contactRole2 !== undefined && p.contactRole2 !== null) ? String(p.contactRole2).trim() : '';
         const parentPhone = (p.parentPhone !== undefined && p.parentPhone !== null && String(p.parentPhone).trim() !== 'undefined') ? String(p.parentPhone).trim() : '';
         const parentPhone2 = (p.parentPhone2 !== undefined && p.parentPhone2 !== null && String(p.parentPhone2).trim() !== 'undefined') ? String(p.parentPhone2).trim() : '';
-        const emergencyPhone = (p.emergencyPhone !== undefined && p.emergencyPhone !== null && String(p.emergencyPhone).trim() !== '') ? String(p.emergencyPhone).trim() : '123';
+        const emergencyPhone = (p.emergencyPhone !== undefined && p.emergencyPhone !== null && String(p.emergencyPhone).trim() !== '') ? String(p.emergencyPhone).trim() : '';
         const whatsappMessage = (p.whatsappMessage && String(p.whatsappMessage).trim() !== '') ? String(p.whatsappMessage).trim() : defaultWaMsg;
         const photoUrl = (p.photoUrl !== undefined && p.photoUrl !== null && String(p.photoUrl).trim() !== 'undefined') ? String(p.photoUrl).trim() : '';
         const securityNotice = (p.securityNotice === 'object' || p.securityNotice === 'person') ? p.securityNotice : 'person';
@@ -829,9 +829,9 @@ class App {
         const emergencyCallLink = document.getElementById('btn-emergency-call-link');
         const emergencyNum = document.getElementById('p-emergency-num');
 
-        if (isVehicle || isSecurity || isPet) {
+        if (profile.emergencyPhone && profile.emergencyPhone.trim() !== '') {
+            const targetEmergency = profile.emergencyPhone.trim();
             emergencyCallBox?.classList.remove('hidden');
-            const targetEmergency = (profile.emergencyPhone && profile.emergencyPhone.trim() !== '') ? profile.emergencyPhone.trim() : '123';
             if (emergencyCallLink) emergencyCallLink.href = `tel:${targetEmergency}`;
             if (emergencyNum) emergencyNum.textContent = (targetEmergency.startsWith('+') || targetEmergency.length > 5) ? `+${targetEmergency}` : targetEmergency;
         } else {
