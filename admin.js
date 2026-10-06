@@ -225,6 +225,7 @@ class AdminApp {
 
         // Security Notice
         let securityNotice = (p.securityNotice === 'object' || p.securityNotice === 'person') ? p.securityNotice : 'person';
+        let contactsTitle = (p.contactsTitle === 'owner' || p.contactsTitle === 'emergency') ? p.contactsTitle : 'emergency';
 
         const defaultWaMsg = gender === 'pet'
             ? 'Hola, encontré a la mascota {nombre} y quiero comunicarme con su dueño.'
@@ -306,6 +307,7 @@ class AdminApp {
             petVaccines: petVaccines,
             vetPhone: vetPhone,
             securityNotice: securityNotice,
+            contactsTitle: contactsTitle,
             secActivity: secActivity,
             secItem: secItem,
             secDesc: secDesc,
@@ -663,6 +665,9 @@ class AdminApp {
 
         const noticeSelect = document.getElementById('input-security-notice');
         if (noticeSelect) noticeSelect.value = profile.securityNotice || 'person';
+        
+        const contactsTitleSelect = document.getElementById('input-contacts-title');
+        if (contactsTitleSelect) contactsTitleSelect.value = profile.contactsTitle || 'emergency';
 
         document.getElementById('input-birthdate').value = profile.birthDate || '';
         document.getElementById('input-age').value = (profile.age !== undefined && profile.age !== null) ? profile.age : '';
@@ -1021,6 +1026,7 @@ class AdminApp {
             const emergencyPhoneVal = document.getElementById('input-emergency-phone')?.value.trim() || '123';
 
             const securityNoticeVal = document.getElementById('input-security-notice')?.value || 'person';
+            const contactsTitleVal = document.getElementById('input-contacts-title')?.value || 'emergency';
             const secActivityVal = document.getElementById('input-sec-activity')?.value || '';
             const secItemVal = document.getElementById('input-sec-item')?.value || '';
             const secDescVal = document.getElementById('input-sec-desc')?.value || '';
@@ -1055,6 +1061,7 @@ class AdminApp {
                 petVaccines: petVaccinesVal,
                 vetPhone: vetPhoneVal,
                 securityNotice: securityNoticeVal,
+                contactsTitle: contactsTitleVal,
                 birthDate: birthDateVal,
                 age: computedAge,
                 bloodType: gender === 'pet' ? '' : (document.getElementById('input-blood').value ? document.getElementById('input-blood').value.trim() : ''),

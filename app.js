@@ -251,6 +251,7 @@ class App {
         const whatsappMessage = (p.whatsappMessage && String(p.whatsappMessage).trim() !== '') ? String(p.whatsappMessage).trim() : defaultWaMsg;
         const photoUrl = (p.photoUrl !== undefined && p.photoUrl !== null && String(p.photoUrl).trim() !== 'undefined') ? String(p.photoUrl).trim() : '';
         const securityNotice = (p.securityNotice === 'object' || p.securityNotice === 'person') ? p.securityNotice : 'person';
+        const contactsTitle = (p.contactsTitle === 'owner' || p.contactsTitle === 'emergency') ? p.contactsTitle : 'emergency';
 
         return {
             id: p.id || `prof-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
@@ -258,6 +259,7 @@ class App {
             name: name,
             gender: gender,
             securityNotice: securityNotice,
+            contactsTitle: contactsTitle,
             vehicleType: vehicleType,
             vehicleBrand: vehicleBrand,
             vehicleModel: vehicleModel,
@@ -460,6 +462,15 @@ class App {
             } else {
                 if (instText) instText.innerHTML = 'Si esta persona está herida o inconsciente, comunícate inmediatamente con sus contactos de emergencia.';
                 if (instIcon) instIcon.innerHTML = '<i class="fa-solid fa-phone-volume"></i>';
+            }
+            
+            const contactsSectionTitle = document.querySelector('.contacts-section-title');
+            if (contactsSectionTitle) {
+                if (isSecurity && profile.contactsTitle === 'owner') {
+                    contactsSectionTitle.innerHTML = '<i class="fa-solid fa-user"></i> CONTACTAR AL PROPIETARIO';
+                } else {
+                    contactsSectionTitle.innerHTML = '<i class="fa-solid fa-users"></i> CONTACTOS DE EMERGENCIA';
+                }
             }
         } else {
             instructionBox?.classList.add('hidden');
