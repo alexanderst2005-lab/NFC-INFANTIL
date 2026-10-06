@@ -2270,9 +2270,9 @@ html.ready .container {
     align-items: center;
     gap: 0.35rem;
     background: rgba(0, 0, 0, 0.04);
-    padding: 0.4rem 0.75rem;
+    padding: 0.5rem 0.9rem;
     border-radius: 12px;
-    font-size: 0.85rem;
+    font-size: 0.95rem;
     color: #475569;
     font-weight: 500;
 }
@@ -2611,9 +2611,9 @@ html.theme-security .v-badge-icon {
     align-items: center;
     gap: 0.35rem;
     background: rgba(220, 38, 38, 0.05);
-    padding: 0.4rem 0.75rem;
+    padding: 0.5rem 0.9rem;
     border-radius: 12px;
-    font-size: 0.85rem;
+    font-size: 0.95rem;
     color: #475569;
     font-weight: 500;
 }
@@ -2836,8 +2836,8 @@ html.theme-vehicle .vehicle-main-spec , html.theme-security .vehicle-main-spec {
 }
 
 html.theme-vehicle .vehicle-badge-item , html.theme-security .vehicle-badge-item {
-    font-size: 0.72rem !important;
-    padding: 0.18rem 0.45rem !important;
+    font-size: 0.95rem !important;
+    padding: 0.5rem 0.8rem !important;
 }
 
 /* Override badge icon color for security to gray */
