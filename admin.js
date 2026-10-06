@@ -223,6 +223,9 @@ class AdminApp {
         let petVaccines = (p.petVaccines !== undefined && p.petVaccines !== null) ? String(p.petVaccines).trim() : '';
         let vetPhone = (p.vetPhone !== undefined && p.vetPhone !== null && String(p.vetPhone).trim() !== '') ? String(p.vetPhone).trim() : '';
 
+        // Security Notice
+        let securityNotice = (p.securityNotice === 'object' || p.securityNotice === 'person') ? p.securityNotice : 'person';
+
         const defaultWaMsg = gender === 'pet'
             ? 'Hola, encontré a la mascota {nombre} y quiero comunicarme con su dueño.'
             : (gender === 'senior'
@@ -657,6 +660,9 @@ class AdminApp {
         const genderSelect = document.getElementById('input-gender');
         if (genderSelect) genderSelect.value = profile.gender || 'boy';
 
+        const noticeSelect = document.getElementById('input-security-notice');
+        if (noticeSelect) noticeSelect.value = profile.securityNotice || 'person';
+
         document.getElementById('input-birthdate').value = profile.birthDate || '';
         document.getElementById('input-age').value = (profile.age !== undefined && profile.age !== null) ? profile.age : '';
         document.getElementById('input-blood').value = profile.bloodType || '';
@@ -760,8 +766,15 @@ class AdminApp {
         const petSection = document.getElementById('section-pet');
         const vetPhoneGroup = document.getElementById('group-vet-phone');
         const securitySection = document.getElementById('section-security');
+        const securityNoticeGroup = document.getElementById('group-security-notice');
         const lblEps = document.getElementById('lbl-input-eps');
         const inputEps = document.getElementById('input-eps');
+
+        if (gender === 'security') {
+            if (securityNoticeGroup) securityNoticeGroup.classList.remove('hidden');
+        } else {
+            if (securityNoticeGroup) securityNoticeGroup.classList.add('hidden');
+        }
 
         if (gender === 'pet') {
             if (lblEps) lblEps.textContent = "Veterinario / Clínica Veterinaria";
@@ -1006,6 +1019,7 @@ class AdminApp {
             const parentPhone2Val = document.getElementById('input-phone2')?.value.trim() || '';
             const emergencyPhoneVal = document.getElementById('input-emergency-phone')?.value.trim() || '123';
 
+            const securityNoticeVal = document.getElementById('input-security-notice')?.value || 'person';
             const secActivityVal = document.getElementById('input-sec-activity')?.value || '';
             const secItemVal = document.getElementById('input-sec-item')?.value || '';
             const secDescVal = document.getElementById('input-sec-desc')?.value || '';
@@ -1039,6 +1053,7 @@ class AdminApp {
                 petNeutered: petNeuteredVal,
                 petVaccines: petVaccinesVal,
                 vetPhone: vetPhoneVal,
+                securityNotice: securityNoticeVal,
                 birthDate: birthDateVal,
                 age: computedAge,
                 bloodType: gender === 'pet' ? '' : (document.getElementById('input-blood').value ? document.getElementById('input-blood').value.trim() : ''),

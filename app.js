@@ -450,6 +450,15 @@ class App {
         const instructionBox = document.getElementById('box-emergency-instruction');
         if (isVehicle || isSecurity) {
             instructionBox?.classList.remove('hidden');
+            const instText = instructionBox?.querySelector('.instruction-text');
+            const instIcon = instructionBox?.querySelector('.instruction-icon');
+            if (isSecurity && profile.securityNotice === 'object') {
+                if (instText) instText.innerHTML = '<b>¿ENCONTRASTE ESTE OBJETO?</b><br>Comunícate con su propietario para coordinar su devolución.';
+                if (instIcon) instIcon.innerHTML = '<i class="fa-solid fa-box"></i>';
+            } else {
+                if (instText) instText.innerHTML = 'Si esta persona está herida o inconsciente, comunícate inmediatamente con sus contactos de emergencia.';
+                if (instIcon) instIcon.innerHTML = '<i class="fa-solid fa-phone-volume"></i>';
+            }
         } else {
             instructionBox?.classList.add('hidden');
         }
