@@ -247,6 +247,8 @@ class App {
         const contactRole2 = (p.contactRole2 !== undefined && p.contactRole2 !== null) ? String(p.contactRole2).trim() : '';
         const parentPhone = (p.parentPhone !== undefined && p.parentPhone !== null && String(p.parentPhone).trim() !== 'undefined') ? String(p.parentPhone).trim() : '';
         const parentPhone2 = (p.parentPhone2 !== undefined && p.parentPhone2 !== null && String(p.parentPhone2).trim() !== 'undefined') ? String(p.parentPhone2).trim() : '';
+        const callPhone1 = (p.callPhone1 !== undefined && p.callPhone1 !== null && String(p.callPhone1).trim() !== 'undefined') ? String(p.callPhone1).trim() : '';
+        const callPhone2 = (p.callPhone2 !== undefined && p.callPhone2 !== null && String(p.callPhone2).trim() !== 'undefined') ? String(p.callPhone2).trim() : '';
         const emergencyPhone = (p.emergencyPhone !== undefined && p.emergencyPhone !== null && String(p.emergencyPhone).trim() !== '') ? String(p.emergencyPhone).trim() : '';
         const whatsappMessage = (p.whatsappMessage && String(p.whatsappMessage).trim() !== '') ? String(p.whatsappMessage).trim() : defaultWaMsg;
         const photoUrl = (p.photoUrl !== undefined && p.photoUrl !== null && String(p.photoUrl).trim() !== 'undefined') ? String(p.photoUrl).trim() : '';
@@ -285,6 +287,8 @@ class App {
             contactRole2: contactRole2,
             parentPhone: parentPhone,
             parentPhone2: parentPhone2,
+            callPhone1: callPhone1,
+            callPhone2: callPhone2,
             emergencyPhone: emergencyPhone,
             whatsappMessage: whatsappMessage,
             locationMapsUrl: locationMapsUrl,
