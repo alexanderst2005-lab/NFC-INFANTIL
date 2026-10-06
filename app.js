@@ -458,7 +458,7 @@ class App {
                 if (instText) instText.innerHTML = '<b>¿ENCONTRASTE ESTE OBJETO?</b><br>Comunícate con su propietario para coordinar su devolución.';
                 if (instIcon) instIcon.innerHTML = '<i class="fa-solid fa-box"></i>';
             } else {
-                if (instText) instText.innerHTML = `Si esta persona está herida o inconsciente, comunícate inmediatamente con sus contactos de emergencia.<br><br><small style="color:red;font-weight:bold;">DEBUG INFO (Por favor envíame un pantallazo de esto):<br>isSecurity: ${isSecurity}<br>gender: ${profile.gender}<br>securityNotice: ${profile.securityNotice}</small>`;
+                if (instText) instText.innerHTML = 'Si esta persona está herida o inconsciente, comunícate inmediatamente con sus contactos de emergencia.';
                 if (instIcon) instIcon.innerHTML = '<i class="fa-solid fa-phone-volume"></i>';
             }
         } else {
