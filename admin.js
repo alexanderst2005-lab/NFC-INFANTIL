@@ -226,6 +226,7 @@ class AdminApp {
         // Security Notice
         let securityNotice = (p.securityNotice === 'object' || p.securityNotice === 'person') ? p.securityNotice : 'person';
         let contactsTitle = (p.contactsTitle === 'owner' || p.contactsTitle === 'emergency') ? p.contactsTitle : 'emergency';
+        let badgeTitle = (p.badgeTitle === 'loss' || p.badgeTitle === 'emergency') ? p.badgeTitle : 'emergency';
 
         const defaultWaMsg = gender === 'pet'
             ? 'Hola, encontré a la mascota {nombre} y quiero comunicarme con su dueño.'
@@ -308,6 +309,7 @@ class AdminApp {
             vetPhone: vetPhone,
             securityNotice: securityNotice,
             contactsTitle: contactsTitle,
+            badgeTitle: badgeTitle,
             secActivity: secActivity,
             secItem: secItem,
             secDesc: secDesc,
@@ -669,6 +671,9 @@ class AdminApp {
         const contactsTitleSelect = document.getElementById('input-contacts-title');
         if (contactsTitleSelect) contactsTitleSelect.value = profile.contactsTitle || 'emergency';
 
+        const badgeTitleSelect = document.getElementById('input-badge-title');
+        if (badgeTitleSelect) badgeTitleSelect.value = profile.badgeTitle || 'emergency';
+
         document.getElementById('input-birthdate').value = profile.birthDate || '';
         document.getElementById('input-age').value = (profile.age !== undefined && profile.age !== null) ? profile.age : '';
         document.getElementById('input-blood').value = profile.bloodType || '';
@@ -1027,6 +1032,7 @@ class AdminApp {
 
             const securityNoticeVal = document.getElementById('input-security-notice')?.value || 'person';
             const contactsTitleVal = document.getElementById('input-contacts-title')?.value || 'emergency';
+            const badgeTitleVal = document.getElementById('input-badge-title')?.value || 'emergency';
             const secActivityVal = document.getElementById('input-sec-activity')?.value || '';
             const secItemVal = document.getElementById('input-sec-item')?.value || '';
             const secDescVal = document.getElementById('input-sec-desc')?.value || '';
@@ -1062,6 +1068,7 @@ class AdminApp {
                 vetPhone: vetPhoneVal,
                 securityNotice: securityNoticeVal,
                 contactsTitle: contactsTitleVal,
+                badgeTitle: badgeTitleVal,
                 birthDate: birthDateVal,
                 age: computedAge,
                 bloodType: gender === 'pet' ? '' : (document.getElementById('input-blood').value ? document.getElementById('input-blood').value.trim() : ''),

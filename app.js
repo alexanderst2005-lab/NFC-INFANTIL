@@ -472,6 +472,27 @@ class App {
                     contactsSectionTitle.innerHTML = '<i class="fa-solid fa-users"></i> CONTACTOS DE EMERGENCIA';
                 }
             }
+            
+            const vehicleEmergencyPill = document.getElementById('vehicle-emergency-pill');
+            if (vehicleEmergencyPill) {
+                if (isSecurity && profile.badgeTitle === 'loss') {
+                    vehicleEmergencyPill.innerHTML = `
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                        <div class="v-pill-text-group">
+                            <span>EN CASO DE</span>
+                            <span>PÉRDIDA</span>
+                        </div>
+                    `;
+                } else {
+                    vehicleEmergencyPill.innerHTML = `
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                        <div class="v-pill-text-group">
+                            <span>EN CASO DE</span>
+                            <span>EMERGENCIA</span>
+                        </div>
+                    `;
+                }
+            }
         } else {
             instructionBox?.classList.add('hidden');
         }
