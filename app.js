@@ -475,7 +475,7 @@ class App {
             
             const vehicleEmergencyPill = document.getElementById('vehicle-emergency-pill');
             if (vehicleEmergencyPill) {
-                if (isSecurity && profile.badgeTitle === 'loss') {
+                if (profile.badgeTitle === 'loss') {
                     vehicleEmergencyPill.innerHTML = `
                         <i class="fa-solid fa-triangle-exclamation"></i>
                         <div class="v-pill-text-group">
