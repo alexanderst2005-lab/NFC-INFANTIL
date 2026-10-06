@@ -3157,4 +3157,108 @@ html.theme-security  { --loader-accent: #6b7280; --loader-accent-light: #9ca3af;
     text-align: center;
     letter-spacing: 0.01em;
 }
+
+/* NEW EMERGENCY CONTACTS GRID */
+.emergency-contacts-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.emergency-grid-btn {
+    display: flex;
+    align-items: center;
+    padding: 12px 10px;
+    border-radius: 12px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    position: relative;
+    overflow: hidden;
+}
+
+.emergency-grid-btn.btn-call {
+    background: linear-gradient(135deg, #e0efff 0%, #cce5ff 100%);
+    border: 1px solid rgba(0, 123, 255, 0.1);
+}
+
+.emergency-grid-btn.btn-wa {
+    background: linear-gradient(135deg, #e6ffe6 0%, #ccffcc 100%);
+    border: 1px solid rgba(37, 211, 102, 0.1);
+}
+
+.grid-btn-icon {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    margin-right: 10px;
+    color: #fff;
+    flex-shrink: 0;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.btn-call .grid-btn-icon {
+    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+}
+
+.btn-wa .grid-btn-icon {
+    background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+}
+
+.grid-btn-text {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    min-width: 0; /* allows text truncation */
+}
+
+.grid-btn-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin-bottom: 2px;
+}
+
+.btn-call .grid-btn-title {
+    color: #002b5e;
+}
+
+.btn-wa .grid-btn-title {
+    color: #004d26;
+}
+
+.grid-btn-sub {
+    font-size: 0.7rem;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.btn-call .grid-btn-sub {
+    color: #0056b3;
+}
+
+.btn-wa .grid-btn-sub {
+    color: #128C7E;
+}
+
+.grid-btn-arrow {
+    font-size: 0.9rem;
+    color: rgba(0,0,0,0.2);
+    margin-left: 5px;
+    flex-shrink: 0;
+}
+
+.btn-call .grid-btn-arrow {
+    color: #007bff;
+}
+
+.btn-wa .grid-btn-arrow {
+    color: #25D366;
+}
 
