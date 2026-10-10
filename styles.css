@@ -3184,8 +3184,8 @@ html.theme-security  { --loader-accent: #6b7280; --loader-accent-light: #9ca3af;
 }
 
 .emergency-grid-btn.btn-wa {
-    background: linear-gradient(135deg, #e6ffe6 0%, #ccffcc 100%);
-    border: 1px solid rgba(37, 211, 102, 0.1);
+    background: linear-gradient(135deg, #25d366 0%, #16a34a 100%);
+    border: 1px solid rgba(37, 211, 102, 0.3);
 }
 
 .grid-btn-icon {
@@ -3207,7 +3207,7 @@ html.theme-security  { --loader-accent: #6b7280; --loader-accent-light: #9ca3af;
 }
 
 .btn-wa .grid-btn-icon {
-    background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+    background: rgba(255, 255, 255, 0.22);
 }
 
 .grid-btn-text {
@@ -3228,7 +3228,7 @@ html.theme-security  { --loader-accent: #6b7280; --loader-accent-light: #9ca3af;
 }
 
 .btn-wa .grid-btn-title {
-    color: #004d26;
+    color: #ffffff;
 }
 
 .grid-btn-sub {
@@ -3244,7 +3244,7 @@ html.theme-security  { --loader-accent: #6b7280; --loader-accent-light: #9ca3af;
 }
 
 .btn-wa .grid-btn-sub {
-    color: #128C7E;
+    color: rgba(255, 255, 255, 0.92);
 }
 
 .grid-btn-arrow {
@@ -3259,6 +3259,6 @@ html.theme-security  { --loader-accent: #6b7280; --loader-accent-light: #9ca3af;
 }
 
 .btn-wa .grid-btn-arrow {
-    color: #25D366;
+    color: rgba(255, 255, 255, 0.9);
 }
 
