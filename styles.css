@@ -1941,12 +1941,12 @@ body.modal-open .admin-grid {
 
     body:has(#admin-dashboard-screen.active-view) .container,
     .admin-page-active .container {
-        max-width: 1140px;
+        max-width: 1440px;
         margin: 0 auto;
     }
 
     .admin-grid {
-        grid-template-columns: repeat(3, 1fr) !important;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)) !important;
         gap: 1.5rem;
     }
 }
@@ -1961,7 +1961,7 @@ body.modal-open .admin-grid {
     }
 
     .admin-grid {
-        grid-template-columns: repeat(2, 1fr) !important;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)) !important;
         gap: 1.3rem;
     }
 }
@@ -1983,7 +1983,7 @@ body.modal-open .admin-grid {
     }
 
     .admin-grid {
-        grid-template-columns: repeat(2, 1fr) !important;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)) !important;
         gap: 1.2rem;
     }
 }
